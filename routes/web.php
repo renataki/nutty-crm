@@ -8,7 +8,8 @@ use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MigrationController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportUserController;
+use App\Http\Controllers\ReportWebsiteController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\SettingApiController;
 use App\Http\Controllers\SystemController;
@@ -49,8 +50,9 @@ Route::group(["middleware" => ["authentication"]], function() {
 
     Route::get("/register", [RegisterController::class, "index"]);
 
-    Route::get("/report", [ReportController::class, "index"]);
-    Route::get("/report/{id}", [ReportController::class, "user"]);
+    Route::get("/report/user", [ReportUserController::class, "index"]);
+    Route::get("/report/user/{id}", [ReportUserController::class, "detail"]);
+    Route::get("/report/website", [ReportWebsiteController::class, "index"]);
 
     Route::get("/security/encryption", [SecurityController::class, "encryption"]);
 
@@ -109,8 +111,9 @@ Route::post("/login/logout", [LoginController::class, "logout"]);
 
 Route::post("/register/register", [RegisterController::class, "register"]);
 
-Route::post("/report/table", [ReportController::class, "table"]);
-Route::post("/report/user/table", [ReportController::class, "userTable"]);
+Route::post("/report/user/table", [ReportUserController::class, "table"]);
+Route::post("/report/user/detail/table", [ReportUserController::class, "detailTable"]);
+Route::post("/report/website/table", [ReportWebsiteController::class, "table"]);
 
 Route::post("/security/encryption/encrypt", [SecurityController::class, "encrypt"]);
 Route::post("/security/initialize-account", [SecurityController::class, "initializeAccount"]);

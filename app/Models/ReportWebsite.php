@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Jenssegers\Mongodb\Eloquent\Model;
 
 
-class Report extends Model {
+class ReportWebsite extends Model {
 
 
     use HasFactory;
@@ -19,16 +19,9 @@ class Report extends Model {
             "totals" => []
         ],
         "total" => 0,
-        "user" => [
-            "_id" => "0",
-            "avatar" => "",
-            "name" => "System",
-            "username" => "system"
-        ],
         "website" => [
-            "ids" => [],
-            "names" => [],
-            "totals" => []
+            "_id" => "0",
+            "name" => "System"
         ],
         "created" => [
             "timestamp" => "",
@@ -51,13 +44,8 @@ class Report extends Model {
         "status->names",
         "status->totals",
         "total",
-        "user->_id",
-        "user->avatar",
-        "user->name",
-        "user->username",
-        "website->ids",
-        "website->names",
-        "website->totals",
+        "website->_id",
+        "website->name",
         "created->timestamp",
         "created->user->_id",
         "created->user->username",
@@ -66,7 +54,7 @@ class Report extends Model {
         "modified->user->username"
     ];
 
-    protected $table = "report";
+    protected $table = "reportWebsite";
 
     public $timestamps = false;
 

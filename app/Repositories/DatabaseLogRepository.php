@@ -142,6 +142,18 @@ class DatabaseLogRepository {
     }
 
 
+    public static function findLastByDatabaseId($databaseId, $websiteId) {
+
+        $databaseLog = new DatabaseLog();
+        $databaseLog->setTable("databaseLog_" . $websiteId);
+
+        return $databaseLog->where([
+            ["database._id", "=", $databaseId]
+        ])->orderBy("created.timestamp", "DESC")->first();
+
+    }
+
+
     public static function findLastByDatabaseIdUserId($databaseId, $userId, $websiteId) {
 
         $databaseLog = new DatabaseLog();

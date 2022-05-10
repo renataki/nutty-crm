@@ -3,21 +3,19 @@
 namespace App\Repositories;
 
 use App\Components\DataComponent;
-use App\Models\Report;
-use Illuminate\Support\Carbon;
+use App\Models\ReportUser;
 use MongoDB\BSON\Regex;
-use MongoDB\BSON\UTCDateTime;
 
 
-class ReportRepository {
+class ReportUserRepository {
 
 
     public static function countByUserIdBetweenDate($endDate, $nucode, $startDate, $userId) {
 
-        $report = new Report();
-        $report->setTable("report_" . $nucode);
+        $reportUser = new ReportUser();
+        $reportUser->setTable("reportUser_" . $nucode);
 
-        return $report->where([
+        return $reportUser->where([
             ["date", ">=", $startDate],
             ["date", "<=", $endDate],
             ["user._id", "=", $userId]
@@ -28,17 +26,17 @@ class ReportRepository {
 
     public static function delete($id) {
 
-        Report::find($id)->delete();
+        ReportUser::find($id)->delete();
 
     }
 
 
     public static function findOneByDateUserId($date, $nucode, $userId) {
 
-        $report = new Report();
-        $report->setTable("report_" . $nucode);
+        $reportUser = new ReportUser();
+        $reportUser->setTable("reportUser_" . $nucode);
 
-        return $report->where([
+        return $reportUser->where([
             ["date", "=", $date],
             ["user._id", "=", $userId]
         ])->first();
@@ -48,10 +46,10 @@ class ReportRepository {
 
     public static function findOneByUserId($nucode, $userId) {
 
-        $report = new Report();
-        $report->setTable("report_" . $nucode);
+        $reportUser = new ReportUser();
+        $reportUser->setTable("reportUser_" . $nucode);
 
-        return $report->where([
+        return $reportUser->where([
             ["user._id", "=", $userId]
         ])->first();
 
@@ -60,10 +58,10 @@ class ReportRepository {
 
     public static function findByUserIdBetweenDate($endDate, $length, $nucode, $page, $startDate, $userId) {
 
-        $report = new Report();
-        $report->setTable("report_" . $nucode);
+        $reportUser = new ReportUser();
+        $reportUser->setTable("reportUser_" . $nucode);
 
-        return $report->where([
+        return $reportUser->where([
             ["date", ">=", $startDate],
             ["date", "<=", $endDate],
             ["user._id", "=", $userId]
@@ -72,41 +70,14 @@ class ReportRepository {
     }
 
 
-    public static function findRawTable($date, $name, $nucode, $username) {
+    public static function findUserTable($date, $name, $nucode, $username) {
 
-        $report = new Report();
-        $report->setTable("report_" . $nucode);
+        $reportUser = new ReportUser();
+        $reportUser->setTable("reportUser_" . $nucode);
 
-        return $report->raw(function($collection) use ($date, $name, $nucode, $username) {
+        return $reportUser->raw(function($collection) use ($date, $name, $nucode, $username) {
 
-            $query = [];
-
-            if(!is_null($date)) {
-
-                $date = explode(" to ", $date);
-
-                if(count($date) == 1) {
-
-                    array_push($query, [
-                        '$match' => [
-                            "date" => new UTCDateTime(Carbon::parse($date[0])->format("U") * 1000)
-                        ]
-                    ]);
-
-                } else if(count($date) == 2) {
-
-                    array_push($query, [
-                        '$match' => [
-                            "date" => [
-                                '$gte' => new UTCDateTime(Carbon::parse($date[0])->format("U") * 1000),
-                                '$lte' => new UTCDateTime(Carbon::parse($date[1])->format("U") * 1000)
-                            ]
-                        ]
-                    ]);
-
-                }
-
-            }
+            $query = DataComponent::initializeReportFilterDateRange($date, []);
 
             if(!is_null($name)) {
 
@@ -161,7 +132,7 @@ class ReportRepository {
         $data->created = DataComponent::initializeTimestamp($account);
         $data->modified = $data->created;
 
-        $data->setTable("report_" . $account->nucode);
+        $data->setTable("reportUser_" . $account->nucode);
 
         $data->save();
 
@@ -178,7 +149,7 @@ class ReportRepository {
 
         }
 
-        $data->setTable("report_" . $account->nucode);
+        $data->setTable("reportUser_" . $account->nucode);
 
         return $data->save();
 

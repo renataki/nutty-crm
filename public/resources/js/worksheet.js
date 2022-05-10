@@ -317,8 +317,8 @@ app.controller("worksheet", [
                             initializeSelect2("worksheet-status", null);
                             $("#worksheet-status").val($scope.status.value).trigger("change");
 
-                            $("#worksheet-skype-call").attr("href", "skype:" + $scope.contact.phone.value.replaceAll("+", "") + "?call");
-                            $("#worksheet-whatsapp-call").attr("href", "https://api.whatsapp.com/send?phone=" + $scope.contact.whatsapp.value.replaceAll("+", ""));
+                            $("#worksheet-skype-call").attr("href", "skype:" + $scope.contact.phone.value.toString().replaceAll("+", "") + "?call");
+                            $("#worksheet-whatsapp-call").attr("href", "https://api.whatsapp.com/send?phone=" + $scope.contact.whatsapp.value.toString().replaceAll("+", ""));
 
                         });
 

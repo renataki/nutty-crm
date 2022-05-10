@@ -37,7 +37,7 @@ class LicenseService {
         Schema::dropIfExists("databaseImport_" . $request->nucode);
         Schema::dropIfExists("databaseImportAction_" . $request->nucode);
         Schema::dropIfExists("playerAttempt_" . $request->nucode);
-        Schema::dropIfExists("report_" . $request->nucode);
+        Schema::dropIfExists("reportUser_" . $request->nucode);
 
         UserGroupRepository::deleteByNucode($request->nucode);
         UserLogRepository::deleteByNucode($request->nucode);

@@ -1,4 +1,4 @@
-app.controller("report", [
+app.controller("reportUser", [
     "$scope", "$window", "$compile", "$timeout", "global", function($scope, $window, $compile, $timeout, global) {
 
         $scope.$on("initializeTable", function() {
@@ -149,7 +149,7 @@ app.controller("report", [
                 }, {
                     "data": "_id",
                     "render": function(data, type, row) {
-                        return "<a href=\"" + $scope.global.url.base + "/report/" + row.user[0]._id.$oid + "/\" class=\"btn btn-outline-secondary btn-sm me-2\" title=\"Analytics\">" + "<i class=\"uil-analytics\"></i>" + "</a>" + "<a href=\"" + $scope.global.url.base + "/worksheet/result/" + row.user[0]._id.$oid + "/\" class=\"btn btn-outline-secondary btn-sm\" title=\"Detail\">" + "<i class=\"uil-file-info-alt\"></i>" + "</a>";
+                        return "<a href=\"" + $scope.global.url.base + "/report/user/" + row.user[0]._id.$oid + "/\" class=\"btn btn-outline-secondary btn-sm me-2\" title=\"Analytics\">" + "<i class=\"uil-analytics\"></i>" + "</a>" + "<a href=\"" + $scope.global.url.base + "/worksheet/result/" + row.user[0]._id.$oid + "/\" class=\"btn btn-outline-secondary btn-sm\" title=\"Detail\">" + "<i class=\"uil-file-info-alt\"></i>" + "</a>";
                     }
                 }
             ];
@@ -166,7 +166,7 @@ app.controller("report", [
 
             }
 
-            let table = $("#report").DataTable({
+            let table = $("#report-user").DataTable({
                 "ajax": {
                     "contentType": "application/json",
                     "data": function(data) {
@@ -176,7 +176,7 @@ app.controller("report", [
                     },
                     "datatype": "json",
                     "type": "POST",
-                    "url": $scope.global.url.base + "/report/table/"
+                    "url": $scope.global.url.base + "/report/user/table/"
                 },
                 "columns": columns,
                 "createdRow": function(row) {
@@ -198,12 +198,6 @@ app.controller("report", [
             $(".dataTables_length select").addClass("form-select form-select-sm");
 
             tableSearch(table);
-
-            $(".flatpickr-date-range").on("change", function() {
-
-                table.draw();
-
-            });
 
         }
 
@@ -278,7 +272,7 @@ app.controller("report", [
                 }
             ];
 
-            let table = $("#report-user").DataTable({
+            let table = $("#report-user-detail").DataTable({
                 "ajax": {
                     "contentType": "application/json",
                     "data": function(data) {
@@ -289,7 +283,7 @@ app.controller("report", [
                     },
                     "datatype": "json",
                     "type": "POST",
-                    "url": $scope.global.url.base + "/report/user/table/"
+                    "url": $scope.global.url.base + "/report/user/detail/table/"
                 },
                 "columns": columns,
                 "createdRow": function(row) {

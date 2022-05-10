@@ -368,7 +368,7 @@ app.controller("global", [
                 "value": "0000"
             },
             "report": {
-                "name": "Report",
+                "name": "ReportUser",
                 "value": "0000"
             },
             "setting": {

@@ -4,10 +4,98 @@ namespace App\Services;
 
 use App\Components\DataComponent;
 use App\Repositories\DatabaseAccountRepository;
+use App\Repositories\DatabaseLogRepository;
 use App\Repositories\NexusPlayerTransactionRepository;
+use Illuminate\Support\Carbon;
 
 
 class DatabaseAccountService {
+
+
+    private static function initializeFirstTransaction($databaseFirstAmount, $databaseFirstTimestamp, $firstAmount, $firstTimestamp) {
+
+        $result = [
+            "amount" => $databaseFirstAmount,
+            "timestamp" => $databaseFirstTimestamp
+        ];
+
+        if(empty($result["amount"]) && empty($result["timestamp"])) {
+
+            $result = [
+                "amount" => floatval($firstAmount),
+                "timestamp" => $firstTimestamp
+            ];
+
+        }
+
+        return $result;
+
+    }
+
+
+    public static function sync($id, $websiteId) {
+
+        $databaseAccountById = DatabaseAccountRepository::findOneById($id, $websiteId);
+
+        if(!empty($databaseAccountById)) {
+
+            $nexusPlayerTransaction = NexusPlayerTransactionRepository::findPlayerTransaction("D", $databaseAccountById->username, $websiteId);
+
+            if(!$nexusPlayerTransaction->isEmpty()) {
+
+                $lastIndex = count($nexusPlayerTransaction) - 1;
+
+                $databaseAccountById->deposit = [
+                    "average" => [
+                        "amount" => floatval($nexusPlayerTransaction->avg("amount.request"))
+                    ],
+                    "first" => [
+                        "amount" => floatval($nexusPlayerTransaction[0]->amount["request"]),
+                        "timestamp" => $nexusPlayerTransaction[0]->requested["timestamp"]
+                    ],
+                    "last" => [
+                        "amount" => floatval($nexusPlayerTransaction[$lastIndex]->amount["request"]),
+                        "timestamp" => $nexusPlayerTransaction[$lastIndex]->requested["timestamp"]
+                    ],
+                    "total" => [
+                        "amount" => floatval($nexusPlayerTransaction->sum("amount.request")),
+                        "time" => count($nexusPlayerTransaction)
+                    ]
+                ];
+                DatabaseAccountRepository::update(DataComponent::initializeSystemAccount(), $databaseAccountById, $websiteId);
+
+            }
+
+            $nexusPlayerTransaction = NexusPlayerTransactionRepository::findPlayerTransaction("W", $databaseAccountById->username, $websiteId);
+
+            if(!$nexusPlayerTransaction->isEmpty()) {
+
+                $lastIndex = count($nexusPlayerTransaction) - 1;
+
+                $databaseAccountById->withdrawal = [
+                    "average" => [
+                        "amount" => floatval($nexusPlayerTransaction->avg("amount.request"))
+                    ],
+                    "first" => [
+                        "amount" => floatval($nexusPlayerTransaction[0]->amount["request"]),
+                        "timestamp" => $nexusPlayerTransaction[0]->requested["timestamp"]
+                    ],
+                    "last" => [
+                        "amount" => floatval($nexusPlayerTransaction[$lastIndex]->amount["request"]),
+                        "timestamp" => $nexusPlayerTransaction[$lastIndex]->requested["timestamp"]
+                    ],
+                    "total" => [
+                        "amount" => floatval($nexusPlayerTransaction->sum("amount.request")),
+                        "time" => count($nexusPlayerTransaction)
+                    ]
+                ];
+                DatabaseAccountRepository::update(DataComponent::initializeSystemAccount(), $databaseAccountById, $websiteId);
+
+            }
+
+        }
+
+    }
 
 
     public static function update($id, $websiteId) {
@@ -16,31 +104,97 @@ class DatabaseAccountService {
 
         if(!empty($databaseAccountById)) {
 
-            $nexusPlayerTransactionFirstTransaction = NexusPlayerTransactionRepository::findPlayerTransaction("D", $databaseAccountById->username, $websiteId);
+            $nexusPlayerTransactionToday = NexusPlayerTransactionRepository::findPendingPlayerTransaction($databaseAccountById->sync["timestamp"], "D", $databaseAccountById->username, $websiteId);
+            $deposit = [];
+            $lastTransaction = null;
 
-            if(!$nexusPlayerTransactionFirstTransaction->isEmpty()) {
+            if(!$nexusPlayerTransactionToday->isEmpty()) {
 
-                $lastIndex = count($nexusPlayerTransactionFirstTransaction) - 1;
+                $depositFirst = self::initializeFirstTransaction($databaseAccountById->deposit["first"]["amount"], $databaseAccountById->deposit["first"]["timestamp"], $nexusPlayerTransactionToday[0]->amount["request"], $nexusPlayerTransactionToday[0]->requested["timestamp"]);
+                $totalAmount = $nexusPlayerTransactionToday->sum("amount.request");
+                $lastIndex = count($nexusPlayerTransactionToday) - 1;
+                $lastTransaction = $nexusPlayerTransactionToday[$lastIndex];
 
-                $databaseAccountById->deposit = [
+                $deposit = [
                     "average" => [
-                        "amount" => $nexusPlayerTransactionFirstTransaction->avg("amount.request")
+                        "amount" => 0.00
                     ],
                     "first" => [
-                        "amount" => $nexusPlayerTransactionFirstTransaction[0]->amount["request"],
-                        "timestamp" => $nexusPlayerTransactionFirstTransaction[0]->requested["timestamp"]
+                        "amount" => $depositFirst["amount"],
+                        "timestamp" => $depositFirst["timestamp"]
                     ],
                     "last" => [
-                        "amount" => $nexusPlayerTransactionFirstTransaction[$lastIndex]->amount["request"],
-                        "timestamp" => $nexusPlayerTransactionFirstTransaction[$lastIndex]->requested["timestamp"]
+                        "amount" => $nexusPlayerTransactionToday[$lastIndex]->amount["request"],
+                        "timestamp" => $nexusPlayerTransactionToday[$lastIndex]->requested["timestamp"]
                     ],
                     "total" => [
-                        "amount" => $nexusPlayerTransactionFirstTransaction->sum("amount.request")
+                        "amount" => $databaseAccountById->deposit["total"]["amount"] + $totalAmount,
+                        "time" => $databaseAccountById->deposit["total"]["time"] + count($nexusPlayerTransactionToday)
                     ]
                 ];
-                DatabaseAccountRepository::update(DataComponent::initializeSystemAccount(), $databaseAccountById, $websiteId);
+                $deposit["average"]["amount"] = floatval($deposit["total"]["amount"] / $deposit["total"]["time"]);
+
+                $databaseLogByDatabaseId = DatabaseLogRepository::findLastByDatabaseId($databaseAccountById->database["_id"], $websiteId);
+
+                if(!empty($databaseLogByDatabaseId)) {
+
+                    $databaseLogByDatabaseId->status = "Deposited";
+                    DatabaseLogRepository::update(DataComponent::initializeSystemAccount(), $databaseLogByDatabaseId, $websiteId);
+
+                }
 
             }
+
+            $nexusPlayerTransactionToday = NexusPlayerTransactionRepository::findPendingPlayerTransaction($databaseAccountById->sync["timestamp"], "W", $databaseAccountById->username, $websiteId);
+            $withdrawal = [];
+
+            if(!$nexusPlayerTransactionToday->isEmpty()) {
+
+                $withdrawalFirst = self::initializeFirstTransaction($databaseAccountById->withdrawal["first"]["amount"], $databaseAccountById->withdrawal["first"]["timestamp"], $nexusPlayerTransactionToday[0]->amount["request"], $nexusPlayerTransactionToday[0]->requested["timestamp"]);
+                $lastIndex = count($nexusPlayerTransactionToday) - 1;
+
+                $dateDeposit = Carbon::createFromDate($lastTransaction->created["timestamp"]->toDateTime());
+                $dateWithdrawal = Carbon::createFromDate($nexusPlayerTransactionToday[$lastIndex]->created["timestamp"]->toDateTime());
+
+                if($dateWithdrawal->gt($dateDeposit)) {
+
+                    $lastTransaction = $nexusPlayerTransactionToday[$lastIndex];
+
+                }
+
+                $withdrawal = [
+                    "average" => [
+                        "amount" => 0.00
+                    ],
+                    "first" => [
+                        "amount" => $withdrawalFirst["amount"],
+                        "timestamp" => $withdrawalFirst["timestamp"]
+                    ],
+                    "last" => [
+                        "amount" => $nexusPlayerTransactionToday[$lastIndex]->amount["request"],
+                        "timestamp" => $nexusPlayerTransactionToday[$lastIndex]->requested["timestamp"]
+                    ],
+                    "total" => [
+                        "amount" => $databaseAccountById->withdrawal["total"]["amount"] + $nexusPlayerTransactionToday->sum("amount.request"),
+                        "time" => $databaseAccountById->withdrawal["total"]["time"] + count($nexusPlayerTransactionToday)
+                    ]
+                ];
+                $withdrawal["average"]["amount"] = floatval($withdrawal["total"]["amount"] / $withdrawal["total"]["time"]);
+
+            }
+
+            if(!empty($lastTransaction)) {
+
+                $databaseAccountById->sync = [
+                    "_id" => DataComponent::initializeObjectId($lastTransaction->_id),
+                    "timestamp" => $lastTransaction->created["timestamp"]
+                ];
+
+            }
+
+            $databaseAccountById->deposit = $deposit;
+            $databaseAccountById->withdrawal = $withdrawal;
+            DatabaseAccountRepository::update(DataComponent::initializeSystemAccount(), $databaseAccountById, $websiteId);
 
         }
 

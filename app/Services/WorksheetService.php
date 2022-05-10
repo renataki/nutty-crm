@@ -4,14 +4,16 @@ namespace App\Services;
 
 use App\Components\DataComponent;
 use App\Models\DatabaseLog;
-use App\Models\Report;
+use App\Models\ReportUser;
+use App\Models\ReportWebsite;
 use App\Models\User;
 use App\Repositories\DatabaseAccountRepository;
 use App\Repositories\DatabaseAttemptRepository;
 use App\Repositories\DatabaseLogRepository;
 use App\Repositories\DatabaseRepository;
 use App\Repositories\PlayerAttemptRepository;
-use App\Repositories\ReportRepository;
+use App\Repositories\ReportUserRepository;
+use App\Repositories\ReportWebsiteRepository;
 use App\Repositories\UserGroupRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
@@ -90,7 +92,7 @@ class WorksheetService {
 
             if(empty($userById)) {
 
-                $reportByUserId = ReportRepository::findOneByUserId($account->nucode, $id);
+                $reportByUserId = ReportUserRepository::findOneByUserId($account->nucode, $id);
 
                 if(!empty($reportByUserId)) {
 
@@ -119,6 +121,70 @@ class WorksheetService {
         $result->result = true;
 
         return $result;
+
+    }
+
+
+    private static function generateReport($request, $account, $website) {
+
+        $date = new UTCDateTime(Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0));
+        $reportUserByDateUserId = ReportUserRepository::findOneByDateUserId($date, $account->nucode, $account->_id);
+
+        if(!empty($reportUserByDateUserId)) {
+
+            $reportUserByDateUserId->status = self::initializeStatusData($reportUserByDateUserId, $request->status);
+            $reportUserByDateUserId->total += 1;
+            $reportUserByDateUserId->website = self::initializeWebsiteData($reportUserByDateUserId, $website);
+            ReportUserRepository::update($account, $reportUserByDateUserId);
+
+        } else {
+
+            $reportUser = new ReportUser();
+            $reportUser->date = $date;
+            $reportUser->status = [
+                "names" => [$request->status],
+                "totals" => [1]
+            ];
+            $reportUser->total = 1;
+            $reportUser->user = [
+                "_id" => DataComponent::initializeObjectId($account->_id),
+                "avatar" => $account->avatar,
+                "name" => $account->name,
+                "username" => $account->username
+            ];
+            $reportUser->website = [
+                "ids" => [$website->_id],
+                "names" => [$website->name],
+                "totals" => [1]
+            ];
+            ReportUserRepository::insert($account, $reportUser);
+
+        }
+
+        $reportWebsiteByDateWebsiteId = ReportWebsiteRepository::findOneByDateWebsiteId($date, $account->nucode, $website->_id);
+
+        if(!empty($reportWebsiteByDateWebsiteId)) {
+
+            $reportWebsiteByDateWebsiteId->status = self::initializeStatusData($reportWebsiteByDateWebsiteId, $request->status);
+            $reportWebsiteByDateWebsiteId->total += 1;
+            ReportWebsiteRepository::update($account, $reportWebsiteByDateWebsiteId);
+
+        } else {
+
+            $reportWebsite = new ReportWebsite();
+            $reportWebsite->date = $date;
+            $reportWebsite->status = [
+                "names" => [$request->status],
+                "totals" => [1]
+            ];
+            $reportWebsite->total = 1;
+            $reportWebsite->website = [
+                "_id" => DataComponent::initializeObjectId($website->_id),
+                "name" => $website->name
+            ];
+            ReportWebsiteRepository::insert($account, $reportWebsite);
+
+        }
 
     }
 
@@ -537,38 +603,7 @@ class WorksheetService {
 
                 }
 
-                $reportByDateUserId = ReportRepository::findOneByDateUserId(new UTCDateTime(Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0)), $account->nucode, $account->_id);
-
-                if(!empty($reportByDateUserId)) {
-
-                    $reportByDateUserId->status = self::initializeStatusData($reportByDateUserId, $request->status);
-                    $reportByDateUserId->total += 1;
-                    $reportByDateUserId->website = self::initializeWebsiteData($reportByDateUserId, $websiteById);
-                    ReportRepository::update($account, $reportByDateUserId);
-
-                } else {
-
-                    $report = new Report();
-                    $report->date = new UTCDateTime(Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0));
-                    $report->status = [
-                        "names" => [$request->status],
-                        "totals" => [1]
-                    ];
-                    $report->total = 1;
-                    $report->user = [
-                        "_id" => DataComponent::initializeObjectId($account->_id),
-                        "avatar" => $account->avatar,
-                        "name" => $account->name,
-                        "username" => $account->username
-                    ];
-                    $report->website = [
-                        "ids" => [$websiteById->_id],
-                        "names" => [$websiteById->name],
-                        "totals" => [1]
-                    ];
-                    ReportRepository::insert($account, $report);
-
-                }
+                self::generateReport($request, $account, $websiteById);
 
                 $result->response = "Worksheet data updated";
                 $result->result = true;

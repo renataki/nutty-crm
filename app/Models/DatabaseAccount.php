@@ -19,18 +19,19 @@ class DatabaseAccount extends Model {
         ],
         "deposit" => [
             "average" => [
-                "amount" => "0",
+                "amount" => 0.00,
             ],
             "first" => [
-                "amount" => "0",
+                "amount" => 0.00,
                 "timestamp" => ""
             ],
             "last" => [
-                "amount" => "0",
+                "amount" => 0.00,
                 "timestamp" => ""
             ],
             "total" => [
-                "amount" => "0"
+                "amount" => 0.00,
+                "time" => 0
             ]
         ],
         "games" => [],
@@ -48,28 +49,33 @@ class DatabaseAccount extends Model {
                 "timestamp" => ""
             ],
             "total" => [
-                "amount" => "0"
+                "amount" => 0
             ]
         ],
         "reference" => "",
         "register" => [
             "timestamp" => ""
         ],
+        "sync" => [
+            "_id" => "0",
+            "timestamp" => ""
+        ],
         "username" => "",
         "withdrawal" => [
             "average" => [
-                "amount" => "0"
+                "amount" => 0.00
             ],
             "first" => [
-                "amount" => "0",
+                "amount" => 0.00,
                 "timestamp" => ""
             ],
             "last" => [
-                "amount" => "0",
+                "amount" => 0.00,
                 "timestamp" => ""
             ],
             "total" => [
-                "amount" => "0"
+                "amount" => 0.00,
+                "time" => 0
             ]
         ],
         "created" => [
@@ -98,6 +104,7 @@ class DatabaseAccount extends Model {
         "deposit->last->amount",
         "deposit->last->timestamp",
         "deposit->total->amount",
+        "deposit->total->time",
         "games",
         "login->average->daily",
         "login->average->monthly",
@@ -108,6 +115,8 @@ class DatabaseAccount extends Model {
         "login->total->amount",
         "reference",
         "register->timestamp",
+        "sync->_id",
+        "sync->timestamp",
         "username",
         "withdrawal->average->amount",
         "withdrawal->first->amount",
@@ -115,6 +124,7 @@ class DatabaseAccount extends Model {
         "withdrawal->last->amount",
         "withdrawal->last->timestamp",
         "withdrawal->total->amount",
+        "withdrawal->total->time",
         "created->timestamp",
         "created->user->_id",
         "created->user->username",

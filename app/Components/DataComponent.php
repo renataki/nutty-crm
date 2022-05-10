@@ -98,28 +98,30 @@ class DataComponent {
 
         $table->string("database._id")->unique();
         $table->string("database.name")->index();
-        $table->string("deposit.average.amount")->index();
-        $table->string("deposit.first.amount")->index();
+        $table->float("deposit.average.amount")->index();
+        $table->float("deposit.first.amount")->index();
         $table->date("deposit.first.timestamp")->index();
-        $table->string("deposit.last.amount")->index();
+        $table->float("deposit.last.amount")->index();
         $table->date("deposit.last.timestamp")->index();
-        $table->string("deposit.total.amount")->index();
+        $table->float("deposit.total.amount")->index();
+        $table->integer("deposit.total.time")->index();
         $table->integer("login.average.daily")->index();
         $table->integer("login.average.monthly")->index();
         $table->integer("login.average.weekly")->index();
         $table->integer("login.average.yearly")->index();
         $table->date("login.first.timestamp")->index();
         $table->date("login.last.timestamp")->index();
-        $table->string("login.total.amount")->index();
+        $table->integer("login.total.amount")->index();
         $table->string("reference")->index();
         $table->date("register.timestamp")->index();
         $table->string("username")->unique();
-        $table->string("withdrawal.average.amount")->index();
-        $table->string("withdrawal.first.amount")->index();
+        $table->float("withdrawal.average.amount")->index();
+        $table->float("withdrawal.first.amount")->index();
         $table->date("withdrawal.first.timestamp")->index();
-        $table->string("withdrawal.last.amount")->index();
+        $table->float("withdrawal.last.amount")->index();
         $table->date("withdrawal.last.timestamp")->index();
-        $table->string("withdrawal.total.amount")->index();
+        $table->float("withdrawal.total.amount")->index();
+        $table->integer("withdrawal.total.time")->index();
         $table->date("created.timestamp")->index();
         $table->date("modified.timestamp")->index();
 
@@ -256,7 +258,7 @@ class DataComponent {
     }
 
 
-    public static function createReportIndex($table) {
+    public static function createReportUserIndex($table) {
 
         $table->date("date")->index();
         $table->integer("total")->index();
@@ -264,6 +266,18 @@ class DataComponent {
         $table->string("user.avatar")->index();
         $table->string("user.name")->index();
         $table->string("user.username")->index();
+        $table->date("created.timestamp")->index();
+        $table->date("modified.timestamp")->index();
+
+    }
+
+
+    public static function createReportWebsiteIndex($table) {
+
+        $table->date("date")->index();
+        $table->integer("total")->index();
+        $table->string("website._id")->index();
+        $table->string("website.name")->index();
         $table->date("created.timestamp")->index();
         $table->date("modified.timestamp")->index();
 
@@ -370,19 +384,37 @@ class DataComponent {
 
         }
 
-        if(!Schema::hasTable("report_" . $nucode)) {
+        if(!Schema::hasTable("reportUser_" . $nucode)) {
 
-            Schema::create("report_" . $nucode, function(Blueprint $table) {
+            Schema::create("reportUser_" . $nucode, function(Blueprint $table) {
 
-                self::createReportIndex($table);
+                self::createReportUserIndex($table);
 
             });
 
         } else {
 
-            Schema::table("report_" . $nucode, function(Blueprint $table) {
+            Schema::table("reportUser_" . $nucode, function(Blueprint $table) {
 
-                self::createReportIndex($table);
+                self::createReportUserIndex($table);
+
+            });
+
+        }
+
+        if(!Schema::hasTable("reportWebsite_" . $nucode)) {
+
+            Schema::create("reportWebsite_" . $nucode, function(Blueprint $table) {
+
+                self::createReportWebsiteIndex($table);
+
+            });
+
+        } else {
+
+            Schema::table("reportWebsite_" . $nucode, function(Blueprint $table) {
+
+                self::createReportWebsiteIndex($table);
 
             });
 
@@ -566,6 +598,40 @@ class DataComponent {
         $result->result = true;
 
         return $result;
+
+    }
+
+
+    public static function initializeReportFilterDateRange($date, $query) {
+
+        if(!is_null($date)) {
+
+            $date = explode(" to ", $date);
+
+            if(count($date) == 1) {
+
+                array_push($query, [
+                    '$match' => [
+                        "date" => new UTCDateTime(Carbon::parse($date[0])->format("U") * 1000)
+                    ]
+                ]);
+
+            } else if(count($date) == 2) {
+
+                array_push($query, [
+                    '$match' => [
+                        "date" => [
+                            '$gte' => new UTCDateTime(Carbon::parse($date[0])->format("U") * 1000),
+                            '$lte' => new UTCDateTime(Carbon::parse($date[1])->format("U") * 1000)
+                        ]
+                    ]
+                ]);
+
+            }
+
+        }
+
+        return $query;
 
     }
 

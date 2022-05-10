@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Components\RestComponent;
 use App\Repositories\NexusPlayerTransactionRepository;
-use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use MongoDB\BSON\UTCDateTime;
 
@@ -40,6 +40,8 @@ class ApiNexusService {
 
             foreach($playerTransactions as $value) {
 
+                $timestamp = new UTCDateTime(Carbon::now());
+
                 array_push($insert, [
                     "adjustment" => [
                         "reference" => $value->adjustmentRefNo
@@ -49,7 +51,7 @@ class ApiNexusService {
                         "request" => intval($value->amount)
                     ],
                     "approved" => [
-                        "timestamp" => new UTCDateTime(\Illuminate\Support\Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate))),
+                        "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate))),
                         "user" => [
                             "_id" => "0",
                             "username" => $value->approvedBy
@@ -84,8 +86,24 @@ class ApiNexusService {
                         "code" => $value->transactionCode,
                         "type" => $value->transactionType
                     ],
-                    "username" => $value->username
+                    "username" => $value->username,
+                    "created" => [
+                        "timestamp" => $timestamp,
+                        "user" => [
+                            "_id" => "0",
+                            "username" => "System"
+                        ]
+                    ],
+                    "modified" => [
+                        "timestamp" => $timestamp,
+                        "user" => [
+                            "_id" => "0",
+                            "username" => "System"
+                        ]
+                    ]
                 ]);
+
+                usleep(1000);
 
             }
 

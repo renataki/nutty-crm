@@ -467,16 +467,6 @@ class UserService {
         $result->user->username = $request->username;
         $result->user->zip = "";
 
-        $userByContactEmail = UserRepository::findOneByContactEmail($request->contact["email"]);
-
-        if(!empty($userByContactEmail)) {
-
-            array_push($validation, false);
-
-            $result->response = "Email already exist";
-
-        }
-
         if(config("app.nucode") == "PUBLIC") {
 
             $licenseByNucode = LicenseRepository::findOneByNucode($account->nucode);

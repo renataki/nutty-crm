@@ -56,7 +56,21 @@ class NexusPlayerTransaction extends Model {
             "code" => "",
             "type" => ""
         ],
-        "username" => ""
+        "username" => "",
+        "created" => [
+            "timestamp" => "",
+            "user" => [
+                "_id" => "0",
+                "username" => "System"
+            ]
+        ],
+        "modified" => [
+            "timestamp" => "",
+            "user" => [
+                "_id" => "0",
+                "username" => "System"
+            ]
+        ]
     ];
 
     protected $fillable = [
@@ -79,7 +93,13 @@ class NexusPlayerTransaction extends Model {
         "requested->user->username",
         "transaction->code",
         "transaction->type",
-        "username"
+        "username",
+        "created->timestamp",
+        "created->user->_id",
+        "created->user->username",
+        "modified->timestamp",
+        "modified->user->_id",
+        "modified->user->username"
     ];
 
     protected $table = "nexusPlayerTransactionHistory";

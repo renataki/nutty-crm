@@ -456,31 +456,58 @@ class DatabaseService {
 
         if(!empty($crmId) && !empty($username)) {
 
-            $result = DatabaseAccountRepository::findOneByUsername($username, $website->_id);
+            $result = new DatabaseAccount();
 
-            if(empty($result)) {
+            $databaseAccountByUsername = DatabaseAccountRepository::findOneByUsername($username, $website->_id);
 
-                $result = new DatabaseAccount();
+            if(!empty($databaseAccountByUsername)) {
+
+                $result = $databaseAccountByUsername;
+
+            } else {
+
+                $result->deposit = [
+                    "average" => [
+                        "amount" => 0.00,
+                    ],
+                    "first" => [
+                        "amount" => 0.00,
+                        "timestamp" => ""
+                    ],
+                    "last" => [
+                        "amount" => 0.00,
+                        "timestamp" => new UTCDateTime(Carbon::instance(Date::excelToDateTimeObject($depositLastTimestamp, config("app.timezone")))->format("U") * 1000)
+                    ],
+                    "total" => [
+                        "amount" => floatval($depositTotalAmount),
+                        "time" => 0
+                    ]
+                ];
+                $result->games = [];
+                $result->sync = [
+                    "_id" => "0",
+                    "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-10 00:00:00"))
+                ];
+                $result->withdrawal = [
+                    "average" => [
+                        "amount" => 0.00,
+                    ],
+                    "first" => [
+                        "amount" => 0.00,
+                        "timestamp" => ""
+                    ],
+                    "last" => [
+                        "amount" => 0.00,
+                        "timestamp" => new UTCDateTime(Carbon::instance(Date::excelToDateTimeObject($withdrawalLastTimestamp, config("app.timezone")))->format("U") * 1000)
+                    ],
+                    "total" => [
+                        "amount" => floatval($withdrawalTotalAmount),
+                        "time" => 0
+                    ]
+                ];
 
             }
 
-            $result->deposit = [
-                "average" => [
-                    "amount" => "0",
-                ],
-                "first" => [
-                    "amount" => "0",
-                    "timestamp" => ""
-                ],
-                "last" => [
-                    "amount" => "0",
-                    "timestamp" => new UTCDateTime(Carbon::instance(Date::excelToDateTimeObject($depositLastTimestamp, config("app.timezone")))->format("U") * 1000)
-                ],
-                "total" => [
-                    "amount" => strval($depositTotalAmount)
-                ]
-            ];
-            $result->games = [];
             $result->login = [
                 "average" => [
                     "daily" => 0,
@@ -495,7 +522,7 @@ class DatabaseService {
                     "timestamp" => new UTCDateTime(Carbon::instance(Date::excelToDateTimeObject($loginLastTimestamp, config("app.timezone")))->format("U") * 1000)
                 ],
                 "total" => [
-                    "amount" => "0"
+                    "amount" => 0
                 ]
             ];
             $result->reference = $reference;
@@ -503,22 +530,6 @@ class DatabaseService {
                 "timestamp" => new UTCDateTime(Carbon::instance(Date::excelToDateTimeObject($registerTimestamp, config("app.timezone")))->format("U") * 1000)
             ];
             $result->username = $username;
-            $result->withdrawal = [
-                "average" => [
-                    "amount" => "0",
-                ],
-                "first" => [
-                    "amount" => "0",
-                    "timestamp" => ""
-                ],
-                "last" => [
-                    "amount" => "0",
-                    "timestamp" => new UTCDateTime(Carbon::instance(Date::excelToDateTimeObject($withdrawalLastTimestamp, config("app.timezone")))->format("U") * 1000)
-                ],
-                "total" => [
-                    "amount" => strval($withdrawalTotalAmount)
-                ]
-            ];
 
         }
 

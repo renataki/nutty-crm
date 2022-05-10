@@ -45,7 +45,7 @@ class DatabaseAccountSyncJob implements ShouldQueue {
 
             foreach($databaseAccounts as $value) {
 
-                DatabaseAccountService::update($value->_id, $this->websiteId);
+                DatabaseAccountService::sync($value->_id, $this->websiteId);
 
             }
 

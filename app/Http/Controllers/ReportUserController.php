@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Components\DataComponent;
 use App\Models\User;
-use App\Services\ReportService;
+use App\Services\ReportUserService;
 use Illuminate\Http\Request;
 use stdClass;
 
 
-class ReportController extends Controller {
+class ReportUserController extends Controller {
 
 
     public function index(Request $request) {
@@ -20,39 +20,10 @@ class ReportController extends Controller {
 
             $model = new stdClass();
 
-            return view("report.report", [
-                "layout" => (object)[
-                    "css" => [],
-                    "js" => ["report.js"]
-                ],
-                "model" => $model
-            ]);
-
-        } else {
-
-            return redirect("/access-denied/");
-
-        }
-
-    }
-
-
-    public function user(Request $request, $id) {
-
-        if(DataComponent::checkPrivilege($request, "report", "view")) {
-
-            $reportResponse = ReportService::findFilter($request, $id);
-
-            $model = new stdClass();
-            $model->filterDate = $reportResponse->filterDate;
-            $model->user = new User();
-            $model->user->_id = $reportResponse->report->user["_id"];
-            $model->user->username = $reportResponse->report->user["username"];
-
             return view("report.user", [
                 "layout" => (object)[
                     "css" => [],
-                    "js" => ["report.js"]
+                    "js" => ["report-user.js"]
                 ],
                 "model" => $model
             ]);
@@ -66,11 +37,40 @@ class ReportController extends Controller {
     }
 
 
-    public function table(Request $request) {
+    public function detail(Request $request, $id) {
 
         if(DataComponent::checkPrivilege($request, "report", "view")) {
 
-            return response()->json(ReportService::findTable($request), 200);
+            $reportUserResponse = ReportUserService::findFilter($request, $id);
+
+            $model = new stdClass();
+            $model->filterDate = $reportUserResponse->filterDate;
+            $model->user = new User();
+            $model->user->_id = $reportUserResponse->report->user["_id"];
+            $model->user->username = $reportUserResponse->report->user["username"];
+
+            return view("report.user-detail", [
+                "layout" => (object)[
+                    "css" => [],
+                    "js" => ["report-user.js"]
+                ],
+                "model" => $model
+            ]);
+
+        } else {
+
+            return redirect("/access-denied/");
+
+        }
+
+    }
+
+
+    public function detailTable(Request $request) {
+
+        if(DataComponent::checkPrivilege($request, "report", "view")) {
+
+            return response()->json(ReportUserService::detailFindTable($request), 200);
 
         } else {
 
@@ -81,11 +81,11 @@ class ReportController extends Controller {
     }
 
 
-    public function userTable(Request $request) {
+    public function table(Request $request) {
 
         if(DataComponent::checkPrivilege($request, "report", "view")) {
 
-            return response()->json(ReportService::findUserTable($request), 200);
+            return response()->json(ReportUserService::findTable($request), 200);
 
         } else {
 
