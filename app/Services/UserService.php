@@ -209,6 +209,8 @@ class UserService {
             $userRole->privilege = [
                 "database" => "7777",
                 "report" => "7777",
+                "setting" => "7777",
+                "settingApi" => "7777",
                 "user" => "7777",
                 "userGroup" => "7777",
                 "userRole" => "7777",
@@ -250,6 +252,8 @@ class UserService {
                 $user->privilege = [
                     "database" => "7777",
                     "report" => "7777",
+                    "setting" => "7777",
+                    "settingApi" => "7777",
                     "user" => "7777",
                     "userGroup" => "7777",
                     "userRole" => "7777",
@@ -450,6 +454,8 @@ class UserService {
         $result->user->privilege = [
             "database" => "0000",
             "report" => "0000",
+            "setting" => "0000",
+            "settingApi" => "0000",
             "user" => "0000",
             "userGroup" => "0000",
             "userRole" => "0000",

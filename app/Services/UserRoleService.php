@@ -159,6 +159,8 @@ class UserRoleService {
         $result->userRole->privilege = [
             "database" => $request->privilege["database"],
             "report" => $request->privilege["report"],
+            "setting" => $request->privilege["setting"],
+            "settingApi" => $request->privilege["settingApi"],
             "user" => $request->privilege["user"],
             "userGroup" => $request->privilege["userGroup"],
             "userRole" => $request->privilege["userRole"],
