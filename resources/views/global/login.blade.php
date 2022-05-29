@@ -28,38 +28,65 @@
                                     <div class="mb-3">
                                         <label class="form-label">Company</label>
                                         <input id="nutty-crm-nucode" class="form-control" type="text"
-                                               placeholder="Company" ng-model="nucode.value"/>
+                                               placeholder="Company" ng-model="nucode.value" tabindex="1"
+                                               autofocus="autofocus"/>
                                     </div>
-                                @endif
-                                <div class="mb-3">
-                                    <label class="form-label">Username</label>
-                                    <input id="nutty-crm-username" class="form-control" type="text"
-                                           placeholder="Username" ng-model="username.value"/>
-                                </div>
-                                <div class="mb-3">
-                                    <div class="float-end">
-                                        <a href="#" class="text-muted">Forgot password?</a>
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input id="nutty-crm-username" class="form-control" type="text"
+                                               placeholder="Username" ng-model="username.value" tabindex="2"/>
                                     </div>
-                                    <label class="form-label">Password</label>
-                                    <input id="nutty-crm-password" class="form-control" type="password"
-                                           placeholder="Password" ng-model="password.value" ng-keyup="login($event)">
-                                </div>
-                                <div class="form-check">
-                                    <input id="nutty-crm-remember-me" class="form-check-input" type="checkbox"/>
-                                    <label class="form-check-label">Remember me</label>
-                                </div>
-                                <div class="mt-3 text-end">
-                                    <button class="btn btn-primary w-sm waves-effect waves-light" type="submit"
-                                            ng-click="login($event)">Log In
-                                    </button>
-                                </div>
-                                @if(config("app.nucode") == "PUBLIC")
+                                    <div class="mb-3">
+                                        <div class="float-end">
+                                            <a href="#" class="text-muted">Forgot password?</a>
+                                        </div>
+                                        <label class="form-label">Password</label>
+                                        <input id="nutty-crm-password" class="form-control" type="password"
+                                               placeholder="Password" ng-model="password.value" ng-keyup="login($event)"
+                                               tabindex="3">
+                                    </div>
+                                    <div class="form-check">
+                                        <input id="nutty-crm-remember-me" class="form-check-input" type="checkbox"
+                                               tabindex="4"/>
+                                        <label class="form-check-label">Remember me</label>
+                                    </div>
+                                    <div class="mt-3 text-end">
+                                        <button class="btn btn-primary w-sm waves-effect waves-light" type="submit"
+                                                ng-click="login($event)" tabindex="5">Log In
+                                        </button>
+                                    </div>
                                     <div class="mt-4 text-center">
                                         <p class="mb-0">
                                             Don't have an account ?
                                             <a href="{{config("app.url")}}/register/" class="fw-medium text-primary">Signup
                                                 now</a>
                                         </p>
+                                    </div>
+                                @else
+                                    <div class="mb-3">
+                                        <label class="form-label">Username</label>
+                                        <input id="nutty-crm-username" class="form-control" type="text"
+                                               placeholder="Username" ng-model="username.value" tabindex="1"
+                                               autofocus="autofocus"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="float-end">
+                                            <a href="#" class="text-muted">Forgot password?</a>
+                                        </div>
+                                        <label class="form-label">Password</label>
+                                        <input id="nutty-crm-password" class="form-control" type="password"
+                                               placeholder="Password" ng-model="password.value" ng-keyup="login($event)"
+                                               tabindex="2">
+                                    </div>
+                                    <div class="form-check">
+                                        <input id="nutty-crm-remember-me" class="form-check-input" type="checkbox"
+                                               tabindex="3"/>
+                                        <label class="form-check-label">Remember me</label>
+                                    </div>
+                                    <div class="mt-3 text-end">
+                                        <button class="btn btn-primary w-sm waves-effect waves-light" type="submit"
+                                                ng-click="login($event)" tabindex="4">Log In
+                                        </button>
                                     </div>
                                 @endif
                             </form>

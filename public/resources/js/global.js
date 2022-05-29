@@ -1,8 +1,7 @@
 let setting = {
     "table": {
         "length": {
-            "default": 20,
-            "option": [10, 20, 50, 100, 200, 500, 1000]
+            "default": 20, "option": [10, 20, 50, 100, 200, 500, 1000]
         }
     }
 };
@@ -200,14 +199,9 @@ function standardCase(string) {
 function sweetAlert(icon, title) {
 
     Swal.fire({
-        icon: icon,
-        title: title,
-        showConfirmButton: !1,
-        timer: 1000,
-        customClass: {
+        icon: icon, title: title, showConfirmButton: !1, timer: 1000, customClass: {
             confirmButton: "btn btn-primary"
-        },
-        buttonsStyling: !1
+        }, buttonsStyling: !1
     });
 
 }
@@ -252,669 +246,612 @@ $(document).ready(function() {
 
 let app = angular.module("application", ["ngSanitize"]);
 
-app.config([
-    "$httpProvider", function($httpProvider) {
+app.config(["$httpProvider", function($httpProvider) {
 
-        $httpProvider.defaults.headers.post["X-XSRF-TOKEN"] = '';
-        $httpProvider.defaults.useXDomain = true;
-        delete $httpProvider.defaults.headers.common["X-Requested-With"];
+    $httpProvider.defaults.headers.post["X-XSRF-TOKEN"] = '';
+    $httpProvider.defaults.useXDomain = true;
+    delete $httpProvider.defaults.headers.common["X-Requested-With"];
+
+}]);
+
+app.controller("global", ["$scope", "$window", "$parse", "global", function($scope, $window, $parse, global) {
+
+    $scope.account = {
+        "nucode": {
+            "value": ""
+        }, "type": {
+            "value": ""
+        }, "username": {
+            "value": ""
+        }
+    };
+
+    $scope.api = {
+        "nexus": {
+            "code": {
+                "value": ""
+            }, "salt": {
+                "value": ""
+            }, "url": {
+                "value": ""
+            }
+        }
+    };
+
+    $scope.contact = {
+        "email": {
+            "value": ""
+        }, "phone": {
+            "value": "", "view": false
+        }, "whatsapp": {
+            "value": "", "view": false
+        }
+    };
+
+    $scope.crm = {
+        "value": ""
+    };
+
+    $scope.description = {
+        "value": ""
+    };
+
+    $scope.global = {
+        "application": {
+            "name": ""
+        }, "cookie": {
+            "path": "", "prefix": ""
+        }, "dateTime": {
+            "format": "", "offset": "", "timezone": ""
+        }, "url": {
+            "audio": "", "base": "", "html": "", "image": "", "video": "", "websocket": ""
+        }
+    };
+
+    $scope.group = {
+        "value": ""
+    };
+
+    $scope.id = {
+        "value": ""
+    };
+
+    $scope.name = {
+        "value": ""
+    };
+
+    $scope.nucode = {
+        "value": ""
+    };
+
+    $scope.password = {
+        "current": {
+            "value": ""
+        }, "confirm": {
+            "value": ""
+        }, "value": ""
+    };
+
+    $scope.privileges = {
+        "database": {
+            "name": "Database", "value": "0000"
+        }, "report": {
+            "name": "ReportUser", "value": "0000"
+        }, "setting": {
+            "name": "Setting", "value": "0000"
+        }, "settingApi": {
+            "name": "Setting API", "value": "0000"
+        }, "user": {
+            "name": "User", "value": "0000"
+        }, "userGroup": {
+            "name": "User Group", "value": "0000"
+        }, "userRole": {
+            "name": "User Role", "value": "0000"
+        }, "website": {
+            "name": "Website", "value": "0000"
+        }, "worksheet": {
+            "name": "Worksheet", "value": "0000"
+        }
+    };
+
+    $scope.reference = {
+        "value": ""
+    };
+
+    $scope.role = {
+        "value": ""
+    };
+
+    $scope.start = {
+        "value": ""
+    };
+
+    $scope.status = {
+        "value": ""
+    };
+
+    $scope.sync = {
+        "value": "NoSync"
+    };
+
+    $scope.telemarketer = {
+        "value": ""
+    };
+
+    $scope.type = {
+        "value": ""
+    };
+
+    $scope.user = {
+        "total": {
+            "value": 0
+        }
+    };
+
+    $scope.username = {
+        "value": ""
+    };
+
+    $scope.website = {
+        "value": ""
+    };
+
+    $scope.websites = {
+        "option": [], "value": []
+    };
+
+    $scope.checkFormDecimalRequired = function(scope, input, response, error) {
+
+        let result = false;
+
+        if($scope.$eval(scope) != null) {
+
+            result = $scope.checkNumber($scope.$eval(scope), true);
+
+        }
+
+        $scope.initializeResponse(input, response, result, error);
+
+        return result;
 
     }
-]);
 
-app.controller("global", [
-    "$scope", "$window", "$parse", "global", function($scope, $window, $parse, global) {
+    $scope.checkFormEmail = function(scope, input, response) {
 
-        $scope.account = {
-            "nucode": {
-                "value": ""
-            },
-            "type": {
-                "value": ""
-            },
-            "username": {
-                "value": ""
-            }
-        };
+        let result = false;
 
-        $scope.api = {
-            "nexus": {
-                "code": {
-                    "value": ""
-                },
-                "salt": {
-                    "value": ""
-                },
-                "url": {
-                    "value": ""
-                }
-            }
-        };
+        if($scope.$eval(scope) != "") {
 
-        $scope.contact = {
-            "email": {
-                "value": ""
-            },
-            "phone": {
-                "value": "",
-                "view": false
-            },
-            "whatsapp": {
-                "value": "",
-                "view": false
-            }
-        };
-
-        $scope.crm = {
-            "value": ""
-        };
-
-        $scope.description = {
-            "value": ""
-        };
-
-        $scope.global = {
-            "application": {
-                "name": ""
-            },
-            "cookie": {
-                "path": "",
-                "prefix": ""
-            },
-            "dateTime": {
-                "format": "",
-                "offset": "",
-                "timezone": ""
-            },
-            "url": {
-                "audio": "",
-                "base": "",
-                "html": "",
-                "image": "",
-                "video": "",
-                "websocket": ""
-            }
-        };
-
-        $scope.group = {
-            "value": ""
-        };
-
-        $scope.id = {
-            "value": ""
-        };
-
-        $scope.name = {
-            "value": ""
-        };
-
-        $scope.nucode = {
-            "value": ""
-        };
-
-        $scope.password = {
-            "current": {
-                "value": ""
-            },
-            "confirm": {
-                "value": ""
-            },
-            "value": ""
-        };
-
-        $scope.privileges = {
-            "database": {
-                "name": "Database",
-                "value": "0000"
-            },
-            "report": {
-                "name": "ReportUser",
-                "value": "0000"
-            },
-            "setting": {
-                "name": "Setting",
-                "value": "0000"
-            },
-            "settingApi": {
-                "name": "Setting API",
-                "value": "0000"
-            },
-            "user": {
-                "name": "User",
-                "value": "0000"
-            },
-            "userGroup": {
-                "name": "User Group",
-                "value": "0000"
-            },
-            "userRole": {
-                "name": "User Role",
-                "value": "0000"
-            },
-            "website": {
-                "name": "Website",
-                "value": "0000"
-            },
-            "worksheet": {
-                "name": "Worksheet",
-                "value": "0000"
-            }
-        };
-
-        $scope.reference = {
-            "value": ""
-        };
-
-        $scope.role = {
-            "value": ""
-        };
-
-        $scope.start = {
-            "value": ""
-        };
-
-        $scope.status = {
-            "value": ""
-        };
-
-        $scope.sync = {
-            "value": "NoSync"
-        };
-
-        $scope.telemarketer = {
-            "value": ""
-        };
-
-        $scope.type = {
-            "value": ""
-        };
-
-        $scope.user = {
-            "total": {
-                "value": 0
-            }
-        };
-
-        $scope.username = {
-            "value": ""
-        };
-
-        $scope.website = {
-            "value": ""
-        };
-
-        $scope.websites = {
-            "option": [],
-            "value": []
-        };
-
-        $scope.checkFormDecimalRequired = function(scope, input, response, error) {
-
-            let result = false;
-
-            if($scope.$eval(scope) != null) {
-
-                result = $scope.checkNumber($scope.$eval(scope), true);
-
-            }
-
-            $scope.initializeResponse(input, response, result, error);
-
-            return result;
-
-        }
-
-        $scope.checkFormEmail = function(scope, input, response) {
-
-            let result = false;
-
-            if($scope.$eval(scope) != "") {
-
-                if($scope.$eval(scope).match(/^([0-9A-Za-z_\-\.]){1,}\@([0-9A-Za-z_\-\.]){1,}\.([A-Za-z]){2,}$/)) {
-
-                    result = true;
-
-                }
-
-            } else {
+            if($scope.$eval(scope).match(/^([0-9A-Za-z_\-\.]){1,}\@([0-9A-Za-z_\-\.]){1,}\.([A-Za-z]){2,}$/)) {
 
                 result = true;
 
             }
 
-            $scope.initializeResponse(input, response, result, "Please input valid email address")
+        } else {
 
-            return result;
-
-        }
-
-        $scope.checkFormIntegerRequired = function(scope, input, response, error) {
-
-            let result = false;
-
-            if($scope.$eval(scope) != null) {
-
-                result = $scope.checkNumber($scope.$eval(scope), false);
-
-            }
-
-            $scope.initializeResponse(input, response, result, error);
-
-            return result;
+            result = true;
 
         }
 
-        $scope.checkFormLength = function(scope, input, response, min, max) {
+        $scope.initializeResponse(input, response, result, "Please input valid email address")
 
-            let result = true;
+        return result;
 
-            if($scope.$eval(scope) != "") {
+    }
 
-                result = $scope.checkFormLengthRequired(scope, input, response, min, max);
+    $scope.checkFormIntegerRequired = function(scope, input, response, error) {
 
-            } else {
+        let result = false;
 
-                $("#" + input).removeClass("is-invalid").addClass("is-valid");
-                $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback").html("Look's good");
+        if($scope.$eval(scope) != null) {
 
-            }
-
-            return result;
+            result = $scope.checkNumber($scope.$eval(scope), false);
 
         }
 
-        $scope.checkFormLengthRequired = function(scope, input, response, min, max) {
+        $scope.initializeResponse(input, response, result, error);
 
-            let result = $scope.checkLength($scope.$eval(scope), min, max);
+        return result;
 
-            $scope.initializeResponse(input, response, result, "Please input between " + min + " - " + max + " characters");
+    }
 
-            return result;
+    $scope.checkFormLength = function(scope, input, response, min, max) {
 
-        }
+        let result = true;
 
-        $scope.checkFormPassword = function(scope, input, response) {
+        if($scope.$eval(scope) != "") {
 
-            let result = false;
+            result = $scope.checkFormLengthRequired(scope, input, response, min, max);
 
-            if($scope.$eval(scope).length < 3) {
+        } else {
 
-                $("#" + input).removeClass("is-valid").addClass("is-invalid");
-                $("#" + response).removeClass("valid-feedback").addClass("invalid-feedback").html("Please enter more than 2 characters");
-
-            } else if(/[a-z]/.test($scope.$eval(scope)) && /[A-Z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) {
-
-                $("#" + input).removeClass("is-invalid").addClass("is-valid");
-                $("#" + response).removeClass("invalid-feedback text-warning").addClass("valid-feedback").html("Strong password");
-
-                result = true;
-
-            } else if((/[A-Z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[A-Z]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[A-Z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope)))) {
-
-                $("#" + input).removeClass("is-invalid").addClass("is-valid");
-                $("#" + response).removeClass("invalid-feedback text-warning").addClass("valid-feedback").html("Secured password");
-
-                result = true;
-
-            } else if((/[0-9]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[A-Z]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[A-Z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[A-Z]/.test($scope.$eval(scope)))) {
-
-                $("#" + input).removeClass("is-invalid").addClass("is-valid");
-                $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback text-warning").html("Medium password");
-
-                result = true;
-
-            } else if((/[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[0-9]/.test($scope.$eval(scope))) || (/[A-Z]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)))) {
-
-                $("#" + input).removeClass("is-invalid").addClass("is-valid");
-                $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback text-warning").html("Low password");
-
-                result = true;
-
-            } else {
-
-                result = true;
-
-            }
-
-            return result;
+            $("#" + input).removeClass("is-invalid").addClass("is-valid");
+            $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback").html("Look's good");
 
         }
 
-        $scope.checkFormPasswordConfirm = function(scope, scopeConfirm, input, response) {
+        return result;
 
-            let result = false;
+    }
 
-            if($scope.$eval(scopeConfirm) != $scope.$eval(scope)) {
+    $scope.checkFormLengthRequired = function(scope, input, response, min, max) {
 
-                $("#" + input).removeClass("is-valid").addClass("is-invalid");
-                $("#" + response).removeClass("valid-feedback").addClass("invalid-feedback").html("Password doesn't match");
+        let result = $scope.checkLength($scope.$eval(scope), min, max);
 
-            } else {
+        $scope.initializeResponse(input, response, result, "Please input between " + min + " - " + max + " characters");
 
-                $("#" + input).removeClass("is-invalid").addClass("is-valid");
-                $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback").html("Look's good");
+        return result;
 
-                result = true;
+    }
 
-            }
+    $scope.checkFormPassword = function(scope, input, response) {
 
-            return result;
+        let result = false;
 
-        }
+        if($scope.$eval(scope).length < 3) {
 
-        $scope.checkFormSelectRequired = function(scope, input, response, error) {
+            $("#" + input).removeClass("is-valid").addClass("is-invalid");
+            $("#" + response).removeClass("valid-feedback").addClass("invalid-feedback").html("Please enter more than 2 characters");
 
-            let result = $scope.checkSelect($scope.$eval(scope));
+        } else if(/[a-z]/.test($scope.$eval(scope)) && /[A-Z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) {
 
-            $scope.initializeResponse(input, response, result, error);
+            $("#" + input).removeClass("is-invalid").addClass("is-valid");
+            $("#" + response).removeClass("invalid-feedback text-warning").addClass("valid-feedback").html("Strong password");
 
-            return result;
+            result = true;
 
-        }
+        } else if((/[A-Z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[A-Z]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[A-Z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope)))) {
 
-        $scope.checkLength = function(string, min, max) {
+            $("#" + input).removeClass("is-invalid").addClass("is-valid");
+            $("#" + response).removeClass("invalid-feedback text-warning").addClass("valid-feedback").html("Secured password");
 
-            let result = false;
+            result = true;
 
-            if(string != "") {
+        } else if((/[0-9]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[A-Z]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[A-Z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[0-9]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)) && /[A-Z]/.test($scope.$eval(scope)))) {
 
-                if(string.length >= min && string.length <= max) {
+            $("#" + input).removeClass("is-invalid").addClass("is-valid");
+            $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback text-warning").html("Medium password");
 
-                    result = true;
+            result = true;
 
-                }
+        } else if((/[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test($scope.$eval(scope))) || (/[0-9]/.test($scope.$eval(scope))) || (/[A-Z]/.test($scope.$eval(scope))) || (/[a-z]/.test($scope.$eval(scope)))) {
 
-            }
+            $("#" + input).removeClass("is-invalid").addClass("is-valid");
+            $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback text-warning").html("Low password");
 
-            return result;
+            result = true;
 
-        }
+        } else {
 
-        $scope.checkNumber = function(string, decimal) {
-
-            let result = false;
-
-            string = string.toString();
-
-            if(string != "") {
-
-                if(decimal && string.match(/^[0-9,.]+$/)) {
-
-                    result = true;
-
-                } else if(!decimal && string.match(/^[0-9,]+$/)) {
-
-                    result = true;
-
-                } else if(!decimal && string.match(/^[0-9]+$/)) {
-
-                    result = true;
-
-                }
-
-            }
-
-            return result;
+            result = true;
 
         }
 
-        $scope.checkSelect = function(value) {
+        return result;
 
-            let result = false;
+    }
 
-            if(value != "") {
+    $scope.checkFormPasswordConfirm = function(scope, scopeConfirm, input, response) {
+
+        let result = false;
+
+        if($scope.$eval(scopeConfirm) != $scope.$eval(scope)) {
+
+            $("#" + input).removeClass("is-valid").addClass("is-invalid");
+            $("#" + response).removeClass("valid-feedback").addClass("invalid-feedback").html("Password doesn't match");
+
+        } else {
+
+            $("#" + input).removeClass("is-invalid").addClass("is-valid");
+            $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback").html("Look's good");
+
+            result = true;
+
+        }
+
+        return result;
+
+    }
+
+    $scope.checkFormSelectRequired = function(scope, input, response, error) {
+
+        let result = $scope.checkSelect($scope.$eval(scope));
+
+        $scope.initializeResponse(input, response, result, error);
+
+        return result;
+
+    }
+
+    $scope.checkLength = function(string, min, max) {
+
+        let result = false;
+
+        if(string != "") {
+
+            if(string.length >= min && string.length <= max) {
 
                 result = true;
 
             }
 
-            return result;
+        }
+
+        return result;
+
+    }
+
+    $scope.checkNumber = function(string, decimal) {
+
+        let result = false;
+
+        string = string.toString();
+
+        if(string != "") {
+
+            if(decimal && string.match(/^[0-9,.]+$/)) {
+
+                result = true;
+
+            } else if(!decimal && string.match(/^[0-9,]+$/)) {
+
+                result = true;
+
+            } else if(!decimal && string.match(/^[0-9]+$/)) {
+
+                result = true;
+
+            }
 
         }
 
-        $scope.delete = function(url, id, event) {
+        return result;
+
+    }
+
+    $scope.checkSelect = function(value) {
+
+        let result = false;
+
+        if(value != "") {
+
+            result = true;
+
+        }
+
+        return result;
+
+    }
+
+    $scope.delete = function(url, id, event) {
+
+        let rest = {
+            "data": {
+                "_token": $("meta[name=\"csrf-token\"]").attr("content"), "id": id
+            }, "url": $scope.global.url.base + url
+        };
+        global.rest(rest, function(response) {
+
+            if(response.result) {
+
+                document.getElementById(id).remove();
+
+                sweetAlert("success", response.response);
+
+            }
+
+        });
+
+        event.preventDefault();
+
+    }
+
+    $scope.initializeAccount = function() {
+
+        if($scope.account.nucode.value == "") {
 
             let rest = {
                 "data": {
-                    "_token": $("meta[name=\"csrf-token\"]").attr("content"),
-                    "id": id
-                },
-                "url": $scope.global.url.base + url
+                    "_token": $("meta[name=\"csrf-token\"]").attr("content")
+                }, "url": $scope.global.url.base + "/security/initialize-account"
             };
             global.rest(rest, function(response) {
 
                 if(response.result) {
 
-                    document.getElementById(id).remove();
+                    $scope.account.nucode.value = response.account.nucode;
+                    $scope.account.type.value = response.account.type;
 
-                    sweetAlert("success", response.response);
+                    $scope.$broadcast("initializeTable");
 
                 }
 
             });
 
-            event.preventDefault();
-
         }
 
-        $scope.initializeAccount = function() {
+    }
 
-            if($scope.account.nucode.value == "") {
+    $scope.initializeGlobal = function() {
 
-                let rest = {
-                    "data": {
-                        "_token": $("meta[name=\"csrf-token\"]").attr("content")
-                    },
-                    "url": $scope.global.url.base + "/security/initialize-account"
-                };
-                global.rest(rest, function(response) {
+        let base = document.getElementsByTagName("base");
 
-                    if(response.result) {
+        if(base.length > 0) {
 
-                        $scope.account.nucode.value = response.account.nucode;
-                        $scope.account.type.value = response.account.type;
+            $scope.global.application.name = base[0].getAttribute("data-application-name");
+            $scope.global.cookie.path = base[0].getAttribute("data-cookie-path");
+            $scope.global.cookie.prefix = base[0].getAttribute("data-cookie-prefix");
 
-                        $scope.$broadcast("initializeTable");
+            $scope.global.dateTime.format = base[0].getAttribute("data-datetime-format");
+            $scope.global.dateTime.offset = base[0].getAttribute("data-datetime-offset");
+            $scope.global.dateTime.timezone = base[0].getAttribute("data-datetime-timezone");
 
-                    }
+            $scope.global.url.audio = base[0].getAttribute("data-url-audio");
 
-                });
+            if(base[0].getAttribute("data-url-base") != null) {
+
+                $scope.global.url.base = base[0].getAttribute("data-url-base");
 
             }
 
+            $scope.global.url.html = base[0].getAttribute("data-url-html");
+            $scope.global.url.image = base[0].getAttribute("data-url-image");
+            $scope.global.url.video = base[0].getAttribute("data-url-video");
+            $scope.global.url.websocket = base[0].getAttribute("data-url-websocket");
+
+            $scope.initializeAccount();
+
         }
 
-        $scope.initializeGlobal = function() {
+    }
 
-            let base = document.getElementsByTagName("base");
+    $scope.initializeResponse = function(input, response, result, error) {
 
-            if(base.length > 0) {
+        if(!result) {
 
-                $scope.global.application.name = base[0].getAttribute("data-application-name");
-                $scope.global.cookie.path = base[0].getAttribute("data-cookie-path");
-                $scope.global.cookie.prefix = base[0].getAttribute("data-cookie-prefix");
+            $("#" + input).removeClass("is-valid").addClass("is-invalid");
+            $("#" + response).removeClass("valid-feedback").addClass("invalid-feedback").html(error);
 
-                $scope.global.dateTime.format = base[0].getAttribute("data-datetime-format");
-                $scope.global.dateTime.offset = base[0].getAttribute("data-datetime-offset");
-                $scope.global.dateTime.timezone = base[0].getAttribute("data-datetime-timezone");
+        } else {
 
-                $scope.global.url.audio = base[0].getAttribute("data-url-audio");
+            $("#" + input).removeClass("is-invalid").addClass("is-valid");
+            $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback").html("Look's good");
 
-                if(base[0].getAttribute("data-url-base") != null) {
+        }
 
-                    $scope.global.url.base = base[0].getAttribute("data-url-base");
+    }
+
+    $scope.initializeSelect = function(value) {
+
+        return value.replaceAll("string:?", "").replaceAll("string:", "").replaceAll("string", "").replaceAll("?", "").trim();
+
+    }
+
+    $scope.initializeSelect2Data = function(options, selected, id, text) {
+
+        let result = [];
+
+        if(options != null) {
+
+            angular.forEach(options, function(value) {
+
+                let data = {
+                    "id": value, "text": value
+                };
+
+                if(value == selected) {
+
+                    data.selected = true;
 
                 }
 
-                $scope.global.url.html = base[0].getAttribute("data-url-html");
-                $scope.global.url.image = base[0].getAttribute("data-url-image");
-                $scope.global.url.video = base[0].getAttribute("data-url-video");
-                $scope.global.url.websocket = base[0].getAttribute("data-url-websocket");
+                if(id != null && text != null) {
 
-                $scope.initializeAccount();
-
-            }
-
-        }
-
-        $scope.initializeResponse = function(input, response, result, error) {
-
-            if(!result) {
-
-                $("#" + input).removeClass("is-valid").addClass("is-invalid");
-                $("#" + response).removeClass("valid-feedback").addClass("invalid-feedback").html(error);
-
-            } else {
-
-                $("#" + input).removeClass("is-invalid").addClass("is-valid");
-                $("#" + response).removeClass("invalid-feedback").addClass("valid-feedback").html("Look's good");
-
-            }
-
-        }
-
-        $scope.initializeSelect = function(value) {
-
-            return value.replaceAll("string:?", "").replaceAll("string:", "").replaceAll("string", "").replaceAll("?", "").trim();
-
-        }
-
-        $scope.initializeSelect2Data = function(options, selected, id, text) {
-
-            let result = [];
-
-            if(options != null) {
-
-                angular.forEach(options, function(value) {
-
-                    let data = {
-                        "id": value,
-                        "text": value
+                    data = {
+                        "id": value[id], "text": value[text]
                     };
 
-                    if(value == selected) {
+                    if(value[id] == selected) {
 
                         data.selected = true;
 
                     }
 
-                    if(id != null && text != null) {
-
-                        data = {
-                            "id": value[id],
-                            "text": value[text]
-                        };
-
-                        if(value[id] == selected) {
-
-                            data.selected = true;
-
-                        }
-
-                    }
-
-                    result.push(data);
-
-                });
-
-            }
-
-            return result;
-
-        }
-
-        $scope.logout = function(event) {
-
-            let rest = {
-                "data": {
-                    "_token": $("meta[name=\"csrf-token\"]").attr("content")
-                },
-                "url": $scope.global.url.base + "/login/logout"
-            };
-            global.rest(rest, function(response) {
-
-                if(response.result) {
-
-                    $window.location.reload();
-
                 }
+
+                result.push(data);
 
             });
 
-            event.preventDefault();
-
         }
 
-        $scope.select2 = function(error, input, required, response, scope, success, value) {
+        return result;
 
-            if(scope != null) {
+    }
 
-                $parse(scope).assign($scope, value);
+    $scope.logout = function(event) {
 
-                if(required) {
+        let rest = {
+            "data": {
+                "_token": $("meta[name=\"csrf-token\"]").attr("content")
+            }, "url": $scope.global.url.base + "/login/logout"
+        };
+        global.rest(rest, function(response) {
 
-                    $scope.checkFormSelectRequired(scope, input, response, error);
+            if(response.result) {
 
-                }
+                $window.location.reload();
 
             }
 
-        }
+        });
 
-        $scope.thirdParty = function(key, value) {
+        event.preventDefault();
 
-            if(key != null) {
+    }
 
-                $parse(key).assign($scope, value);
+    $scope.select2 = function(error, input, required, response, scope, success, value) {
+
+        if(scope != null) {
+
+            $parse(scope).assign($scope, value);
+
+            if(required) {
+
+                $scope.checkFormSelectRequired(scope, input, response, error);
 
             }
 
         }
 
     }
-]);
+
+    $scope.thirdParty = function(key, value) {
+
+        if(key != null) {
+
+            $parse(key).assign($scope, value);
+
+        }
+
+    }
+
+}]);
 
 app.provider("global", function() {
 
-    this.$get = [
-        "$http", function($http) {
+    this.$get = ["$http", function($http) {
 
-            return {
-                "rest": function(rest, callback) {
+        return {
+            "rest": function(rest, callback) {
 
-                    $http({
-                        "data": rest.data,
-                        "headers": {"Content-Type": "application/json"},
-                        "method": "POST",
-                        "url": rest.url
-                    }).then(function(response) {
+                $http({
+                    "data": rest.data,
+                    "headers": {"Content-Type": "application/json"},
+                    "method": "POST",
+                    "url": rest.url
+                }).then(function(response) {
 
-                        callback(response.data);
+                    callback(response.data);
 
-                    });
+                });
 
-                },
-                "restMultipart": function(rest, callback) {
+            }, "restMultipart": function(rest, callback) {
 
-                    $http({
-                        "data": rest.data,
-                        "headers": {
-                            "Content-Type": undefined,
-                            "Process-Data": false
-                        },
-                        "method": "POST",
-                        "transformRequest": angular.identity,
-                        "url": rest.url
-                    }).then(function(response) {
+                $http({
+                    "data": rest.data, "headers": {
+                        "Content-Type": undefined, "Process-Data": false
+                    }, "method": "POST", "transformRequest": angular.identity, "url": rest.url
+                }).then(function(response) {
 
-                        callback(response.data);
+                    callback(response.data);
 
-                    });
+                });
 
-                }
-            };
+            }
+        };
 
-        }
-    ];
+    }];
 
 });

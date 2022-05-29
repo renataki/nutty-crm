@@ -6,6 +6,7 @@ use App\Components\DataComponent;
 use App\Repositories\DatabaseAccountRepository;
 use App\Repositories\DatabaseLogRepository;
 use App\Repositories\NexusPlayerTransactionRepository;
+use App\Repositories\WebsiteRepository;
 use Illuminate\Support\Carbon;
 
 
@@ -142,6 +143,10 @@ class DatabaseAccountService {
                     DatabaseLogRepository::update(DataComponent::initializeSystemAccount(), $databaseLogByDatabaseId, $websiteId);
 
                 }
+
+                $websiteById = WebsiteRepository::findOneById($websiteId);
+
+                WorksheetService::generateReport(DataComponent::initializeSystemAccount(), "Deposited", $websiteById);
 
             }
 

@@ -60,15 +60,21 @@ class ReportUserService {
 
         $result = new stdClass();
         $result->draw = $request->draw;
+        $result->recordsTotal = 0;
 
         $account = DataComponent::initializeAccount($request);
 
-        $reportUsers = ReportUserRepository::findUserTable($request->columns[0]["search"]["value"], $request->columns[2]["search"]["value"], $account->nucode, $request->columns[1]["search"]["value"]);
+        $countUserTable = ReportUserRepository::countUserTable($request->columns[0]["search"]["value"], $request->columns[2]["search"]["value"], $account->nucode, $request->columns[1]["search"]["value"]);
 
-        $result->recordsTotal = $reportUsers->count("_id");
+        if(!$countUserTable->isEmpty()) {
+
+            $result->recordsTotal = $countUserTable[0]->count;
+
+        }
+
         $result->recordsFiltered = $result->recordsTotal;
 
-        $result->data = $reportUsers->forPage(DataComponent::initializePage($request->start, $request->length), $request->length);
+        $result->data = ReportUserRepository::findUserTable($request->columns[0]["search"]["value"], $request->length, $request->columns[2]["search"]["value"], $account->nucode, $request->start, $request->columns[1]["search"]["value"]);
 
         if($account->nucode != "system") {
 

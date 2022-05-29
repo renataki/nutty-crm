@@ -61,6 +61,7 @@
                                         @endif
                                         <th>Total Call</th>
                                         <th>Website Call</th>
+                                        <th>Deposited</th>
                                         <th>Registered</th>
                                         <th>Interested</th>
                                         <th>Follow Up</th>
@@ -83,6 +84,7 @@
                                         @endif
                                         <th>Total Call</th>
                                         <th>Website Call</th>
+                                        <th>Deposited</th>
                                         <th>Registered</th>
                                         <th>Interested</th>
                                         <th>Follow Up</th>

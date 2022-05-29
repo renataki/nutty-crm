@@ -2,21 +2,13 @@
 
 namespace App\Jobs;
 
-use App\Components\DataComponent;
-use App\Models\Database;
 use App\Models\DatabaseAccount;
-use App\Models\DatabaseAttempt;
-use App\Models\DatabaseLog;
-use App\Models\ReportUser;
-use App\Repositories\UserRepository;
-use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use MongoDB\BSON\UTCDateTime;
 
 

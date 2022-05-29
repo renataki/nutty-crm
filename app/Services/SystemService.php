@@ -24,7 +24,7 @@ class SystemService {
         $result->response = "Failed to find player transaction";
         $result->result = false;
 
-        $websiteByStatusNotApiNexusSaltStart = WebsiteRepository::findByStatusNotApiNexusSaltStart("", "", "Synced");
+        $websiteByStatusNotApiNexusSaltStart = WebsiteRepository::findBySyncNotApiNexusSaltStart("", "", "Synced");
         $loop = ceil(count($websiteByStatusNotApiNexusSaltStart) / config("app.api.nexus.batch.size.website"));
 
         $delay = Carbon::now();
@@ -42,8 +42,8 @@ class SystemService {
 
             foreach($websiteByStatusNotApiNexusSaltStart as $value) {
 
-                $databaseAccounts = DatabaseAccountRepository::findAll($value->_id);
-                $loop = ceil(count($databaseAccounts) / config("app.api.nexus.batch.size.player"));
+                $databaseAccountCount = DatabaseAccountRepository::count($value->_id);
+                $loop = ceil($databaseAccountCount / config("app.api.nexus.batch.size.player"));
 
                 for($i = 0; $i < $loop; $i++) {
 

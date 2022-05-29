@@ -65,6 +65,13 @@ class WebsiteRepository {
     }
 
 
+    public static function findIdAll() {
+
+        return Website::where([])->pluck("_id")->toArray();
+
+    }
+
+
     public static function findInId($ids) {
 
         return Website::whereIn("_id", $ids)->get();
@@ -72,12 +79,12 @@ class WebsiteRepository {
     }
 
 
-    public static function findByStatusNotApiNexusSaltStart($apiNexusSalt, $start, $status) {
+    public static function findBySyncNotApiNexusSaltStart($apiNexusSalt, $start, $sync) {
 
         return Website::where([
             ["api.nexus.salt", "!=", $apiNexusSalt],
             ["start", "!=", $start],
-            ["status", "=", $status]
+            ["sync", "=", $sync]
         ])->get();
 
     }
@@ -113,11 +120,12 @@ class WebsiteRepository {
     }
 
 
-    public static function findPageNotApiNexusSaltStart($apiNexusSalt, $start, $page, $size) {
+    public static function findPageBySyncNotApiNexusSaltStart($apiNexusSalt, $start, $sync, $page, $size) {
 
         return Website::where([
             ["api.nexus.salt", "!=", $apiNexusSalt],
-            ["start", "!=", $start]
+            ["start", "!=", $start],
+            ["sync", "=", $sync]
         ])->forPage($page, $size)->get();
 
     }

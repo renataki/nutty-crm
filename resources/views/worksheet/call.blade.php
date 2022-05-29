@@ -71,6 +71,7 @@
                                             <select id="worksheet-status" class="form-control select2"
                                                     data-scope="status.value">
                                                 <option value="">Response</option>
+                                                <option value="Deposited">Deposited</option>
                                                 <option value="Registered">Registered</option>
                                                 <option value="Interested">Interested</option>
                                                 <option value="FollowUp">Follow Up</option>

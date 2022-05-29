@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 
 class PlayerTransactionJob implements ShouldQueue {
@@ -35,7 +36,7 @@ class PlayerTransactionJob implements ShouldQueue {
 
     public function handle() {
 
-        $websites = WebsiteRepository::findPageNotApiNexusSaltStart("", "", $this->page, config("app.api.nexus.batch.size.website"));
+        $websites = WebsiteRepository::findPageBySyncNotApiNexusSaltStart("", "", "Synced", $this->page, config("app.api.nexus.batch.size.website"));
 
         if(!$websites->isEmpty()) {
 
@@ -58,6 +59,8 @@ class PlayerTransactionJob implements ShouldQueue {
             }
 
         }
+
+        Log::info("Player transaction job executed");
 
     }
 

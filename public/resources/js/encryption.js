@@ -1,93 +1,90 @@
-app.controller("encryption", [
-    "$scope", "$window", "$compile", "$timeout", "global", function($scope, $window, $compile, $timeout, global) {
+app.controller("encryption", ["$scope", "$window", "$compile", "$timeout", "global", function($scope, $window, $compile, $timeout, global) {
 
-        $scope.action = {
-            "value": ""
-        };
+    $scope.action = {
+        "value": ""
+    };
 
-        $scope.result = {
-            "value": ""
-        };
+    $scope.result = {
+        "value": ""
+    };
 
-        $scope.string = {
-            "value": ""
-        };
+    $scope.string = {
+        "value": ""
+    };
 
-        $scope.encrypt = function(event) {
+    $scope.encrypt = function(event) {
 
-            if(event.which == 1 || event.which == 13) {
+        if(event.which == 1 || event.which == 13) {
 
-                let validation = $scope.validateData();
+            let validation = $scope.validateData();
 
-                if(validation) {
+            if(validation) {
 
-                    let rest = {
-                        "data": {
-                            "_token": $("meta[name=\"csrf-token\"]").attr("content"),
-                            "action": $scope.action.value,
-                            "string": $scope.string.value
-                        },
-                        "url": $scope.global.url.base + "/security/encryption/encrypt"
-                    };
-                    global.rest(rest, function(response) {
+                let rest = {
+                    "data": {
+                        "_token": $("meta[name=\"csrf-token\"]").attr("content"),
+                        "action": $scope.action.value,
+                        "string": $scope.string.value
+                    }, "url": $scope.global.url.base + "/security/encryption/encrypt"
+                };
+                global.rest(rest, function(response) {
 
-                        if(response.result) {
+                    if(response.result) {
 
-                            sweetAlert("success", response.response);
+                        sweetAlert("success", response.response);
 
-                            $scope.result.value = response.string;
+                        $scope.result.value = response.string;
 
-                            $scope.$digest();
+                        $scope.$digest();
 
-                        } else {
+                    } else {
 
-                            sweetAlert("error", response.response);
+                        sweetAlert("error", response.response);
 
-                        }
+                    }
 
-                    });
+                });
 
-                } else {
+            } else {
 
-                    sweetAlert("error", "Please input valid data");
-
-                }
-
-                event.preventDefault();
+                sweetAlert("error", "Please input valid data");
 
             }
 
-        }
-
-        $scope.initializeData = function() {
-
-            initializeSelect2("encryption-action", null);
-
-        }
-
-        $scope.validateData = function() {
-
-            let result = true;
-
-            let valid = {
-                "action": $scope.checkFormSelectRequired("action.value", "encryption-action", "response-action", "Please select action")
-            };
-
-            angular.forEach(valid, function(value) {
-
-                if(!value) {
-
-                    result = false;
-
-                    return false;
-
-                }
-
-            });
-
-            return result;
+            event.preventDefault();
 
         }
 
     }
-]);
+
+    $scope.initializeData = function() {
+
+        initializeSelect2("encryption-action", null);
+
+    }
+
+    $scope.validateData = function() {
+
+        let result = true;
+
+        let valid = {
+            "action": $scope.checkFormSelectRequired("action.value", "encryption-action", "response-action", "Please select action")
+        };
+
+        angular.forEach(valid, function(value) {
+
+            if(!value) {
+
+                result = false;
+
+                return false;
+
+            }
+
+        });
+
+        return result;
+
+    }
+
+}]);

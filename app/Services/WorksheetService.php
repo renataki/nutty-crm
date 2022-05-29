@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Components\DataComponent;
+use App\Models\DatabaseAccount;
 use App\Models\DatabaseLog;
 use App\Models\ReportUser;
 use App\Models\ReportWebsite;
@@ -125,14 +126,14 @@ class WorksheetService {
     }
 
 
-    private static function generateReport($request, $account, $website) {
+    public static function generateReport($account, $status, $website) {
 
         $date = new UTCDateTime(Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0));
         $reportUserByDateUserId = ReportUserRepository::findOneByDateUserId($date, $account->nucode, $account->_id);
 
         if(!empty($reportUserByDateUserId)) {
 
-            $reportUserByDateUserId->status = self::initializeStatusData($reportUserByDateUserId, $request->status);
+            $reportUserByDateUserId->status = self::initializeStatusData($reportUserByDateUserId, $status);
             $reportUserByDateUserId->total += 1;
             $reportUserByDateUserId->website = self::initializeWebsiteData($reportUserByDateUserId, $website);
             ReportUserRepository::update($account, $reportUserByDateUserId);
@@ -142,7 +143,7 @@ class WorksheetService {
             $reportUser = new ReportUser();
             $reportUser->date = $date;
             $reportUser->status = [
-                "names" => [$request->status],
+                "names" => [$status],
                 "totals" => [1]
             ];
             $reportUser->total = 1;
@@ -165,7 +166,7 @@ class WorksheetService {
 
         if(!empty($reportWebsiteByDateWebsiteId)) {
 
-            $reportWebsiteByDateWebsiteId->status = self::initializeStatusData($reportWebsiteByDateWebsiteId, $request->status);
+            $reportWebsiteByDateWebsiteId->status = self::initializeStatusData($reportWebsiteByDateWebsiteId, $status);
             $reportWebsiteByDateWebsiteId->total += 1;
             ReportWebsiteRepository::update($account, $reportWebsiteByDateWebsiteId);
 
@@ -174,7 +175,7 @@ class WorksheetService {
             $reportWebsite = new ReportWebsite();
             $reportWebsite->date = $date;
             $reportWebsite->status = [
-                "names" => [$request->status],
+                "names" => [$status],
                 "totals" => [1]
             ];
             $reportWebsite->total = 1;
@@ -359,25 +360,38 @@ class WorksheetService {
 
         $account = DataComponent::initializeAccount($request);
 
+        $websiteIds = [];
         $filter = DataComponent::initializeObject($request->columns);
         $count = 0;
         $data = new Collection();
 
-        $filterDate = $filter[1]->search->value;
-        $filterGroup = $account->group["_id"];
         $filterName = $filter[3]->search->value;
         $filterStatus = $filter[5]->search->value;
         $filterUser = $account->_id;
         $filterUsername = $filter[2]->search->value;
         $filterWebsite = $filter[4]->search->value;
 
-        if($account->type == "Administrator") {
+        if($account->username == "system" || $account->type == "Administrator") {
 
-            $userById = UserRepository::findOneById($filter[2]->search->value);
+            if($account->username == "system") {
 
-            if(!empty($userById)) {
+                $websiteIds = WebsiteRepository::findIdAll();
 
-                $filterGroup = $userById->group["_id"];
+            } else if($account->type == "Administrator") {
+
+                $userById = UserRepository::findOneById($filter[2]->search->value);
+
+                if(!empty($userById)) {
+
+                    $userGroupById = UserGroupRepository::findOneById($userById->group["_id"]);
+
+                    if(!empty($userGroupById)) {
+
+                        $websiteIds = $userGroupById->website["ids"];
+
+                    }
+
+                }
 
             }
 
@@ -387,16 +401,24 @@ class WorksheetService {
             $filterUsername = $filter[3]->search->value;
             $filterWebsite = $filter[5]->search->value;
 
+        } else {
+
+            $userGroupById = UserGroupRepository::findOneById($account->group["_id"]);
+
+            if(!empty($userGroupById)) {
+
+                $websiteIds = $userGroupById->website["ids"];
+
+            }
+
         }
 
-        $userGroupById = UserGroupRepository::findOneById($filterGroup);
-
-        if(!empty($userGroupById)) {
+        if(!empty($websiteIds)) {
 
             $date = Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0);
-            $filterDateRange = DataComponent::initializeFilterDateRange($filterDate, new UTCDateTime($date->addDays(1)), new UTCDateTime($date));
+            $filterDateRange = DataComponent::initializeFilterDateRange($request->columns[1]["search"]["value"], new UTCDateTime($date->addDays(1)), new UTCDateTime($date));
 
-            foreach($userGroupById->website["ids"] as $value) {
+            foreach($websiteIds as $value) {
 
                 $retrieve = true;
 
@@ -548,6 +570,72 @@ class WorksheetService {
                         $databaseAccountById->username = $request->account["username"];
                         DatabaseAccountRepository::update($account, $databaseAccountById, $websiteById->_id);
 
+                    } else {
+
+                        $databaseAccount = new DatabaseAccount();
+                        $databaseAccount->deposit = [
+                            "average" => [
+                                "amount" => 0.00,
+                            ],
+                            "first" => [
+                                "amount" => 0.00,
+                                "timestamp" => ""
+                            ],
+                            "last" => [
+                                "amount" => 0.00,
+                                "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-10 00:00:00"))
+                            ],
+                            "total" => [
+                                "amount" => 0,
+                                "time" => 0
+                            ]
+                        ];
+                        $databaseAccount->games = [];
+                        $databaseAccount->sync = [
+                            "_id" => "0",
+                            "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-10 00:00:00"))
+                        ];
+                        $databaseAccount->withdrawal = [
+                            "average" => [
+                                "amount" => 0.00,
+                            ],
+                            "first" => [
+                                "amount" => 0.00,
+                                "timestamp" => ""
+                            ],
+                            "last" => [
+                                "amount" => 0.00,
+                                "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-10 00:00:00"))
+                            ],
+                            "total" => [
+                                "amount" => 0,
+                                "time" => 0
+                            ]
+                        ];
+                        $databaseAccount->login = [
+                            "average" => [
+                                "daily" => 0,
+                                "monthly" => 0,
+                                "weekly" => 0,
+                                "yearly" => 0
+                            ],
+                            "first" => [
+                                "timestamp" => ""
+                            ],
+                            "last" => [
+                                "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", "1970-01-10 00:00:00"))
+                            ],
+                            "total" => [
+                                "amount" => 0
+                            ]
+                        ];
+                        $databaseAccount->reference = "";
+                        $databaseAccount->register = [
+                            "timestamp" => new UTCDateTime()
+                        ];
+                        $databaseAccount->username = $request->account["username"];
+                        DatabaseAccountRepository::insert($account, $databaseAccount, $websiteById->_id);
+
                     }
 
                     $playerAttemptByUsername = PlayerAttemptRepository::findOneByUsername($account->nucode, $request->account["username"]);
@@ -603,7 +691,7 @@ class WorksheetService {
 
                 }
 
-                self::generateReport($request, $account, $websiteById);
+                self::generateReport($account, $request->status, $websiteById);
 
                 $result->response = "Worksheet data updated";
                 $result->result = true;

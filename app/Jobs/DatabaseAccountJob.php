@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 
 class DatabaseAccountJob implements ShouldQueue {
@@ -50,6 +51,8 @@ class DatabaseAccountJob implements ShouldQueue {
             }
 
         }
+
+        Log::info("Database account job executed");
 
     }
 

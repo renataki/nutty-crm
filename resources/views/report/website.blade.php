@@ -49,6 +49,7 @@
                                             @endif
                                         @endif
                                         <th>Total Call</th>
+                                        <th>Deposited</th>
                                         <th>Registered</th>
                                         <th>Interested</th>
                                         <th>Follow Up</th>
@@ -69,6 +70,7 @@
                                             @endif
                                         @endif
                                         <th>Total Call</th>
+                                        <th>Deposited</th>
                                         <th>Registered</th>
                                         <th>Interested</th>
                                         <th>Follow Up</th>

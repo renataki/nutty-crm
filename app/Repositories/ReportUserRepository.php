@@ -24,6 +24,32 @@ class ReportUserRepository {
     }
 
 
+    public static function countUserTable($date, $name, $nucode, $username) {
+
+        $reportUser = new ReportUser();
+        $reportUser->setTable("reportUser_" . $nucode);
+
+        return $reportUser->raw(function($collection) use ($date, $name, $username) {
+
+            $query = self::initializeUserTable($date, $name, $username);
+
+            array_push($query, [
+                '$group' => [
+                    "_id" => '$user._id'
+                ]
+            ]);
+
+            array_push($query, [
+                '$count' => "count"
+            ]);
+
+            return $collection->aggregate($query, ["allowDiskUse" => true]);
+
+        });
+
+    }
+
+
     public static function delete($id) {
 
         ReportUser::find($id)->delete();
@@ -70,34 +96,14 @@ class ReportUserRepository {
     }
 
 
-    public static function findUserTable($date, $name, $nucode, $username) {
+    public static function findUserTable($date, $limit, $name, $nucode, $start, $username) {
 
         $reportUser = new ReportUser();
         $reportUser->setTable("reportUser_" . $nucode);
 
-        return $reportUser->raw(function($collection) use ($date, $name, $nucode, $username) {
+        return $reportUser->raw(function($collection) use ($date, $limit, $name, $start, $username) {
 
-            $query = DataComponent::initializeReportFilterDateRange($date, []);
-
-            if(!is_null($name)) {
-
-                array_push($query, [
-                    '$match' => [
-                        "user.name" => new Regex($name)
-                    ]
-                ]);
-
-            }
-
-            if(!is_null($username)) {
-
-                array_push($query, [
-                    '$match' => [
-                        "user.username" => new Regex($username)
-                    ]
-                ]);
-
-            }
+            $query = self::initializeUserTable($date, $name, $username);
 
             array_push($query, [
                 '$group' => [
@@ -120,9 +126,46 @@ class ReportUserRepository {
                 ]
             ]);
 
+            array_push($query, [
+                '$skip' => $start
+            ]);
+
+            array_push($query, [
+                '$limit' => $limit
+            ]);
+
             return $collection->aggregate($query, ["allowDiskUse" => true]);
 
         });
+
+    }
+
+
+    private static function initializeUserTable($date, $name, $username) {
+
+        $result = DataComponent::initializeReportFilterDateRange($date, []);
+
+        if(!empty($name)) {
+
+            array_push($result, [
+                '$match' => [
+                    "user.name" => new Regex($name)
+                ]
+            ]);
+
+        }
+
+        if(!empty($username)) {
+
+            array_push($result, [
+                '$match' => [
+                    "user.username" => new Regex($username)
+                ]
+            ]);
+
+        }
+
+        return $result;
 
     }
 

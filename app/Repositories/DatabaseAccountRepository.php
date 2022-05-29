@@ -38,16 +38,6 @@ class DatabaseAccountRepository {
     }
 
 
-    public static function findAll($websiteId) {
-
-        $databaseAccount = new DatabaseAccount();
-        $databaseAccount->setTable("databaseAccount_" . $websiteId);
-
-        return $databaseAccount->where([])->get();
-
-    }
-
-
     public static function findOneByDatabaseId($databaseId, $websiteId) {
 
         $databaseAccount = new DatabaseAccount();

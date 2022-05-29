@@ -29,7 +29,7 @@
                                            data-regex="false"/>
                                 </div>
                                 @if(Session::has("account"))
-                                    @if(Session::get("account")->type == "Administrator")
+                                    @if(Session::get("account")->username == "system" || Session::get("account")->type == "Administrator")
                                         <div class="col-md-2">
                                             <select id="worksheet-result-filter-user"
                                                     class="select2 form-select dt-select"
@@ -64,6 +64,7 @@
                                                     name="worksheet-result-filter-status"
                                                     data-column="6" data-regex="false">
                                                 <option value="">Status</option>
+                                                <option value="Deposited">Deposited</option>
                                                 <option value="Registered">Registered</option>
                                                 <option value="Interested">Interested</option>
                                                 <option value="FollowUp">Follow Up</option>
@@ -97,6 +98,7 @@
                                                     name="worksheet-result-filter-status"
                                                     data-column="5" data-regex="false">
                                                 <option value="">Status</option>
+                                                <option value="Deposited">Deposited</option>
                                                 <option value="Registered">Registered</option>
                                                 <option value="Interested">Interested</option>
                                                 <option value="FollowUp">Follow Up</option>

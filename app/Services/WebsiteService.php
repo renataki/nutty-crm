@@ -239,6 +239,7 @@ class WebsiteService {
             $result->website->description = $request->description;
             $result->website->name = $request->name;
             $result->website->nucode = $request->nucode;
+            $result->website->start = new UTCDateTime(Carbon::createFromFormat("Y/m/d H:i:s", $request->start . "1970/01/10 00:00:00"));
             $result->website->status = $request->status;
             $result->website->sync = $request->sync;
 
