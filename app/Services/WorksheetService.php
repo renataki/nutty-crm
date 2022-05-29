@@ -573,6 +573,10 @@ class WorksheetService {
                     } else {
 
                         $databaseAccount = new DatabaseAccount();
+                        $databaseAccount->database = [
+                            "_id" => DataComponent::initializeObjectId($database->_id),
+                            "name" => $database->name
+                        ];
                         $databaseAccount->deposit = [
                             "average" => [
                                 "amount" => 0.00,
