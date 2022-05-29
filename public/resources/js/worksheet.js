@@ -370,28 +370,44 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
     $scope.update = function(event) {
 
-        let rest = {
-            "data": {
-                "_token": $("meta[name=\"csrf-token\"]").attr("content"), "id": $scope.id.value, "account": {
-                    "username": $scope.account.username.value
-                }, "log": {
-                    "id": $scope.databaseLog.id.value
-                }, "name": $scope.name.value, "reference": $scope.reference.value, "status": $scope.status.value
-            }, "url": $scope.global.url.base + "/worksheet/update"
-        };
-        global.rest(rest, function(response) {
+        let update = true;
 
-            if(response.result) {
+        if($scope.status.value == "Registered" && $scope.account.username.value == "") {
 
-                $window.location.reload();
+            update = false;
 
-            } else {
+        }
 
-                sweetAlert("error", response.response);
+        if(update) {
 
-            }
+            let rest = {
+                "data": {
+                    "_token": $("meta[name=\"csrf-token\"]").attr("content"), "id": $scope.id.value, "account": {
+                        "username": $scope.account.username.value
+                    }, "log": {
+                        "id": $scope.databaseLog.id.value
+                    }, "name": $scope.name.value, "reference": $scope.reference.value, "status": $scope.status.value
+                }, "url": $scope.global.url.base + "/worksheet/update"
+            };
+            global.rest(rest, function(response) {
 
-        });
+                if(response.result) {
+
+                    $window.location.reload();
+
+                } else {
+
+                    sweetAlert("error", response.response);
+
+                }
+
+            });
+
+        } else {
+
+            sweetAlert("error", "Please fill in username when choose \"Registered\"");
+
+        }
 
         event.preventDefault();
 
