@@ -38,9 +38,13 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="mb-3" style="text-align: center;">
-                                                <button class="btn btn-primary waves-effect waves-light"
-                                                        ng-click="copyPhoneNumber()">Copy Phone Number
-                                                </button>
+                                                @if(Session::has("account"))
+                                                    @if(Session::get("account")->type != 'CRM')
+                                                        <button class="btn btn-primary waves-effect waves-light"
+                                                                ng-click="copyPhoneNumber()">Copy Phone Number
+                                                        </button>
+                                                    @endif
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
