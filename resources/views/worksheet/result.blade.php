@@ -50,7 +50,8 @@
                                                    data-column="4" data-regex="true"/>
                                         </div>
                                         <div class="col-md-2">
-                                            <select class="select2 form-select dt-select"
+                                            <select id="worksheet-result-filter-website"
+                                                    class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-status"
                                                     data-column="5" data-regex="false">
                                                 <option value="">Website</option>
@@ -60,7 +61,8 @@
                                             </select>
                                         </div>
                                         <div class="col-md-2">
-                                            <select class="select2 form-select dt-select"
+                                            <select id="worksheet-result-filter-status"
+                                                    class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-status"
                                                     data-column="6" data-regex="false">
                                                 <option value="">Status</option>
@@ -84,7 +86,8 @@
                                                    data-column="3" data-regex="true"/>
                                         </div>
                                         <div class="col-md-2">
-                                            <select class="select2 form-select dt-select"
+                                            <select id="worksheet-result-filter-website"
+                                                    class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-status"
                                                     data-column="4" data-regex="false">
                                                 <option value="">Website</option>
@@ -94,7 +97,8 @@
                                             </select>
                                         </div>
                                         <div class="col-md-2">
-                                            <select class="select2 form-select dt-select"
+                                            <select id="worksheet-result-filter-status"
+                                                    class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-status"
                                                     data-column="5" data-regex="false">
                                                 <option value="">Status</option>

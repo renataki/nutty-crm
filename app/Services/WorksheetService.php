@@ -126,9 +126,8 @@ class WorksheetService {
     }
 
 
-    public static function generateReport($account, $status, $website) {
+    public static function generateReport($account, $date, $status, $website) {
 
-        $date = new UTCDateTime(Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0));
         $reportUserByDateUserId = ReportUserRepository::findOneByDateUserId($date, $account->nucode, $account->_id);
 
         if(!empty($reportUserByDateUserId)) {
@@ -695,7 +694,7 @@ class WorksheetService {
 
                 }
 
-                self::generateReport($account, $request->status, $websiteById);
+                self::generateReport($account, new UTCDateTime(Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0)), $request->status, $websiteById);
 
                 $result->response = "Worksheet data updated";
                 $result->result = true;

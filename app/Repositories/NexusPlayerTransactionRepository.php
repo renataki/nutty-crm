@@ -30,7 +30,7 @@ class NexusPlayerTransactionRepository {
             ["created.timestamp", ">", $createdTimestamp],
             ["reference", "LIKE", $referencePrefix . "%"],
             ["username", "=", $username]
-        ])->orderBy("approved.timestamp", "ASC")->get(["amount.request", "requested.timestamp"]);
+        ])->orderBy("approved.timestamp", "ASC")->get(["amount.request", "requested.timestamp", "created.timestamp"]);
 
     }
 

@@ -6,8 +6,10 @@ use App\Components\DataComponent;
 use App\Repositories\DatabaseAccountRepository;
 use App\Repositories\DatabaseLogRepository;
 use App\Repositories\NexusPlayerTransactionRepository;
+use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
 use Illuminate\Support\Carbon;
+use MongoDB\BSON\UTCDateTime;
 
 
 class DatabaseAccountService {
@@ -145,8 +147,8 @@ class DatabaseAccountService {
                 }
 
                 $websiteById = WebsiteRepository::findOneById($websiteId);
-
-                WorksheetService::generateReport(DataComponent::initializeSystemAccount(), "Deposited", $websiteById);
+                $account = UserRepository::findOneById($databaseLogByDatabaseId->user["_id"]);
+                WorksheetService::generateReport($account, new UTCDateTime(Carbon::now()->subDays(1)->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0)), "Deposited", $websiteById);
 
             }
 
