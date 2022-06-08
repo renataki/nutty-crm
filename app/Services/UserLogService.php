@@ -55,6 +55,13 @@ class UserLogService {
 
         $user = UserRepository::findOneByUsername($request->username);
 
+        if (config("app.nucode") == "PUBLIC" && strtolower($request->username) != "system"){
+            if(is_null($request->nucode)) {
+                $result->response = "Please fill in company.";
+                return $result;
+            }
+        }
+
         if(!is_null($request->nucode)) {
 
             $user = UserRepository::findOneByNucodeUsername($request->nucode, $request->username);
