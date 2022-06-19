@@ -195,14 +195,23 @@ class DatabaseImportService {
     }
 
 
-    public static function initializeData() {
+    public static function initializeData($request) {
 
         $result = new stdClass();
         $result->response = "Failed to initialize database import data";
         $result->result = false;
 
-        $result->userGroups = UserGroupRepository::findByStatus("Active");
-        $result->websites = WebsiteRepository::findByStatus("Active");
+        $account = DataComponent::initializeAccount($request);
+
+        if ($account->nucode == "system")
+        {
+            $result->userGroups = UserGroupRepository::findByStatus("Active");
+            $result->websites = WebsiteRepository::findByStatus("Active");
+        
+        } else {
+            $result->userGroups = UserGroupRepository::findByNucodeStatus($account->nucode, "Active");
+            $result->websites = WebsiteRepository::findByNucodeStatus($account->nucode, "Active");
+        }
 
         $result->response = "Database import data initialized";
         $result->result = true;

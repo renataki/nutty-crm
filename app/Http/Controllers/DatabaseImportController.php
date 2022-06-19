@@ -128,7 +128,7 @@ class DatabaseImportController extends Controller {
 
         if(DataComponent::checkPrivilege($request, "database", "view")) {
 
-            return response()->json(DatabaseImportService::initializeData(), 200);
+            return response()->json(DatabaseImportService::initializeData($request), 200);
 
         } else {
 
