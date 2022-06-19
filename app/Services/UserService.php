@@ -152,6 +152,8 @@ class UserService {
             $result->response = "User data inserted";
             $result->result = true;
 
+        } else {
+            $result->response = $validation->response;
         }
 
         return $result;
@@ -475,11 +477,11 @@ class UserService {
 
         if(config("app.nucode") == "PUBLIC") {
 
-            $licenseByNucode = LicenseRepository::findOneByNucode($account->nucode);
+            $licenseByNucode = LicenseRepository::findOneByNucode($request->nucode);
 
             if(!empty($licenseByNucode)) {
 
-                $countUsersByNucode = UserRepository::countByNucode($account->nucode);
+                $countUsersByNucode = UserRepository::countByNucode($request->nucode);
 
                 if($licenseByNucode->user["total"] < $countUsersByNucode) {
 
