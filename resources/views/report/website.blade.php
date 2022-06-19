@@ -27,7 +27,7 @@
                                            placeholder="Date" data-column="0" data-regex="false"/>
                                 </div>
                                 <div class="col-md-2">
-                                    <select class="select2 form-select dt-select"
+                                    <select id="report-filter-website" class="select2 form-select dt-select"
                                             data-column="1" data-regex="false">
                                         <option value="">Website</option>
                                         @foreach($model->websites as $value)
