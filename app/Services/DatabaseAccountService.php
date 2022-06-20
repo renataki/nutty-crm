@@ -107,7 +107,7 @@ class DatabaseAccountService {
 
         if(!empty($databaseAccountById)) {
 
-            $nexusPlayerTransactionToday = NexusPlayerTransactionRepository::findPendingPlayerTransaction($databaseAccountById->sync["timestamp"], "D", $databaseAccountById->username, $websiteId);
+            $nexusPlayerTransactionToday = NexusPlayerTransactionRepository::findPendingPlayerTransaction(new UTCDateTime(Carbon::now()->subDays(30)->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0)), "D", $databaseAccountById->username, $websiteId);
             $deposit = [];
             $lastTransaction = null;
 
@@ -144,15 +144,17 @@ class DatabaseAccountService {
                     $databaseLogByDatabaseId->status = "Deposited";
                     DatabaseLogRepository::update(DataComponent::initializeSystemAccount(), $databaseLogByDatabaseId, $websiteId);
 
-                }
+                    $websiteById = WebsiteRepository::findOneById($websiteId);
+                    $account = UserRepository::findOneById($databaseLogByDatabaseId->user["_id"]);
+                    WorksheetService::generateReport($account, new UTCDateTime(Carbon::now()->subDays(1)->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0)), "Deposited", $websiteById);
 
-                $websiteById = WebsiteRepository::findOneById($websiteId);
-                $account = UserRepository::findOneById($databaseLogByDatabaseId->user["_id"]);
-                WorksheetService::generateReport($account, new UTCDateTime(Carbon::now()->subDays(1)->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0)), "Deposited", $websiteById);
+                    NexusPlayerTransactionRepository::updateClaimById(true, $nexusPlayerTransactionToday[0]->_id, $websiteId);
+
+                }
 
             }
 
-            $nexusPlayerTransactionToday = NexusPlayerTransactionRepository::findPendingPlayerTransaction($databaseAccountById->sync["timestamp"], "W", $databaseAccountById->username, $websiteId);
+            $nexusPlayerTransactionToday = NexusPlayerTransactionRepository::findPendingPlayerTransaction(new UTCDateTime(Carbon::now()->subDays(1)->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0)), "W", $databaseAccountById->username, $websiteId);
             $withdrawal = [];
 
             if(!$nexusPlayerTransactionToday->isEmpty()) {

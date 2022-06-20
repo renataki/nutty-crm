@@ -41,6 +41,7 @@ class NexusPlayerTransaction extends Model {
             "from" => "",
             "to" => ""
         ],
+        "claim" => false,
         "fee" => [
             "admin" => 0
         ],
@@ -86,6 +87,7 @@ class NexusPlayerTransaction extends Model {
         "bank->account->to->number",
         "bank->from",
         "bank->to",
+        "claim",
         "fee->admin",
         "reference",
         "requested->timestamp",

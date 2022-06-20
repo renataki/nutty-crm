@@ -220,7 +220,7 @@ class WebsiteService {
 
             $result->website->api = [
                 "nexus" => [
-                    "code" => $request->api["nexus"]["code"],
+                    "code" => strtoupper($request->api["nexus"]["code"]),
                     "salt" => $request->api["nexus"]["salt"],
                     "url" => $request->api["nexus"]["url"]
                 ]

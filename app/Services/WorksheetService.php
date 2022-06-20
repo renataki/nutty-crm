@@ -20,6 +20,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use MongoDB\BSON\UTCDateTime;
 use stdClass;
 
@@ -51,7 +52,7 @@ class WorksheetService {
 
                 $result->reference = $result->databaseLog->reference;
 
-                if($result->databaseLog->status != "FollowUp" && $result->databaseLog->status != "Registered") {
+                if($result->databaseLog->status != "FollowUp" && $result->databaseLog->status != "Interested" && $result->databaseLog->status != "Pending" && $result->databaseLog->status != "Registered") {
 
                     $result->back = true;
 
@@ -127,6 +128,8 @@ class WorksheetService {
 
 
     public static function generateReport($account, $date, $status, $website) {
+
+        Log::debug("Generate Report : " . $account->_id . " " . $date . " " . $status . " " . $website->_id);
 
         $reportUserByDateUserId = ReportUserRepository::findOneByDateUserId($date, $account->nucode, $account->_id);
 

@@ -1,7 +1,7 @@
 @include("global.head")
 @include("global.header")
 <div class="main-content" ng-controller="worksheet">
-    <div class="page-content" ng-init="initializeData()">
+    <div class="page-content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
@@ -128,6 +128,8 @@
                                                 <th>User</th>
                                             @endif
                                         @endif
+                                        <th>Phone</th>
+                                        <th>Whatsapp</th>
                                         <th>Username</th>
                                         <th>Name</th>
                                         <th>Website</th>
@@ -144,6 +146,8 @@
                                                 <th>User</th>
                                             @endif
                                         @endif
+                                        <th>Phone</th>
+                                        <th>Whatsapp</th>
                                         <th>Username</th>
                                         <th>Name</th>
                                         <th>Website</th>

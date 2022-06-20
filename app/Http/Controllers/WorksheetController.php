@@ -39,6 +39,8 @@ class WorksheetController extends Controller {
 
         if(DataComponent::checkPrivilege($request, "worksheet", "view")) {
 
+            $request->session()->put("websiteId", $websiteId);
+
             $model = new stdClass();
             $model->id = $id;
             $model->websiteId = $websiteId;
