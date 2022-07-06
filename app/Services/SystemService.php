@@ -7,6 +7,7 @@ use App\Jobs\DatabaseAccountJob;
 use App\Jobs\DatabaseAccountSyncJob;
 use App\Jobs\PlayerTransactionJob;
 use App\Jobs\PlayerTransactionSyncJob;
+use App\Jobs\ReportDepositJob;
 use App\Repositories\DatabaseAccountRepository;
 use App\Repositories\WebsiteRepository;
 use Illuminate\Database\Schema\Blueprint;
@@ -42,14 +43,7 @@ class SystemService {
 
             foreach($websiteByStatusNotApiNexusSaltStart as $value) {
 
-                $databaseAccountCount = DatabaseAccountRepository::count($value->_id);
-                $loop = ceil($databaseAccountCount / config("app.api.nexus.batch.size.player"));
-
-                for($i = 0; $i < $loop; $i++) {
-
-                    dispatch((new DatabaseAccountJob($loop, $i + 1, $value->_id)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
-
-                }
+                dispatch((new ReportDepositJob($value->nucode, $value->_id)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
 
             }
 

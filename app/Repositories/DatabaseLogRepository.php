@@ -179,6 +179,18 @@ class DatabaseLogRepository {
     }
 
 
+    public static function findUserIdByStatusInDatabaseId($databaseIds, $status, $websiteId) {
+
+        $databaseLog = new DatabaseLog();
+        $databaseLog->setTable("databaseLog_" . $websiteId);
+
+        return $databaseLog->where([
+            ["status", "=", $status]
+        ])->whereIn("database._id", $databaseIds)->pluck("user._id")->toArray();
+
+    }
+
+
     public static function insert($account, $data, $websiteId) {
 
         $data->created = DataComponent::initializeTimestamp($account);
@@ -230,6 +242,15 @@ class DatabaseLogRepository {
         $data->setTable("databaseLog_" . $websiteId);
 
         return $data->save();
+
+    }
+
+
+    public static function updateInDatabaseId($databaseIds, $data, $websiteId) {
+
+        $databaseLog = new DatabaseLog();
+        $databaseLog->setTable("databaseLog_" . $websiteId);
+        $databaseLog->whereIn("database._id", $databaseIds)->update($data, ["upsert" => false]);
 
     }
 

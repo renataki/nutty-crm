@@ -38,6 +38,16 @@ class DatabaseAccountRepository {
     }
 
 
+    public static function findDatabaseIdInUsername($usernames, $websiteId) {
+
+        $databaseAccount = new DatabaseAccount();
+        $databaseAccount->setTable("databaseAccount_" . $websiteId);
+
+        return $databaseAccount->whereIn("username", $usernames)->pluck("database._id")->toArray();
+
+    }
+
+
     public static function findOneByDatabaseId($databaseId, $websiteId) {
 
         $databaseAccount = new DatabaseAccount();

@@ -284,6 +284,18 @@ class DataComponent {
     }
 
 
+    public static function createUnclaimedDepositIndex($table) {
+
+        $table->date("date")->index();
+        $table->string("reference")->index();
+        $table->boolean("status")->index();
+        $table->string("username")->index();
+        $table->date("created.timestamp")->index();
+        $table->date("modified.timestamp")->index();
+
+    }
+
+
     public static function initializeAccessDenied() {
 
         $result = new stdClass();
@@ -492,6 +504,24 @@ class DataComponent {
             Schema::table("nexusPlayerTransaction_" . $websiteId, function(Blueprint $table) {
 
                 self::createNexusPlayerTransactionIndex($table);
+
+            });
+
+        }
+
+        if(!Schema::hasTable("unclaimedDeposit_" . $websiteId)) {
+
+            Schema::create("unclaimedDeposit_" . $websiteId, function(Blueprint $table) {
+
+                self::createUnclaimedDepositIndex($table);
+
+            });
+
+        } else {
+
+            Schema::table("unclaimedDeposit_" . $websiteId, function(Blueprint $table) {
+
+                self::createUnclaimedDepositIndex($table);
 
             });
 

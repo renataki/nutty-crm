@@ -129,8 +129,6 @@ class WorksheetService {
 
     public static function generateReport($account, $date, $status, $website) {
 
-        Log::debug("Generate Report : " . $account->_id . " " . $date . " " . $status . " " . $website->_id);
-
         $reportUserByDateUserId = ReportUserRepository::findOneByDateUserId($date, $account->nucode, $account->_id);
 
         if(!empty($reportUserByDateUserId)) {
@@ -548,6 +546,10 @@ class WorksheetService {
         $database->name = $request->name;
         $database->status = "Processed";
         DatabaseRepository::update($account, $database, $request->session()->get("websiteId"));
+
+        $request->account = [
+            "username" => strtolower($request->account["username"])
+        ];
 
         if(is_null($request->status)) {
 

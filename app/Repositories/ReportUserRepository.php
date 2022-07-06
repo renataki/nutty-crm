@@ -57,6 +57,20 @@ class ReportUserRepository {
     }
 
 
+    public static function findByUserIdBetweenDate($endDate, $length, $nucode, $page, $startDate, $userId) {
+
+        $reportUser = new ReportUser();
+        $reportUser->setTable("reportUser_" . $nucode);
+
+        return $reportUser->where([
+            ["date", ">=", $startDate],
+            ["date", "<=", $endDate],
+            ["user._id", "=", $userId]
+        ])->forPage($page, $length)->get();
+
+    }
+
+
     public static function findOneByDateUserId($date, $nucode, $userId) {
 
         $reportUser = new ReportUser();
@@ -78,20 +92,6 @@ class ReportUserRepository {
         return $reportUser->where([
             ["user._id", "=", $userId]
         ])->first();
-
-    }
-
-
-    public static function findByUserIdBetweenDate($endDate, $length, $nucode, $page, $startDate, $userId) {
-
-        $reportUser = new ReportUser();
-        $reportUser->setTable("reportUser_" . $nucode);
-
-        return $reportUser->where([
-            ["date", ">=", $startDate],
-            ["date", "<=", $endDate],
-            ["user._id", "=", $userId]
-        ])->forPage($page, $length)->get();
 
     }
 

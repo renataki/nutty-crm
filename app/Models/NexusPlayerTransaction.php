@@ -57,6 +57,10 @@ class NexusPlayerTransaction extends Model {
             "code" => "",
             "type" => ""
         ],
+        "user" => [
+            "_id" => "0",
+            "username" => "System"
+        ],
         "username" => "",
         "created" => [
             "timestamp" => "",
@@ -95,6 +99,8 @@ class NexusPlayerTransaction extends Model {
         "requested->user->username",
         "transaction->code",
         "transaction->type",
+        "user->_id",
+        "user->username",
         "username",
         "created->timestamp",
         "created->user->_id",

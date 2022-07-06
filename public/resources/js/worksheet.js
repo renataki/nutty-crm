@@ -95,6 +95,48 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
                 return initializeTimestamp(data.$date.$numberLong);
             }
         }, {
+            "data": "database", "name": "database", "render": function(data) {
+                let result = "";
+
+                if(data.length > 0) {
+
+                    let maskIndex = data[0].contact.phone.length - 4;
+                    let maskNumber = "";
+
+                    for(let i = 0; i < maskIndex; i++) {
+
+                        maskNumber += "*";
+
+                    }
+
+                    result = maskNumber + data[0].contact.phone.substr(maskIndex);
+
+                }
+
+                return result;
+            }
+        }, {
+            "data": "database", "name": "database", "render": function(data) {
+                let result = "";
+
+                if(data.length > 0) {
+
+                    let maskIndex = data[0].contact.whatsapp.length - 4;
+                    let maskNumber = "";
+
+                    for(let i = 0; i < maskIndex; i++) {
+
+                        maskNumber += "*";
+
+                    }
+
+                    result = maskNumber + data[0].contact.whatsapp.substr(maskIndex);
+
+                }
+
+                return result;
+            }
+        }, {
             "data": "databaseAccount", "name": "databaseAccount", "render": function(data) {
                 let result = "";
 

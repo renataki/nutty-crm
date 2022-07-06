@@ -176,6 +176,8 @@ class WebsiteService {
         if($validation->result) {
 
             WebsiteRepository::update(DataComponent::initializeAccount($request), $validation->website);
+            //DataComponent::initializeCollectionByWebsite($validation->website->_id);
+
             UserGroupService::updateWebsiteNames($validation->website->_id, $validation->website->name);
 
             $result->response = "Website data updated";
