@@ -100,7 +100,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
                 if(data.length > 0) {
 
-                    let maskIndex = data[0].contact.phone.length - 4;
+                    let maskIndex = data[0].contact.phone.toString().length - 4;
                     let maskNumber = "";
 
                     for(let i = 0; i < maskIndex; i++) {
@@ -109,7 +109,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
                     }
 
-                    result = maskNumber + data[0].contact.phone.substr(maskIndex);
+                    result = maskNumber + data[0].contact.phone.toString().substr(maskIndex);
 
                 }
 
@@ -121,7 +121,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
                 if(data.length > 0) {
 
-                    let maskIndex = data[0].contact.whatsapp.length - 4;
+                    let maskIndex = data[0].contact.whatsapp.toString().length - 4;
                     let maskNumber = "";
 
                     for(let i = 0; i < maskIndex; i++) {
@@ -130,7 +130,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
                     }
 
-                    result = maskNumber + data[0].contact.whatsapp.substr(maskIndex);
+                    result = maskNumber + data[0].contact.whatsapp.toString().substr(maskIndex);
 
                 }
 
