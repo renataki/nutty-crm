@@ -246,7 +246,7 @@ class DatabaseLogRepository {
     }
 
 
-    public static function updateInDatabaseId($databaseIds, $data, $websiteId) {
+    public static function updateByDatabaseId($databaseIds, $data, $websiteId) {
 
         $databaseLog = new DatabaseLog();
         $databaseLog->setTable("databaseLog_" . $websiteId);

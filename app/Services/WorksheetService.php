@@ -20,7 +20,6 @@ use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use MongoDB\BSON\UTCDateTime;
 use stdClass;
 

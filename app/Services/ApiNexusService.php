@@ -39,6 +39,7 @@ class ApiNexusService {
 
             $insert = [];
             $insertUnclaimed = [];
+            $usernames = [];
 
             foreach($playerTransactions as $value) {
 
@@ -109,12 +110,22 @@ class ApiNexusService {
                     ]
                 ]);
 
-                if($value->transactionType == "Deposit") {
+                if($value->transactionType == "Deposit" && !in_array(strtolower($value->username), $usernames)) {
+
+                    $countDeposit = NexusPlayerTransactionRepository::countByTransactionTypeLikeUsername("Deposit", $value->username, $websiteId);
+                    $type = "FirstDeposit";
+
+                    if($countDeposit > 0) {
+
+                        $type = "Redeposit";
+
+                    }
 
                     array_push($insertUnclaimed, [
                         "date" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate))),
                         "reference" => $value->refNo,
                         "status" => true,
+                        "type" => $type,
                         "username" => strtolower($value->username),
                         "created" => [
                             "timestamp" => $timestamp,
@@ -131,6 +142,8 @@ class ApiNexusService {
                             ]
                         ]
                     ]);
+
+                    array_push($usernames, strtolower($value->username));
 
                 }
 

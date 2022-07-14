@@ -289,6 +289,7 @@ class DataComponent {
         $table->date("date")->index();
         $table->string("reference")->index();
         $table->boolean("status")->index();
+        $table->string("type")->index();
         $table->string("username")->index();
         $table->date("created.timestamp")->index();
         $table->date("modified.timestamp")->index();

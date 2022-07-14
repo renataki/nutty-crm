@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Components\DataComponent;
-use App\Jobs\DatabaseAccountJob;
 use App\Jobs\DatabaseAccountSyncJob;
 use App\Jobs\PlayerTransactionJob;
 use App\Jobs\PlayerTransactionSyncJob;

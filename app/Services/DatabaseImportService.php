@@ -203,11 +203,10 @@ class DatabaseImportService {
 
         $account = DataComponent::initializeAccount($request);
 
-        if ($account->nucode == "system")
-        {
+        if($account->nucode == "system") {
             $result->userGroups = UserGroupRepository::findByStatus("Active");
             $result->websites = WebsiteRepository::findByStatus("Active");
-        
+
         } else {
             $result->userGroups = UserGroupRepository::findByNucodeStatus($account->nucode, "Active");
             $result->websites = WebsiteRepository::findByNucodeStatus($account->nucode, "Active");

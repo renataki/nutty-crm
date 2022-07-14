@@ -2,10 +2,36 @@
 
 namespace App\Repositories;
 
+use App\Components\DataComponent;
 use App\Models\NexusPlayerTransaction;
 
 
 class NexusPlayerTransactionRepository {
+
+
+    public static function countByTransactionTypeLikeUsername($transactionType, $username, $websiteId) {
+
+        $nexusPlayerTransaction = new NexusPlayerTransaction();
+        $nexusPlayerTransaction->setTable("nexusPlayerTransaction_" . $websiteId);
+
+        return $nexusPlayerTransaction->where([
+            ["transaction.type", "=", $transactionType],
+            ["username", "LIKE", $username]
+        ])->count("_id");
+
+    }
+
+
+    public static function findOneByReference($reference, $websiteId) {
+
+        $nexusPlayerTransaction = new NexusPlayerTransaction();
+        $nexusPlayerTransaction->setTable("nexusPlayerTransaction_" . $websiteId);
+
+        return $nexusPlayerTransaction->where([
+            ["reference", "=", $reference]
+        ])->first();
+
+    }
 
 
     public static function findPlayerTransaction($referencePrefix, $username, $websiteId) {
@@ -30,7 +56,11 @@ class NexusPlayerTransactionRepository {
             ["created.timestamp", ">", $createdTimestamp],
             ["reference", "LIKE", $referencePrefix . "%"],
             ["username", "LIKE", $username]
-        ])->whereNull("claim")->orderBy("approved.timestamp", "ASC")->get(["amount.request", "requested.timestamp", "created.timestamp"]);
+        ])->whereNull("claim")->orderBy("approved.timestamp", "ASC")->get([
+            "amount.request",
+            "requested.timestamp",
+            "created.timestamp"
+        ]);
 
     }
 
@@ -40,6 +70,21 @@ class NexusPlayerTransactionRepository {
         $nexusPlayerTransaction = new NexusPlayerTransaction();
         $nexusPlayerTransaction->setTable("nexusPlayerTransaction_" . $websiteId);
         $nexusPlayerTransaction->insert($data);
+
+    }
+
+
+    public static function update($account, $data, $websiteId) {
+
+        if($account != null) {
+
+            $data->modified = DataComponent::initializeTimestamp($account);
+
+        }
+
+        $data->setTable("nexusPlayerTransaction_" . $websiteId);
+
+        return $data->save();
 
     }
 

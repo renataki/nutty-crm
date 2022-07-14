@@ -16,6 +16,7 @@ class UnclaimedDeposit extends Model {
         "date" => "",
         "reference" => "",
         "status" => true,
+        "type" => "",
         "username" => "",
         "created" => [
             "timestamp" => "",
@@ -37,6 +38,7 @@ class UnclaimedDeposit extends Model {
         "date",
         "reference",
         "status",
+        "type",
         "username",
         "created->timestamp",
         "created->user->_id",

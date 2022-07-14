@@ -10,6 +10,7 @@ use App\Models\ReportUser;
 use App\Models\ReportWebsite;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\Website;
 use App\Repositories\ReportUserRepository;
 use App\Repositories\ReportWebsiteRepository;
 use App\Repositories\WebsiteRepository;
@@ -20,6 +21,43 @@ use stdClass;
 
 
 class MigrationService {
+
+
+    public static function generateUnclaimedDeposit() {
+
+        $result = new stdClass();
+        $result->response = "Failed to generate unclaimed deposit data";
+        $result->result = false;
+
+        $websites = Website::where([])->get();
+
+        foreach($websites as $value) {
+
+            if(!Schema::hasTable("nexusPlayerTransaction_" . $value->_id)) {
+
+                Schema::create("nexusPlayerTransaction_" . $value->_id, function(Blueprint $table) {
+
+                    DataComponent::createNexusPlayerTransactionIndex($table);
+
+                });
+
+            }
+
+            if(!Schema::hasTable("unclaimedDeposit_" . $value->_id)) {
+
+                Schema::create("unclaimedDeposit_" . $value->_id, function(Blueprint $table) {
+
+                    DataComponent::createUnclaimedDepositIndex($table);
+
+                });
+
+            }
+
+        }
+
+        return $result;
+
+    }
 
 
     private static function generateReportWebsite($nucode) {

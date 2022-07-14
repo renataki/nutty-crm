@@ -85,6 +85,7 @@ Route::group(["middleware" => ["authentication"]], function() {
 });
 
 Route::get("/access-denied", [AccessDeniedController::class, "index"]);
+Route::get("/migration/generate-unclaimed-deposit", [MigrationController::class, "generateUnclaimedDeposit"]);
 Route::get("/migration/migrate", [MigrationController::class, "migrate"]);
 Route::get("/system/info", [SystemController::class, "info"]);
 Route::get("/system/find-player-transaction/{date}", [SystemController::class, "findPlayerTransaction"]);

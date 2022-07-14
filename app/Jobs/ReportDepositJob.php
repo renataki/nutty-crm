@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Components\DataComponent;
 use App\Repositories\DatabaseAccountRepository;
 use App\Repositories\DatabaseLogRepository;
+use App\Repositories\NexusPlayerTransactionRepository;
 use App\Repositories\ReportUserRepository;
 use App\Repositories\ReportWebsiteRepository;
 use App\Repositories\UnclaimedDepositRepository;
@@ -39,37 +41,44 @@ class ReportDepositJob implements ShouldQueue {
 
     public function handle() {
 
-        $usernames = UnclaimedDepositRepository::findUsernameByStatus(true, $this->websiteId);
-        $databaseIds = DatabaseAccountRepository::findDatabaseIdInUsername($usernames, $this->websiteId);
+        set_time_limit(900);
 
-        $update = [
-            "status" => "Deposited"
-        ];
-        DatabaseLogRepository::updateInDatabaseId($databaseIds, $update, $this->websiteId);
+        $unclaimedDepositByStatus = UnclaimedDepositRepository::findByStatus(true, $this->websiteId);
 
-        $update = [
-            "status" => false
-        ];
-        UnclaimedDepositRepository::updateByUsername($usernames, $update, $this->websiteId);
-
-        $userIds = DatabaseLogRepository::findUserIdByStatusInDatabaseId($databaseIds, "Deposited", $this->websiteId);
         $deposits = [];
 
-        foreach($userIds as $value) {
+        foreach($unclaimedDepositByStatus as $value) {
 
-            if(array_key_exists(strval($value), $deposits)) {
+            $databaseAccountById = DatabaseAccountRepository::findOneByUsername($value->username, $this->websiteId);
 
-                $deposits[strval($value)] += 1;
+            if(!empty($databaseAccountById)) {
 
-            } else {
+                $databaseLogByDatabaseId = DatabaseLogRepository::findLastByDatabaseId($databaseAccountById->database["_id"], $this->websiteId);
 
-                $deposits[strval($value)] = 1;
+                if(!empty($databaseLogByDatabaseId)) {
+
+                    $userById = UserRepository::findOneById($databaseLogByDatabaseId->user["_id"]);
+
+                    if(!empty($userById)) {
+
+                        if($userById->type == "Telemarketer" && $value->type == "FirstDeposit") {
+
+                            $deposits = $this->generateDeposit($databaseLogByDatabaseId, $deposits, $value);
+
+                        } else if($userById->type == "CRM" && $value->type == "ReDeposit") {
+
+                            $deposits = $this->generateDeposit($databaseLogByDatabaseId, $deposits, $value);
+
+                        }
+
+                    }
+
+                }
 
             }
 
         }
 
-        Log::debug("Deposit for " . $this->websiteId . " " . json_encode($deposits));
         $totalDeposit = 0;
         $account = null;
 
@@ -86,12 +95,12 @@ class ReportDepositJob implements ShouldQueue {
 
                 if(gettype($index) == "integer") {
 
-                    $statusTotals[$index] += $value;
+                    $statusTotals[$index] = $statusTotals[$index] + $value["total"];
 
                 } else {
 
                     array_push($statusNames, "Deposited");
-                    array_push($statusTotals, $value);
+                    array_push($statusTotals, $value["total"]);
 
                 }
 
@@ -99,7 +108,6 @@ class ReportDepositJob implements ShouldQueue {
 
                 if(!empty($account)) {
 
-                    Log::debug("Report update for " . $reportUserByDateUserId->_id . " " . $value);
                     $reportUserByDateUserId->status = [
                         "names" => $statusNames,
                         "totals" => $statusTotals
@@ -110,7 +118,7 @@ class ReportDepositJob implements ShouldQueue {
 
             }
 
-            $totalDeposit += $value;
+            $totalDeposit += $value["total"];
 
         }
 
@@ -127,12 +135,12 @@ class ReportDepositJob implements ShouldQueue {
 
                 if(gettype($index) == "integer") {
 
-                    $statusTotals[$index] += $value;
+                    $statusTotals[$index] += $totalDeposit;
 
                 } else {
 
                     array_push($statusNames, "Deposited");
-                    array_push($statusTotals, $value);
+                    array_push($statusTotals, $totalDeposit);
 
                 }
 
@@ -145,6 +153,44 @@ class ReportDepositJob implements ShouldQueue {
             }
 
         }
+
+        Log::debug(json_encode($deposits));
+
+    }
+
+
+    private function generateDeposit($databaseLog, $deposits, $unclaimedDeposit) {
+
+        $databaseLog->status = "Deposited";
+        DatabaseLogRepository::update(DataComponent::initializeSystemAccount(), $databaseLog, $this->websiteId);
+
+        UnclaimedDepositRepository::updateByUsername($unclaimedDeposit->username, ["status" => false], $this->websiteId);
+        $nexusPlayerTransactionByReference = NexusPlayerTransactionRepository::findOneByReference($unclaimedDeposit->reference, $this->websiteId);
+
+        if(!empty($nexusPlayerTransactionByReference)) {
+
+            $nexusPlayerTransactionByReference->claim = true;
+            $nexusPlayerTransactionByReference->user = $databaseLog->user;
+            NexusPlayerTransactionRepository::update(DataComponent::initializeSystemAccount(), $nexusPlayerTransactionByReference, $this->websiteId);
+
+        }
+
+        if(array_key_exists(strval($databaseLog->user["_id"]), $deposits)) {
+
+            $deposits[strval($databaseLog->user["_id"])]["total"] += 1;
+            array_push($deposits[strval($databaseLog->user["_id"])]["reference"], $nexusPlayerTransactionByReference->reference);
+
+        } else {
+
+            $deposits[strval($databaseLog->user["_id"])] = [
+                "reference" => [$nexusPlayerTransactionByReference->reference],
+                "total" => 1,
+                "username" => $databaseLog->user["username"]
+            ];
+
+        }
+
+        return $deposits;
 
     }
 

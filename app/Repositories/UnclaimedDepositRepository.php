@@ -8,14 +8,14 @@ use App\Models\UnclaimedDeposit;
 class UnclaimedDepositRepository {
 
 
-    public static function findUsernameByStatus($status, $websiteId) {
+    public static function findByStatus($status, $websiteId) {
 
         $unclaimedDeposit = new UnclaimedDeposit();
         $unclaimedDeposit->setTable("unclaimedDeposit_" . $websiteId);
 
         return $unclaimedDeposit->where([
             ["status", "=", $status]
-        ])->pluck("username")->toArray();
+        ])->get();
 
     }
 
@@ -29,11 +29,13 @@ class UnclaimedDepositRepository {
     }
 
 
-    public static function updateByUsername($usernames, $data, $websiteId) {
+    public static function updateByUsername($username, $data, $websiteId) {
 
         $unclaimedDeposit = new UnclaimedDeposit();
         $unclaimedDeposit->setTable("unclaimedDeposit_" . $websiteId);
-        $unclaimedDeposit->whereIn("username", $usernames)->update($data, ["upsert" => false]);
+        $unclaimedDeposit->where([
+            ["username", "=", $username]
+        ])->update($data, ["upsert" => false]);
 
     }
 
