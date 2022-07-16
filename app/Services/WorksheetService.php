@@ -365,10 +365,12 @@ class WorksheetService {
         $data = new Collection();
 
         $filterName = $filter[3]->search->value;
-        $filterStatus = $filter[5]->search->value;
+        $filterPhone = $filter[4]->search->value;
+        $filterStatus = $filter[7]->search->value;
         $filterUser = $account->_id;
         $filterUsername = $filter[2]->search->value;
-        $filterWebsite = $filter[4]->search->value;
+        $filterWebsite = $filter[6]->search->value;
+        $filterWhatsapp = $filter[5]->search->value;
 
         if($account->username == "system" || $account->type == "Administrator") {
 
@@ -395,10 +397,12 @@ class WorksheetService {
             }
 
             $filterName = $filter[4]->search->value;
-            $filterStatus = $filter[6]->search->value;
+            $filterPhone = $filter[5]->search->value;
+            $filterStatus = $filter[8]->search->value;
             $filterUser = $filter[2]->search->value;
             $filterUsername = $filter[3]->search->value;
-            $filterWebsite = $filter[5]->search->value;
+            $filterWebsite = $filter[7]->search->value;
+            $filterWhatsapp = $filter[6]->search->value;;
 
         } else {
 
@@ -429,7 +433,7 @@ class WorksheetService {
 
                 if($retrieve) {
 
-                    $countResultTable = DatabaseLogRepository::countDatabaseAccountTable($filterDateRange->end, $filterDateRange->start, $filterName, $filterStatus, $filterUser, $filterUsername, $value);
+                    $countResultTable = DatabaseLogRepository::countDatabaseAccountTable($filterDateRange->end, $filterDateRange->start, $filterName, $filterPhone, $filterStatus, $filterUser, $filterUsername, $value, $filterWhatsapp);
 
                     if(!$countResultTable->isEmpty()) {
 
@@ -473,7 +477,7 @@ class WorksheetService {
 
                 if($retrieve) {
 
-                    $data = $data->merge(DatabaseLogRepository::findDatabaseAccountTable($filterDateRange->end, $filterDateRange->start, $request->length, $filterName, $request->start, $sorts, $filterStatus, $filterUser, $filterUsername, $value));
+                    $data = $data->merge(DatabaseLogRepository::findDatabaseAccountTable($filterDateRange->end, $filterDateRange->start, $request->length, $filterName, $filterPhone, $request->start, $sorts, $filterStatus, $filterUser, $filterUsername, $value, $filterWhatsapp));
 
                 }
 

@@ -23,14 +23,14 @@
                     <div class="card">
                         <div class="card-body">
                             <form class="row g-1 mb-3" method="POST" action="">
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <input class="form-control dt-input flatpickr-date-range" type="text"
                                            placeholder="Date" value="{{$model->filterDate}}" data-column="1"
                                            data-regex="false"/>
                                 </div>
                                 @if(Session::has("account"))
                                     @if(Session::get("account")->username == "system" || Session::get("account")->type == "Administrator")
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <select id="worksheet-result-filter-user"
                                                     class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-user" data-column="2"
@@ -41,30 +41,38 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <input class="form-control dt-input" type="text" placeholder="Username"
                                                    data-column="3" data-regex="true"/>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <input class="form-control dt-input" type="text" placeholder="Name"
                                                    data-column="4" data-regex="true"/>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
+                                            <input class="form-control dt-input" type="text" placeholder="Phone"
+                                                   data-column="5" data-regex="true"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input class="form-control dt-input" type="text" placeholder="Whatsapp"
+                                                   data-column="6" data-regex="true"/>
+                                        </div>
+                                        <div class="col-md-3">
                                             <select id="worksheet-result-filter-website"
                                                     class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-status"
-                                                    data-column="5" data-regex="false">
+                                                    data-column="7" data-regex="false">
                                                 <option value="">Website</option>
                                                 @foreach($model->websites as $value)
                                                     <option value="{{$value->_id}}">{{$value->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <select id="worksheet-result-filter-status"
                                                     class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-status"
-                                                    data-column="6" data-regex="false">
+                                                    data-column="8" data-regex="false">
                                                 <option value="">Status</option>
                                                 <option value="Deposited">Deposited</option>
                                                 <option value="Registered">Registered</option>
@@ -77,30 +85,38 @@
                                             </select>
                                         </div>
                                     @else
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <input class="form-control dt-input" type="text" placeholder="Username"
                                                    data-column="2" data-regex="true"/>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <input class="form-control dt-input" type="text" placeholder="Name"
                                                    data-column="3" data-regex="true"/>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
+                                            <input class="form-control dt-input" type="text" placeholder="Phone"
+                                                   data-column="4" data-regex="true"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input class="form-control dt-input" type="text" placeholder="Whatsapp"
+                                                   data-column="5" data-regex="true"/>
+                                        </div>
+                                        <div class="col-md-3">
                                             <select id="worksheet-result-filter-website"
                                                     class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-status"
-                                                    data-column="4" data-regex="false">
+                                                    data-column="6" data-regex="false">
                                                 <option value="">Website</option>
                                                 @foreach($model->websites as $value)
                                                     <option value="{{$value->_id}}">{{$value->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             <select id="worksheet-result-filter-status"
                                                     class="select2 form-select dt-select"
                                                     name="worksheet-result-filter-status"
-                                                    data-column="5" data-regex="false">
+                                                    data-column="7" data-regex="false">
                                                 <option value="">Status</option>
                                                 <option value="Deposited">Deposited</option>
                                                 <option value="Registered">Registered</option>
@@ -112,7 +128,7 @@
                                                 <option value="InvalidNumber">Invalid Number</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-2"></div>
+                                        <div class="col-md-3"></div>
                                     @endif
                                 @endif
                             </form>
