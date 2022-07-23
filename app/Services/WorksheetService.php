@@ -416,6 +416,9 @@ class WorksheetService {
 
         }
 
+        $filterPhone = preg_replace("/[^0-9]/",'', $filterPhone);
+        $filterWhatsapp = preg_replace("/[^0-9]/",'', $filterWhatsapp);
+
         if(!empty($websiteIds)) {
 
             $date = Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0);
