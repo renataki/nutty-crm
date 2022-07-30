@@ -26,6 +26,23 @@ class SystemController extends Controller {
     }
 
 
+    public function generateUnclaimedDepositQueue($date) {
+
+        $model = new stdClass();
+
+        SystemService::generateUnclaimedDepositQueue($date);
+
+        return view("global.migration", [
+            "layout" => (object)[
+                "css" => [],
+                "js" => []
+            ],
+            "model" => $model
+        ]);
+
+    }
+
+
     public function info() {
 
         dd(phpinfo());

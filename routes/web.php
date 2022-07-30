@@ -89,6 +89,10 @@ Route::get("/migration/generate-unclaimed-deposit", [MigrationController::class,
 Route::get("/migration/migrate", [MigrationController::class, "migrate"]);
 Route::get("/system/info", [SystemController::class, "info"]);
 Route::get("/system/find-player-transaction/{date}", [SystemController::class, "findPlayerTransaction"]);
+Route::get("/system/generate-unclaimed-deposit-queue/{date}", [
+    SystemController::class,
+    "generateUnclaimedDepositQueue"
+]);
 Route::get("/system/sync-player-transaction/{websiteId}", [SystemController::class, "syncPlayerTransaction"]);
 
 Route::post("/database/delete", [DatabaseController::class, "delete"]);

@@ -2,20 +2,33 @@
 
 namespace App\Repositories;
 
+use App\Components\DataComponent;
 use App\Models\UnclaimedDeposit;
 
 
 class UnclaimedDepositRepository {
 
 
-    public static function findByStatus($status, $websiteId) {
+    public static function findOneById($id, $websiteId) {
+
+        $unclaimedDeposit = new UnclaimedDeposit();
+        $unclaimedDeposit->setTable("unclaimedDeposit_" . $websiteId);
+
+        return $unclaimedDeposit->where([
+            ["_id", "=", $id]
+        ])->first();
+
+    }
+
+
+    public static function findByStatusLimit($status, $websiteId, $limit) {
 
         $unclaimedDeposit = new UnclaimedDeposit();
         $unclaimedDeposit->setTable("unclaimedDeposit_" . $websiteId);
 
         return $unclaimedDeposit->where([
             ["status", "=", $status]
-        ])->get();
+        ])->take($limit)->get();
 
     }
 
@@ -25,6 +38,21 @@ class UnclaimedDepositRepository {
         $unclaimedDeposit = new UnclaimedDeposit();
         $unclaimedDeposit->setTable("unclaimedDeposit_" . $websiteId);
         $unclaimedDeposit->insert($data);
+
+    }
+
+
+    public static function update($account, $data, $websiteId) {
+
+        if($account != null) {
+
+            $data->modified = DataComponent::initializeTimestamp($account);
+
+        }
+
+        $data->setTable("unclaimedDeposit_" . $websiteId);
+
+        return $data->save();
 
     }
 

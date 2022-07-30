@@ -416,8 +416,8 @@ class WorksheetService {
 
         }
 
-        $filterPhone = preg_replace("/[^0-9]/",'', $filterPhone);
-        $filterWhatsapp = preg_replace("/[^0-9]/",'', $filterWhatsapp);
+        $filterPhone = preg_replace("/[^0-9]/", '', $filterPhone);
+        $filterWhatsapp = preg_replace("/[^0-9]/", '', $filterWhatsapp);
 
         if(!empty($websiteIds)) {
 
