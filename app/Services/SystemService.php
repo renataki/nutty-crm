@@ -269,9 +269,14 @@ class SystemService {
 
                     }
 
-                    Log::debug(json_encode($deposits));
+                } else {
+
+                    $unclaimedDepositQueueByStatus->status = "Done";
+                    UnclaimedDepositQueueRepository::update(DataComponent::initializeSystemAccount(), $unclaimedDepositQueueByStatus);
 
                 }
+
+                Log::debug(json_encode($deposits));
 
             }
 
