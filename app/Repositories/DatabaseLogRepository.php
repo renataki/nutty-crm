@@ -56,7 +56,7 @@ class DatabaseLogRepository {
 
             array_push($query, [
                 '$match' => [
-                    "created.timestamp" => [
+                    "modified.timestamp" => [
                         '$gte' => $createdDateStart,
                         '$lte' => $createdDateEnd
                     ]

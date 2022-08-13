@@ -31,6 +31,14 @@ class Kernel extends ConsoleKernel {
 
         })->everyThreeMinutes();
 
+        $schedule->call(function() {
+
+            SystemService::syncWebsiteTransaction();
+
+            Log::info("Sync website transaction scheduler executed");
+
+        })->everyFiveMinutes();
+
     }
 
 

@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Components\DataComponent;
+use App\Models\SyncQueue;
 use App\Models\Website;
+use App\Repositories\SyncQueueRepository;
 use App\Repositories\WebsiteRepository;
 use Illuminate\Support\Carbon;
 use MongoDB\BSON\UTCDateTime;
@@ -140,10 +142,20 @@ class WebsiteService {
 
             if(!empty($websiteById->api["nexus"]["code"]) && !empty($websiteById->api["nexus"]["salt"]) && !empty($websiteById->api["nexus"]["url"]) && !empty($websiteById->start)) {
 
-                SystemService::syncPlayerTransaction($websiteById->_id);
+                //SystemService::syncPlayerTransaction($websiteById->_id);
 
                 $websiteById->sync = "OnGoing";
                 WebsiteRepository::update(DataComponent::initializeAccount($request), $websiteById);
+
+                $syncQueue = new SyncQueue();
+                $syncQueue->date = $websiteById->start;
+                $syncQueue->nucode = $websiteById->nucode;
+                $syncQueue->status = "OnGoing";
+                $syncQueue->website = [
+                    "_id" => DataComponent::initializeObjectId($websiteById->_id),
+                    "name" => $websiteById->name
+                ];
+                SyncQueueRepository::insert(DataComponent::initializeSystemAccount(), $syncQueue);
 
                 $result->response = "Website data synced";
                 $result->result = true;

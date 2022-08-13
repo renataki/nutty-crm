@@ -13,6 +13,7 @@ use App\Repositories\DatabaseLogRepository;
 use App\Repositories\NexusPlayerTransactionRepository;
 use App\Repositories\ReportUserRepository;
 use App\Repositories\ReportWebsiteRepository;
+use App\Repositories\SyncQueueRepository;
 use App\Repositories\UnclaimedDepositQueueRepository;
 use App\Repositories\UnclaimedDepositRepository;
 use App\Repositories\UserRepository;
@@ -357,10 +358,12 @@ class SystemService {
 
                 for($i = 0; $i < $loop; $i++) {
 
-                    dispatch((new PlayerTransactionSyncJob($dateEnd, $dateStart, $loop, $websiteById->api["nexus"]["code"], $i + 1, $websiteById->api["nexus"]["salt"], $websiteById->api["nexus"]["url"], $websiteById->_id)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
+                    dispatch((new PlayerTransactionSyncJob($dateEnd, $dateStart, $loop, $websiteById->api["nexus"]["code"], $i + 1, $websiteById->api["nexus"]["salt"], $websiteById->api["nexus"]["url"], $websiteById->_id)))->delay($delay);
 
                     $dateStart = $date->format("Y/m/d");
                     $dateEnd = $date->addDays(1)->format("Y/m/d");
+
+                    $delay = $delay->addMinutes(config("app.api.nexus.batch.delay"));
 
                 }
 
@@ -371,7 +374,9 @@ class SystemService {
 
             for($i = 0; $i < $loop; $i++) {
 
-                dispatch((new DatabaseAccountSyncJob($loop, $i + 1, $websiteById->_id)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
+                dispatch((new DatabaseAccountSyncJob($loop, $i + 1, $websiteById->_id)))->delay($delay);
+
+                $delay->addMinutes(config("app.api.nexus.batch.delay"));
 
             }
 
@@ -379,6 +384,58 @@ class SystemService {
 
         $result->response = "Player transaction synced";
         $result->result = true;
+
+        return $result;
+
+    }
+
+
+    public static function syncWebsiteTransaction() {
+
+        $result = new stdClass();
+        $result->response = "Failed to sync website transaction";
+        $result->result = false;
+
+        $syncQueueByStatus = SyncQueueRepository::findOneByStatus("OnGoing");
+
+        if(!empty($syncQueueByStatus)) {
+
+            $websiteById = WebsiteRepository::findOneById($syncQueueByStatus->website["_id"]);
+
+            if(!empty($websiteById)) {
+
+                if(!empty($websiteById->api["nexus"]["code"]) && !empty($websiteById->api["nexus"]["salt"]) && !empty($websiteById->api["nexus"]["url"])) {
+
+                    $date = Carbon::createFromDate($syncQueueByStatus->date->toDateTime());
+                    $dateStart = $date->format("Y-m-d") . "T00:00:00";
+                    $date = $date->addDays(1);
+                    $dateEnd = $date->format("Y-m-d") . "T00:00:00";
+                    $apiNexusPlayerTransaction = ApiNexusService::findPlayerTransaction($websiteById->api["nexus"]["code"], $dateStart, $dateEnd, $websiteById->api["nexus"]["salt"], $websiteById->api["nexus"]["url"]);
+
+                    if($apiNexusPlayerTransaction->result) {
+
+                        ApiNexusService::savePlayerTransaction($apiNexusPlayerTransaction->content->data->bankTransactionList, $websiteById->_id);
+
+                        $syncQueueByStatus->date = new UTCDateTime($date);
+                        SyncQueueRepository::update(DataComponent::initializeSystemAccount(), $syncQueueByStatus);
+
+                        if($date->gte(Carbon::now())) {
+
+                            $websiteById->sync = "Sync";
+                            WebsiteRepository::update(DataComponent::initializeSystemAccount(), $websiteById);
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            $result->response = "Player transaction synced";
+            $result->result = true;
+
+        }
 
         return $result;
 
