@@ -25,30 +25,11 @@ class LicenseRepository {
     }
 
 
-    public static function findOneByIdStatus($id, $status) {
-
-        return License::where([
-            ["_id", "=", $id],
-            ["status", "=", $status]
-        ])->first();
-
-    }
-
-
     public static function findOneByNucode($nucode) {
 
         return License::where([
             ["nucode", "=", $nucode]
         ])->first();
-
-    }
-
-
-    public static function findByStatus($status) {
-
-        return License::where([
-            ["status", "=", $status]
-        ])->get();
 
     }
 

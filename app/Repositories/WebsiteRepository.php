@@ -120,17 +120,6 @@ class WebsiteRepository {
     }
 
 
-    public static function findPageBySyncNotApiNexusSaltStart($apiNexusSalt, $start, $sync, $page, $size) {
-
-        return Website::where([
-            ["api.nexus.salt", "!=", $apiNexusSalt],
-            ["start", "!=", $start],
-            ["sync", "=", $sync]
-        ])->forPage($page, $size)->get();
-
-    }
-
-
     public static function insert($account, $data) {
 
         $data->created = DataComponent::initializeTimestamp($account);

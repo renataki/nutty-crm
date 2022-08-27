@@ -137,17 +137,4 @@ class DatabaseRepository {
     }
 
 
-    public static function updateByStatusLteModifiedTimestamp($data, $status, $modifiedTimestamp, $websiteId) {
-
-        $database = new Database();
-        $database->setTable("database_" . $websiteId);
-
-        return $database->where([
-            ["status", "=", $status],
-            ["modified.timestamp", "<=", $modifiedTimestamp]
-        ])->update($data, ["upsert" => false]);
-
-    }
-
-
 }

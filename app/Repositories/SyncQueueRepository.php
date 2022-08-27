@@ -25,6 +25,15 @@ class SyncQueueRepository {
     }
 
 
+    public static function findOneByWebsiteId($websiteId) {
+
+        return SyncQueue::where([
+            ["website._id", "=", $websiteId]
+        ])->first();
+
+    }
+
+
     public static function insert($account, $data) {
 
         $data->created = DataComponent::initializeTimestamp($account);

@@ -16,12 +16,19 @@ class Kernel extends ConsoleKernel {
 
         $schedule->call(function() {
 
-            //SystemService::findPlayerTransaction(Carbon::now()->format("Y-m-d"));
             SystemService::generateUnclaimedDepositQueue(Carbon::now()->format("Y-m-d"));
 
-            Log::info("Scheduler running");
+            Log::info("Generate unclaimed deposit queue scheduler running");
 
         })->dailyAt("1:00");
+
+        $schedule->call(function() {
+
+            SystemService::deleteUnclaimedDeposit();
+
+            Log::info("Delete unclaimed deposit scheduler running");
+
+        })->dailyAt("21:00");
 
         $schedule->call(function() {
 

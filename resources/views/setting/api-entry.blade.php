@@ -80,15 +80,20 @@
                                         </button>
                                         <button type="reset" class="btn btn-secondary waves-effect me-1">Reset</button>
                                         @if($model->website->sync == "NoSync")
-                                            <button class="btn btn-success waves-effect" ng-click="sync($event)">Sync
+                                            <button class="btn btn-success waves-effect me-1" ng-click="sync($event)">
+                                                Sync
                                             </button>
                                         @elseif($model->website->sync == "OnGoing")
-                                            <button class="btn btn-success waves-effect" disabled="disabled">Sync On
+                                            <button class="btn btn-success waves-effect me-1" disabled="disabled">Sync
+                                                On
                                                 Going
                                             </button>
                                         @else
-                                            <button class="btn btn-success waves-effect" disabled="disabled">Synced
+                                            <button class="btn btn-success waves-effect me-1" disabled="disabled">Synced
                                             </button>
+                                        @endif
+                                        @if($model->syncQueue != null)
+                                            <span>{{$model->syncQueue->date}}</span>
                                         @endif
                                     </div>
                                 </div>

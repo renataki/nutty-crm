@@ -47,6 +47,7 @@ class WebsiteService {
         $result->response = "Failed to find website data";
         $result->result = false;
 
+        $result->syncQueue = SyncQueueRepository::findOneByWebsiteId($id);
         $result->website = WebsiteRepository::findOneById($id);
 
         $result->response = "Website data found";

@@ -41,6 +41,7 @@ class SettingApiController extends Controller {
             $websiteResponse = WebsiteService::findData($id);
 
             $model = new stdClass();
+            $model->syncQueue = $websiteResponse->syncQueue;
             $model->website = $websiteResponse->website;
 
             return view("setting.api-entry", [

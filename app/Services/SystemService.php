@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Components\DataComponent;
 use App\Jobs\DatabaseAccountSyncJob;
+use App\Jobs\DeleteUnclaimedDepositJob;
 use App\Jobs\PlayerTransactionJob;
 use App\Jobs\PlayerTransactionSyncJob;
 use App\Jobs\ReportDepositJob;
@@ -18,10 +19,8 @@ use App\Repositories\UnclaimedDepositQueueRepository;
 use App\Repositories\UnclaimedDepositRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
 use MongoDB\BSON\UTCDateTime;
 use stdClass;
 
@@ -29,40 +28,21 @@ use stdClass;
 class SystemService {
 
 
-    public static function findPlayerTransaction($date) {
+    public static function deleteUnclaimedDeposit() {
 
         $result = new stdClass();
         $result->response = "Failed to find player transaction";
         $result->result = false;
 
-        $websiteByStatusNotApiNexusSaltStart = WebsiteRepository::findBySyncNotApiNexusSaltStart("", "", "Synced");
-        $loop = ceil(count($websiteByStatusNotApiNexusSaltStart) / config("app.api.nexus.batch.size.website"));
+        $websites = WebsiteRepository::findAll();
 
         $delay = Carbon::now();
 
-        $fromDate = Carbon::createFromFormat("Y-m-d", $date)->subDays(1)->format("Y-m-d");
-        $toDate = Carbon::createFromFormat("Y-m-d", $date)->format("Y-m-d");
+        foreach($websites as $value) {
 
-        for($i = 0; $i < $loop; $i++) {
-
-            dispatch((new PlayerTransactionJob($fromDate, $i + 1, $toDate)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
+            dispatch((new DeleteUnclaimedDepositJob($value->_id)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
 
         }
-
-        if(!$websiteByStatusNotApiNexusSaltStart->isEmpty()) {
-
-            foreach($websiteByStatusNotApiNexusSaltStart as $value) {
-
-                dispatch((new ReportDepositJob($value->nucode, $value->_id)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
-
-            }
-
-        }
-
-        $result->response = "Player transaction found";
-        $result->result = true;
-
-        return $result;
 
     }
 
@@ -320,69 +300,6 @@ class SystemService {
         }
 
         $result->response = "Unclaimed deposit queue generated";
-        $result->result = true;
-
-        return $result;
-
-    }
-
-
-    public static function syncPlayerTransaction($websiteId) {
-
-        $result = new stdClass();
-        $result->response = "Failed to sync player transaction";
-        $result->result = false;
-
-        $websiteById = WebsiteRepository::findOneById($websiteId);
-
-        if(!empty($websiteById)) {
-
-            if(!Schema::hasTable("nexusPlayerTransaction_" . $websiteId)) {
-
-                Schema::create("nexusPlayerTransaction_" . $websiteId, function(Blueprint $table) {
-
-                    DataComponent::createNexusPlayerTransactionIndex($table);
-
-                });
-
-            }
-
-            $delay = Carbon::now();
-
-            if(!empty($websiteById->api["nexus"]["code"]) && !empty($websiteById->api["nexus"]["salt"]) && !empty($websiteById->api["nexus"]["url"])) {
-
-                $date = Carbon::createFromDate($websiteById->start->toDateTime());
-                $loop = $date->diffInDays(Carbon::now()->addDays(7));
-                $dateStart = $date->format("Y/m/d");
-                $dateEnd = $date->addDays(1)->format("Y/m/d");
-
-                for($i = 0; $i < $loop; $i++) {
-
-                    dispatch((new PlayerTransactionSyncJob($dateEnd, $dateStart, $loop, $websiteById->api["nexus"]["code"], $i + 1, $websiteById->api["nexus"]["salt"], $websiteById->api["nexus"]["url"], $websiteById->_id)))->delay($delay);
-
-                    $dateStart = $date->format("Y/m/d");
-                    $dateEnd = $date->addDays(1)->format("Y/m/d");
-
-                    $delay = $delay->addMinutes(config("app.api.nexus.batch.delay"));
-
-                }
-
-            }
-
-            $databaseAccountCount = DatabaseAccountRepository::count($websiteById->_id);
-            $loop = ceil($databaseAccountCount / config("app.api.nexus.batch.size.player"));
-
-            for($i = 0; $i < $loop; $i++) {
-
-                dispatch((new DatabaseAccountSyncJob($loop, $i + 1, $websiteById->_id)))->delay($delay);
-
-                $delay->addMinutes(config("app.api.nexus.batch.delay"));
-
-            }
-
-        }
-
-        $result->response = "Player transaction synced";
         $result->result = true;
 
         return $result;

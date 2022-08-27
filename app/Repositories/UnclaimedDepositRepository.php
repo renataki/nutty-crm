@@ -9,6 +9,17 @@ use App\Models\UnclaimedDeposit;
 class UnclaimedDepositRepository {
 
 
+    public static function deleteLteCreatedTimestamp($createdTimestamp, $websiteId) {
+
+        $unclaimedDeposit = new UnclaimedDeposit();
+        $unclaimedDeposit->setTable("unclaimedDeposit_" . $websiteId);
+        $unclaimedDeposit->where([
+            ["created.timestamp", "<=", $createdTimestamp]
+        ])->delete();
+
+    }
+
+
     public static function findOneById($id, $websiteId) {
 
         $unclaimedDeposit = new UnclaimedDeposit();

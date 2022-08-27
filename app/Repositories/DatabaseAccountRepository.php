@@ -87,16 +87,6 @@ class DatabaseAccountRepository {
     }
 
 
-    public static function findPageSort($page, $size, $sort, $websiteId) {
-
-        $databaseAccount = new DatabaseAccount();
-        $databaseAccount->setTable("databaseAccount_" . $websiteId);
-
-        return $databaseAccount->where([])->orderBy($sort["field"], $sort["direction"])->forPage($page, $size)->get();
-
-    }
-
-
     public static function insert($account, $data, $websiteId) {
 
         $data->created = DataComponent::initializeTimestamp($account);
@@ -122,17 +112,6 @@ class DatabaseAccountRepository {
         $data->setTable("databaseAccount_" . $websiteId);
 
         return $data->save();
-
-    }
-
-
-    public static function updateByDatabaseId($account, $databaseId, $data, $websiteId) {
-
-        $data["modified"] = DataComponent::initializeTimestamp($account);
-
-        $databaseAccount = new DatabaseAccount();
-        $databaseAccount->setTable("databaseAccount_" . $websiteId);
-        $databaseAccount->where("database._id", $databaseId)->update($data, ["upsert" => false]);
 
     }
 
