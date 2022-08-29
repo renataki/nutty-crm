@@ -19,6 +19,53 @@ class DatabaseAccountRepository {
     }
 
 
+    public static function countCrmTable($endDepositLastTimestamp, $limit, $startDepositLastTimestamp, $websiteId) {
+
+        $databaseAccount = new DatabaseAccount();
+        $databaseAccount->setTable("databaseAccount_" . $websiteId);
+
+        return $databaseAccount->raw(function($collection) use ($endDepositLastTimestamp, $limit, $startDepositLastTimestamp, $websiteId) {
+
+            $query = [
+                [
+                    '$lookup' => [
+                        "from" => "database_" . $websiteId,
+                        "localField" => "database._id",
+                        "foreignField" => "_id",
+                        "pipeline" => [],
+                        "as" => "database"
+                    ]
+                ]
+            ];
+
+            if($endDepositLastTimestamp != null && $startDepositLastTimestamp != null) {
+
+                array_push($query, [
+                    '$match' => [
+                        "deposit.last.timestamp" => [
+                            '$gte' => $startDepositLastTimestamp,
+                            '$lte' => $endDepositLastTimestamp
+                        ]
+                    ]
+                ]);
+
+            }
+
+            array_push($query, [
+                '$limit' => $limit
+            ]);
+
+            array_push($query, [
+                '$count' => "count"
+            ]);
+
+            return $collection->aggregate($query, ["allowDiskUse" => true]);
+
+        });
+
+    }
+
+
     public static function delete($data) {
 
         return $data->delete();
@@ -34,6 +81,70 @@ class DatabaseAccountRepository {
         return $databaseAccount->where([
             ["database._id", "=", $databaseId]
         ])->delete();
+
+    }
+
+
+    public static function findCrmTable($endDepositLastTimestamp, $limit, $sorts, $start, $startDepositLastTimestamp, $websiteId) {
+
+        $databaseAccount = new DatabaseAccount();
+        $databaseAccount->setTable("databaseAccount_" . $websiteId);
+
+        return $databaseAccount->raw(function($collection) use ($endDepositLastTimestamp, $limit, $sorts, $start, $startDepositLastTimestamp, $websiteId) {
+
+            $query = [
+                [
+                    '$lookup' => [
+                        "from" => "database_" . $websiteId,
+                        "localField" => "database._id",
+                        "foreignField" => "_id",
+                        "pipeline" => [],
+                        "as" => "database"
+                    ]
+                ],
+                [
+                    '$addFields' => [
+                        "website" => [
+                            "_id" => $websiteId
+                        ]
+                    ]
+                ]
+            ];
+
+            if($endDepositLastTimestamp != null && $startDepositLastTimestamp != null) {
+
+                array_push($query, [
+                    '$match' => [
+                        "deposit.last.timestamp" => [
+                            '$gte' => $startDepositLastTimestamp,
+                            '$lte' => $endDepositLastTimestamp
+                        ]
+                    ]
+                ]);
+
+            }
+
+            foreach($sorts as $sort) {
+
+                array_push($query, [
+                    '$sort' => [
+                        $sort["field"] => $sort["direction"]
+                    ]
+                ]);
+
+            }
+
+            array_push($query, [
+                '$skip' => $start
+            ]);
+
+            array_push($query, [
+                '$limit' => $limit
+            ]);
+
+            return $collection->aggregate($query, ["allowDiskUse" => true]);
+
+        });
 
     }
 

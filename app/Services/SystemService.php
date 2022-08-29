@@ -134,11 +134,11 @@ class SystemService {
 
                     foreach($unclaimedDepositByStatus as $value) {
 
-                        $databaseAccountById = DatabaseAccountRepository::findOneByUsername($value->username, $unclaimedDepositQueueByStatus->website["_id"]);
+                        $databaseAccountByUsername = DatabaseAccountRepository::findOneByUsername($value->username, $unclaimedDepositQueueByStatus->website["_id"]);
 
-                        if(!empty($databaseAccountById)) {
+                        if(!empty($databaseAccountByUsername)) {
 
-                            $databaseLogByDatabaseId = DatabaseLogRepository::findLastByDatabaseId($databaseAccountById->database["_id"], $unclaimedDepositQueueByStatus->website["_id"]);
+                            $databaseLogByDatabaseId = DatabaseLogRepository::findLastByDatabaseId($databaseAccountByUsername->database["_id"], $unclaimedDepositQueueByStatus->website["_id"]);
 
                             if(!empty($databaseLogByDatabaseId)) {
 

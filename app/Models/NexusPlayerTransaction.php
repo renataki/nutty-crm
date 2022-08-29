@@ -17,8 +17,8 @@ class NexusPlayerTransaction extends Model {
             "reference" => ""
         ],
         "amount" => [
-            "final" => 0,
-            "request" => 0
+            "final" => 0.0,
+            "request" => 0.0
         ],
         "approved" => [
             "timestamp" => "",

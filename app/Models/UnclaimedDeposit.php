@@ -13,6 +13,10 @@ class UnclaimedDeposit extends Model {
 
 
     protected $attributes = [
+        "amount" => [
+            "final" => 0.0,
+            "request" => 0.0
+        ],
         "date" => "",
         "reference" => "",
         "status" => true,
@@ -35,6 +39,8 @@ class UnclaimedDeposit extends Model {
     ];
 
     protected $fillable = [
+        "amount->final",
+        "amount->request",
         "date",
         "reference",
         "status",

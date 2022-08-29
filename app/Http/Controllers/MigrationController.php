@@ -10,6 +10,23 @@ use stdClass;
 class MigrationController extends Controller {
 
 
+    public function generateLastDeposit(Request $request) {
+
+        $model = new stdClass();
+
+        MigrationService::generateLastDeposit();
+
+        return view("global.migration", [
+            "layout" => (object)[
+                "css" => [],
+                "js" => []
+            ],
+            "model" => $model
+        ]);
+
+    }
+
+
     public function generateUnclaimedDeposit(Request $request) {
 
         $model = new stdClass();

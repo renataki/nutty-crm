@@ -79,12 +79,14 @@ Route::group(["middleware" => ["authentication"]], function() {
 
     Route::get("/worksheet", [WorksheetController::class, "index"]);
     Route::get("/worksheet/call/{websiteId}/{id}", [WorksheetController::class, "call"]);
+    Route::get("/worksheet/crm", [WorksheetController::class, "crm"]);
     Route::get("/worksheet/result", [WorksheetController::class, "result"]);
     Route::get("/worksheet/result/{id}", [WorksheetController::class, "resultUser"]);
 
 });
 
 Route::get("/access-denied", [AccessDeniedController::class, "index"]);
+Route::get("/migration/generate-last-deposit", [MigrationController::class, "generateLastDeposit"]);
 Route::get("/migration/generate-unclaimed-deposit", [MigrationController::class, "generateUnclaimedDeposit"]);
 Route::get("/migration/migrate", [MigrationController::class, "migrate"]);
 Route::get("/system/info", [SystemController::class, "info"]);
@@ -154,6 +156,7 @@ Route::post("/website/table", [WebsiteController::class, "table"]);
 Route::post("/website/update", [WebsiteController::class, "update"]);
 
 Route::post("/worksheet/call/initialize-data", [WorksheetController::class, "callInitializeData"]);
+Route::post("/worksheet/crm/table", [WorksheetController::class, "crmTable"]);
 Route::post("/worksheet/initialize-data", [WorksheetController::class, "initializeData"]);
 Route::post("/worksheet/result/table", [WorksheetController::class, "resultTable"]);
 Route::post("/worksheet/start", [WorksheetController::class, "start"]);

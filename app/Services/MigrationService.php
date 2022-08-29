@@ -17,10 +17,53 @@ use App\Repositories\WebsiteRepository;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
+use MongoDB\BSON\UTCDateTime;
 use stdClass;
 
 
 class MigrationService {
+
+
+    public static function generateLastDeposit() {
+
+        $result = new stdClass();
+        $result->response = "Failed to generate last deposit data";
+        $result->result = false;
+
+        $websites = Website::where([])->get();
+
+        foreach($websites as $value) {
+
+            $databaseAccount = new DatabaseAccount();
+            $databaseAccount->setTable("databaseAccount_" . $value->_id);
+
+            $update = [
+                "deposit" => [
+                    "average" => [
+                        "amount" => 0.00,
+                    ],
+                    "first" => [
+                        "amount" => 0.00,
+                        "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", "1960-01-10 00:00:00"))
+                    ],
+                    "last" => [
+                        "amount" => 0.00,
+                        "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", "1960-01-10 00:00:00"))
+                    ],
+                    "total" => [
+                        "amount" => 0.00,
+                        "time" => 0
+                    ]
+                ]
+            ];
+            $databaseAccount->where([])->update($update, ["upsert" => false]);
+            $databaseAccount->update($update, ["upsert" => false]);
+
+        }
+
+        return $result;
+
+    }
 
 
     public static function generateUnclaimedDeposit() {

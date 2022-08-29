@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Components\DataComponent;
 use App\Components\RestComponent;
+use App\Repositories\DatabaseAccountRepository;
 use App\Repositories\NexusPlayerTransactionRepository;
 use App\Repositories\UnclaimedDepositRepository;
 use Exception;
@@ -50,8 +52,8 @@ class ApiNexusService {
                         "reference" => $value->adjustmentRefNo
                     ],
                     "amount" => [
-                        "final" => intval($value->finalAmount),
-                        "request" => intval($value->amount)
+                        "final" => floatval($value->finalAmount),
+                        "request" => floatval($value->amount)
                     ],
                     "approved" => [
                         "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate))),
@@ -122,6 +124,10 @@ class ApiNexusService {
                     }
 
                     array_push($insertUnclaimed, [
+                        "amount" => [
+                            "final" => floatval($value->finalAmount),
+                            "request" => floatval($value->amount)
+                        ],
                         "date" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate))),
                         "reference" => $value->refNo,
                         "status" => true,
@@ -144,6 +150,21 @@ class ApiNexusService {
                     ]);
 
                     array_push($usernames, strtolower($value->username));
+
+                }
+
+                $databaseAccountByUsername = DatabaseAccountRepository::findOneByUsername(strtolower($value->username), $websiteId);
+
+                if(!empty($databaseAccountByUsername)) {
+
+                    $databaseAccountByUsername->deposit["last"] = [
+                        "amount" => $value->amount["final"],
+                        "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate)))
+                    ];
+                    $databaseAccountByUsername->deposit["total"] = [
+                        "amount" => floatval($databaseAccountByUsername->deposit["total"]["amount"]) + floatval($value->amount["final"])
+                    ];
+                    DatabaseAccountRepository::update(DataComponent::initializeSystemAccount(), $databaseAccountByUsername, $websiteId);
 
                 }
 

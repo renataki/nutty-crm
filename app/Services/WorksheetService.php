@@ -69,6 +69,56 @@ class WorksheetService {
     }
 
 
+    public static function crmFindTable($request) {
+
+        $result = new stdClass();
+        $result->draw = $request->draw;
+
+        $sorts = [
+            [
+                "field" => "created.timestamp",
+                "direction" => 1
+            ]
+        ];
+
+        $type = explode("-", $request->columns[1]["search"]["value"]);
+
+        if(count($type) == 2) {
+
+            $endDepositLastTimestamp = new UTCDateTime(Carbon::now()->subDays(intval($type[0])));
+            $startDepositLastTimestamp = new UTCDateTime(Carbon::now()->subDays(intval($type[1])));
+
+            $count = DatabaseAccountRepository::countCrmTable($endDepositLastTimestamp, 100, $startDepositLastTimestamp, $request->session()->get("websiteId"));
+
+            if(!$count->isEmpty()) {
+
+                $result->recordsTotal = $count[0]->count;
+                $result->recordsFiltered = $result->recordsTotal;
+
+            }
+
+            $result->data = DatabaseAccountRepository::findCrmTable($endDepositLastTimestamp, $request->length, $sorts, $request->start, $startDepositLastTimestamp, $request->session()->get("websiteId"));
+
+        } else {
+
+            $count = DatabaseAccountRepository::countCrmTable(null, 100, null, $request->session()->get("websiteId"));
+
+            if(!$count->isEmpty()) {
+
+                $result->recordsTotal = $count[0]->count;
+                $result->recordsFiltered = $result->recordsTotal;
+
+            }
+
+            $result->data = DatabaseAccountRepository::findCrmTable(null, $request->length, $sorts, $request->start, null, $request->session()->get("websiteId"));
+
+        }
+
+        return $result;
+
+    }
+
+
     public static function findFilter($request, $id) {
 
         $result = new stdClass();
@@ -501,6 +551,7 @@ class WorksheetService {
     public static function start($request) {
 
         $result = new stdClass();
+        $result->account = DataComponent::initializeAccount($request);
         $result->response = "Failed to start worksheet";
         $result->result = false;
 

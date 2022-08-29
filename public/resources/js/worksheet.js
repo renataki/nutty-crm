@@ -86,6 +86,94 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
         tableSearch(table);
 
+        table = $("#worksheet-crm").DataTable({
+            "ajax": {
+                "contentType": "application/json", "data": function(data) {
+                    data["_token"] = $("meta[name=\"csrf-token\"]").attr("content");
+
+                    return JSON.stringify(initializeFilter(data));
+                }, "datatype": "json", "type": "POST", "url": $scope.global.url.base + "/worksheet/crm/table/"
+            },
+            "columns": [{
+                "data": "database", "render": function(data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            }, {
+                "data": "database", "name": "database", "render": function(data) {
+                    let result = "";
+
+                    if(data.length > 0) {
+
+                        let maskIndex = data[0].contact.phone.toString().length - 4;
+                        let maskNumber = "";
+
+                        for(let i = 0; i < maskIndex; i++) {
+
+                            maskNumber += "*";
+
+                        }
+
+                        result = maskNumber + data[0].contact.phone.toString().substr(maskIndex);
+
+                    }
+
+                    return result;
+                }
+            }, {
+                "data": "database", "name": "database", "render": function(data) {
+                    let result = "";
+
+                    if(data.length > 0) {
+
+                        let maskIndex = data[0].contact.whatsapp.toString().length - 4;
+                        let maskNumber = "";
+
+                        for(let i = 0; i < maskIndex; i++) {
+
+                            maskNumber += "*";
+
+                        }
+
+                        result = maskNumber + data[0].contact.whatsapp.toString().substr(maskIndex);
+
+                    }
+
+                    return result;
+                }
+            }, {
+                "data": "username", "name": "username"
+            }, {
+                "data": "database", "name": "database", "render": function(data) {
+                    let result = "";
+
+                    if(data.length > 0) {
+
+                        result = data[0].name;
+
+                    }
+
+                    return result;
+                }
+            }, {
+                "data": "_id", "render": function(data, type, row) {
+                    return "<a href=\"" + $scope.global.url.base + "/worksheet/call/" + row.website._id + "/" + row.database[0]._id.$oid + "/\" class=\"btn btn-outline-secondary btn-sm me-2 call\" title=\"Call\">" + "<i class=\"fas fa-phone-alt\"></i>" + "</a>";
+                }
+            }],
+            "createdRow": function(row) {
+                $compile(angular.element(row).contents())($scope);
+            },
+            "lengthMenu": [5, 10, 15, 20],
+            "pageLength": 5,
+            "processing": !0,
+            "rowId": "_id",
+            "searching": false,
+            "serverSide": !0
+        });
+
+        $(".dataTables_length select").addClass("form-select form-select-sm");
+
+        tableSearch(table);
+
         let columns = [{
             "data": "database", "render": function(data, type, row, meta) {
                 return meta.row + 1;
@@ -178,7 +266,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
                 return result;
             }
-        }]
+        }];
 
         if($scope.account.type.value == "Administrator") {
 
@@ -396,7 +484,23 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
             if(response.result) {
 
-                $window.location.reload();
+                if(response.account != null) {
+
+                    if(response.account.type == "CRM") {
+
+                        $window.location.href = $scope.global.url.base + "/worksheet/crm"
+
+                    } else {
+
+                        $window.location.reload();
+
+                    }
+
+                } else {
+
+                    sweetAlert("error", "Invalid account")
+
+                }
 
             } else {
 

@@ -62,6 +62,46 @@ class WorksheetController extends Controller {
     }
 
 
+    public function crm(Request $request) {
+
+        if(DataComponent::checkPrivilege($request, "worksheet", "view")) {
+
+            $worksheetResponse = WorksheetService::findFilter($request, null);
+
+            $model = new stdClass();
+
+            return view("worksheet.crm", [
+                "layout" => (object)[
+                    "css" => [],
+                    "js" => ["worksheet.js"]
+                ],
+                "model" => $model
+            ]);
+
+        } else {
+
+            return redirect("/access-denied/");
+
+        }
+
+    }
+
+
+    public function crmTable(Request $request) {
+
+        if(DataComponent::checkPrivilege($request, "worksheet", "view")) {
+
+            return response()->json(WorksheetService::crmFindTable($request), 200);
+
+        } else {
+
+            return response()->json(DataComponent::initializeAccessDenied(), 200);
+
+        }
+
+    }
+
+
     public function result(Request $request) {
 
         if(DataComponent::checkPrivilege($request, "worksheet", "view")) {
