@@ -17,7 +17,7 @@ class SyncQueueRepository {
 
 
     public static function findOneByStatus($status) {
-
+ 
         return SyncQueue::where([
             ["status", "=", $status]
         ])->orderBy("created.timestamp", "ASC")->first();
@@ -29,6 +29,14 @@ class SyncQueueRepository {
 
         return SyncQueue::where([
             ["website._id", "=", $websiteId]
+        ])->first();
+
+    }
+
+    public static function findOneByTemplateId($templateId) {
+
+        return SyncQueue::where([
+            ["template._id", "=", $templateId]
         ])->first();
 
     }

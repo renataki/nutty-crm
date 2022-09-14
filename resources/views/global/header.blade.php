@@ -359,6 +359,19 @@
                                 </ul>
                             </li>
                         @endif
+                        @if(substr(Session::get("account")->privilege["template"], 0, 1) == "7")
+                            <li class="menu-title">Template</li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="uil-globe"></i>
+                                    <span>Template</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="{{url("template")}}/">List</a></li>
+                                    <li><a href="{{url("template/entry")}}/">Add New</a></li>
+                                </ul>
+                            </li>
+                        @endif
                         @if(substr(Session::get("account")->privilege["database"], 0, 1) == "7" || substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
                             <li class="menu-title">Apps</li>
                             @if(substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
@@ -397,17 +410,9 @@
                             <li class="menu-title">Report</li>
                             @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
                                 <li>
-                                    <a href="{{url("report")}}/user/">
-                                        <i class="uil-chart-bar"></i>
-                                        <span>User</span>
-                                    </a>
-                                </li>
-                            @endif
-                            @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
-                                <li>
-                                    <a href="{{url("report")}}/website/">
+                                    <a href="{{url("report")}}/">
                                         <i class="uil-graph-bar"></i>
-                                        <span>Website</span>
+                                        <span>Report</span>
                                     </a>
                                 </li>
                             @endif

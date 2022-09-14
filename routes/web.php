@@ -8,8 +8,7 @@ use App\Http\Controllers\LicenseController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MigrationController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\ReportUserController;
-use App\Http\Controllers\ReportWebsiteController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SecurityController;
 use App\Http\Controllers\SettingApiController;
 use App\Http\Controllers\SystemController;
@@ -17,6 +16,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserRoleController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\WorksheetController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,9 +50,8 @@ Route::group(["middleware" => ["authentication"]], function() {
 
     Route::get("/register", [RegisterController::class, "index"]);
 
-    Route::get("/report/user", [ReportUserController::class, "index"]);
-    Route::get("/report/user/{id}", [ReportUserController::class, "detail"]);
-    Route::get("/report/website", [ReportWebsiteController::class, "index"]);
+    Route::get("/report", [ReportController::class, "index"]);
+    Route::get("/report/{id}", [ReportController::class, "user"]);
 
     Route::get("/security/encryption", [SecurityController::class, "encryption"]);
 
@@ -77,24 +76,21 @@ Route::group(["middleware" => ["authentication"]], function() {
     Route::get("/website/entry", [WebsiteController::class, "add"]);
     Route::get("/website/entry/{id}", [WebsiteController::class, "edit"]);
 
+    Route::get("/template", [TemplateController::class, "index"]);
+    Route::get("/template/entry", [TemplateController::class, "add"]);
+    Route::get("/template/entry/{id}", [TemplateController::class, "edit"]);
+
     Route::get("/worksheet", [WorksheetController::class, "index"]);
     Route::get("/worksheet/call/{websiteId}/{id}", [WorksheetController::class, "call"]);
-    Route::get("/worksheet/crm", [WorksheetController::class, "crm"]);
     Route::get("/worksheet/result", [WorksheetController::class, "result"]);
     Route::get("/worksheet/result/{id}", [WorksheetController::class, "resultUser"]);
 
 });
 
 Route::get("/access-denied", [AccessDeniedController::class, "index"]);
-Route::get("/migration/generate-last-deposit", [MigrationController::class, "generateLastDeposit"]);
-Route::get("/migration/generate-unclaimed-deposit", [MigrationController::class, "generateUnclaimedDeposit"]);
 Route::get("/migration/migrate", [MigrationController::class, "migrate"]);
 Route::get("/system/info", [SystemController::class, "info"]);
 Route::get("/system/find-player-transaction/{date}", [SystemController::class, "findPlayerTransaction"]);
-Route::get("/system/generate-unclaimed-deposit-queue/{date}", [
-    SystemController::class,
-    "generateUnclaimedDepositQueue"
-]);
 Route::get("/system/sync-player-transaction/{websiteId}", [SystemController::class, "syncPlayerTransaction"]);
 
 Route::post("/database/delete", [DatabaseController::class, "delete"]);
@@ -118,9 +114,8 @@ Route::post("/login/logout", [LoginController::class, "logout"]);
 
 Route::post("/register/register", [RegisterController::class, "register"]);
 
-Route::post("/report/user/table", [ReportUserController::class, "table"]);
-Route::post("/report/user/detail/table", [ReportUserController::class, "detailTable"]);
-Route::post("/report/website/table", [ReportWebsiteController::class, "table"]);
+Route::post("/report/table", [ReportController::class, "table"]);
+Route::post("/report/user/table", [ReportController::class, "userTable"]);
 
 Route::post("/security/encryption/encrypt", [SecurityController::class, "encrypt"]);
 Route::post("/security/initialize-account", [SecurityController::class, "initializeAccount"]);
@@ -155,8 +150,13 @@ Route::post("/website/insert", [WebsiteController::class, "insert"]);
 Route::post("/website/table", [WebsiteController::class, "table"]);
 Route::post("/website/update", [WebsiteController::class, "update"]);
 
+Route::post("/template/delete", [TemplateController::class, "delete"]);
+Route::post("/template/initialize-data", [TemplateController::class, "initializeData"]);
+Route::post("/template/insert", [TemplateController::class, "insert"]);
+Route::post("/template/table", [TemplateController::class, "table"]);
+Route::post("/template/update", [TemplateController::class, "update"]);
+
 Route::post("/worksheet/call/initialize-data", [WorksheetController::class, "callInitializeData"]);
-Route::post("/worksheet/crm/table", [WorksheetController::class, "crmTable"]);
 Route::post("/worksheet/initialize-data", [WorksheetController::class, "initializeData"]);
 Route::post("/worksheet/result/table", [WorksheetController::class, "resultTable"]);
 Route::post("/worksheet/start", [WorksheetController::class, "start"]);

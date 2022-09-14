@@ -530,6 +530,99 @@ class DataComponent {
 
     }
 
+    public static function initializeCollectionByTemplate($templateId) {
+
+        if(!Schema::hasTable("database_" . $templateId)) {
+
+            Schema::create("database_" . $templateId, function(Blueprint $table) {
+
+                self::createDatabaseIndex($table);
+
+            });
+
+        } else {
+
+            Schema::table("database_" . $templateId, function(Blueprint $table) {
+
+                self::createDatabaseIndex($table);
+
+            });
+
+        }
+
+        if(!Schema::hasTable("databaseAccount_" . $templateId)) {
+
+            Schema::create("databaseAccount_" . $templateId, function(Blueprint $table) {
+
+                self::createDatabaseAccountIndex($table);
+
+            });
+
+        } else {
+
+            Schema::table("databaseAccount_" . $templateId, function(Blueprint $table) {
+
+                self::createDatabaseAccountIndex($table);
+
+            });
+
+        }
+
+        if(!Schema::hasTable("databaseLog_" . $templateId)) {
+
+            Schema::create("databaseLog_" . $templateId, function(Blueprint $table) {
+
+                self::createDatabaseLogIndex($table);
+
+            });
+
+        } else {
+
+            Schema::table("databaseLog_" . $templateId, function(Blueprint $table) {
+
+                self::createDatabaseLogIndex($table);
+
+            });
+
+        }
+
+        if(!Schema::hasTable("nexusPlayerTransaction_" . $templateId)) {
+
+            Schema::create("nexusPlayerTransaction_" . $templateId, function(Blueprint $table) {
+
+                self::createNexusPlayerTransactionIndex($table);
+
+            });
+
+        } else {
+
+            Schema::table("nexusPlayerTransaction_" . $templateId, function(Blueprint $table) {
+
+                self::createNexusPlayerTransactionIndex($table);
+
+            });
+
+        }
+
+        if(!Schema::hasTable("unclaimedDeposit_" . $templateId)) {
+
+            Schema::create("unclaimedDeposit_" . $templateId, function(Blueprint $table) {
+
+                self::createUnclaimedDepositIndex($table);
+
+            });
+
+        } else {
+
+            Schema::table("unclaimedDeposit_" . $templateId, function(Blueprint $table) {
+
+                self::createUnclaimedDepositIndex($table);
+
+            });
+
+        }
+
+    }
 
     public static function initializeData($data) {
 
@@ -548,9 +641,7 @@ class DataComponent {
         }
 
         if(!array_key_exists("timestamp", $data["created"])) {
-
             $data["created"]["timestamp"] = new UTCDateTime();
-
         }
 
         if(!array_key_exists("user", $data["created"])) {
