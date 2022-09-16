@@ -72,15 +72,17 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
                     $scope.id.value = response.template._id;
                     $scope.description.value = response.template.description;
                     $scope.textMessage.value = response.template.textMessage;
+                    $scope.isDefault.value = response.template.isDefault;
                     $scope.nucode.value = response.template.nucode;
+                    $scope.mediaType.value = response.template.media.mediaType;
+                    $scope.mediaUrl.value = response.template.media.mediaUrl;
                     $scope.status.value = response.template.status;
-
-
                 }
 
                 $timeout(function() {
 
                     $("#template-status").val($scope.status.value);
+                    $("#template-mediaType").val($scope.mediaType.value);
 
                     initializeThirdParty();
 
@@ -97,21 +99,26 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
     }
 
     $scope.initializeInputData = function() {
-
         return {
             "_token": $("meta[name=\"csrf-token\"]").attr("content"),
             "description": $scope.description.value,
             "textMessage": $scope.textMessage.value,
             "name": $scope.name.value,
             "nucode": $scope.nucode.value,
+            "isDefault": $scope.isDefault.value,
+            "media": {
+                "mediaType": $scope.initializeSelect($scope.mediaType.value),
+                "mediaUrl": $scope.mediaUrl.value
+            },
             "status": $scope.initializeSelect($scope.status.value)
         };
 
     }
 
     $scope.insert = function(event) {
+        //console.warn($scope.initializeInputData());
         let validation = $scope.validateData();
-
+       
         if(validation) {
 
             let rest = {
@@ -119,7 +126,6 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
             };
             global.rest(rest, function(response) {
                 if(response.result) {
-
                     sweetAlert("success", response.response);
 
                 } else {
@@ -184,6 +190,8 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
             "textMessage": $scope.checkFormLengthRequired("textMessage.value", "template-textMessage", "response-textMessage", 3, 250),
             "name": $scope.checkFormLengthRequired("name.value", "template-name", "response-name", 3, 50),
             "nucode": $scope.checkFormLength("nucode.value", "template-nucode", "response-nucode", 1, 50),
+            "mediaType": $scope.checkFormSelectRequired("mediaType.value", "template-mediaType", "response-mediaType", "Please select media Type"),
+            "mediaUrl": $scope.checkFormLength("mediaUrl.value", "template-mediaUrl", "response-mediaUrl", 3, 50),
             "status": $scope.checkFormSelectRequired("status.value", "template-status", "response-status", "Please select status")
         };
         angular.forEach(valid, function(value) {
