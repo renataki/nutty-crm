@@ -298,6 +298,15 @@ app.controller("global", ["$scope", "$window", "$parse", "global", function($sco
     $scope.textMessage = {
         "value": ""
     };
+    $scope.mediaType = {
+        "value": ""
+    };
+    $scope.mediaUrl = {
+        "value": ""
+    };
+    $scope.isDefault = {
+        "value": ""
+    };
     $scope.global = {
         "application": {
             "name": ""
@@ -843,7 +852,7 @@ app.provider("global", function() {
 
                 $http({
                     "data": rest.data, "headers": {
-                        "Content-Type": undefined, "Process-Data": false
+                       "Content-Type": undefined, "Process-Data": false
                     }, "method": "POST", "transformRequest": angular.identity, "url": rest.url
                 }).then(function(response) {
 

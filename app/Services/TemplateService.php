@@ -216,10 +216,10 @@ class TemplateService
         $result->template->nucode = $request->nucode;
         $result->template->textMessage = $request->textMessage;
         $result->template->status = $request->status;
-        $result->template->isDefault = 'False';
+        $result->template->isDefault = $request->isDefault;
         $result->template->media = [
-            "mediaType" => 'Video',
-            "mediaUrl" => "https://youtube.com"
+            "mediaType" => $request->media['mediaType'],
+            "mediaUrl" => $request->media['mediaUrl']
         ];
         $templateByNameNucode = TemplateRepository::findOneByNameNucode($request->name, $request->nucode);
 
