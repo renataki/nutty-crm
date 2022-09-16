@@ -161,6 +161,7 @@ class UserRoleService {
             "report" => $request->privilege["report"],
             "setting" => $request->privilege["setting"],
             "settingApi" => $request->privilege["settingApi"],
+            "template" => $request->privilege["template"],
             "user" => $request->privilege["user"],
             "userGroup" => $request->privilege["userGroup"],
             "userRole" => $request->privilege["userRole"],
