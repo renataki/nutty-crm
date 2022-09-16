@@ -530,7 +530,7 @@ class DataComponent {
 
     }
 
-    public static function initializeCollectionByTemplate($templateId) {
+public static function initializeCollectionByTemplate($templateId) {
 
         if(!Schema::hasTable("database_" . $templateId)) {
 
@@ -641,7 +641,9 @@ class DataComponent {
         }
 
         if(!array_key_exists("timestamp", $data["created"])) {
+
             $data["created"]["timestamp"] = new UTCDateTime();
+
         }
 
         if(!array_key_exists("user", $data["created"])) {

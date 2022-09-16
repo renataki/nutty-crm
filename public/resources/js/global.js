@@ -351,8 +351,6 @@ app.controller("global", ["$scope", "$window", "$parse", "global", function($sco
             "name": "User Role", "value": "0000"
         }, "website": {
             "name": "Website", "value": "0000"
-        }, "template": {
-            "name": "template", "value": "0000"
         }, "worksheet": {
             "name": "Worksheet", "value": "0000"
         }
@@ -399,9 +397,6 @@ app.controller("global", ["$scope", "$window", "$parse", "global", function($sco
     $scope.website = {
         "value": ""
     };
-    $scope.template = {
-        "value": ""
-    };
 
     $scope.websites = {
         "option": [], "value": []
@@ -430,7 +425,9 @@ app.controller("global", ["$scope", "$window", "$parse", "global", function($sco
         if($scope.$eval(scope) != "") {
 
             if($scope.$eval(scope).match(/^([0-9A-Za-z_\-\.]){1,}\@([0-9A-Za-z_\-\.]){1,}\.([A-Za-z]){2,}$/)) {
+
                 result = true;
+
             }
 
         } else {

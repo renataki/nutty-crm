@@ -410,9 +410,17 @@
                             <li class="menu-title">Report</li>
                             @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
                                 <li>
-                                    <a href="{{url("report")}}/">
+                                    <a href="{{url("report")}}/user/">
+                                        <i class="uil-chart-bar"></i>
+                                        <span>User</span>
+                                    </a>
+                                </li>
+                            @endif
+                            @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
+                                <li>
+                                    <a href="{{url("report")}}/website/">
                                         <i class="uil-graph-bar"></i>
-                                        <span>Report</span>
+                                        <span>Website</span>
                                     </a>
                                 </li>
                             @endif

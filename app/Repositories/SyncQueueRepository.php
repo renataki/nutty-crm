@@ -17,7 +17,7 @@ class SyncQueueRepository {
 
 
     public static function findOneByStatus($status) {
- 
+
         return SyncQueue::where([
             ["status", "=", $status]
         ])->orderBy("created.timestamp", "ASC")->first();
@@ -40,8 +40,7 @@ class SyncQueueRepository {
         ])->first();
 
     }
-
-
+    
     public static function insert($account, $data) {
 
         $data->created = DataComponent::initializeTimestamp($account);
