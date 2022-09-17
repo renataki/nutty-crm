@@ -33,6 +33,7 @@ class SyncQueueRepository {
 
     }
 
+
     public static function findOneByTemplateId($templateId) {
 
         return SyncQueue::where([
@@ -40,7 +41,8 @@ class SyncQueueRepository {
         ])->first();
 
     }
-    
+
+
     public static function insert($account, $data) {
 
         $data->created = DataComponent::initializeTimestamp($account);

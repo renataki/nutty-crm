@@ -71,7 +71,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Media URL</label>
-                                        <input id="template-mediaUrl" class="form-control" name="template-mediaUrl" type="text"
+                                        <input id="template-mediaUrl" class="form-control" name="template-mediaUrl"
+                                               type="text"
                                                placeholder="Media URL" ng-model="mediaUrl.value"
                                                ng-keyup="checkFormLength('mediaUrl.value', 'template-mediaUrl', 'response-mediaUrl', 3, 50)"/>
                                         <div id="response-mediaUrl"></div>
@@ -80,9 +81,9 @@
                                     <div class="mb-3">
                                         <label class="form-label">Defualt</label>
                                         <div>
-                                                <input class="form-check-input" type="checkbox"
-                                                       ng-checked="isDefult.value">
-                                                <label class="form-check-label" ng-bind="isDefult.value"></label>
+                                            <input class="form-check-input" type="checkbox"
+                                                   ng-checked="isDefult.value">
+                                            <label class="form-check-label" ng-bind="isDefult.value"></label>
                                         </div>
                                     </div>
 
@@ -98,7 +99,7 @@
                                         </select>
                                         <div id="response-status"></div>
                                     </div>
-                                    
+
                                     <div class="mb-3">
                                         @if($model->template->_id != null)
                                             <button class="btn btn-warning waves-effect waves-light me-1"

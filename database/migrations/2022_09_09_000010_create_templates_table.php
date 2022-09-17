@@ -4,7 +4,9 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+
 class CreateTemplatesTable extends Migration {
+
 
     private function createIndex($table) {
 
@@ -18,6 +20,7 @@ class CreateTemplatesTable extends Migration {
         $table->date("created.timestamp")->index();
         $table->date("modified.timestamp")->index();
     }
+
 
     public function up() {
 
@@ -43,6 +46,9 @@ class CreateTemplatesTable extends Migration {
 
 
     public function down() {
+
         Schema::dropIfExists("template");
     }
+
+
 }

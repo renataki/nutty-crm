@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Repositories\NexusPlayerTransactionRepository;
 use App\Repositories\UnclaimedDepositRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,7 +13,7 @@ use Illuminate\Support\Carbon;
 use MongoDB\BSON\UTCDateTime;
 
 
-class DeleteUnclaimedDepositJob implements ShouldQueue {
+class DeleteOldTransactionJob implements ShouldQueue {
 
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -32,6 +33,9 @@ class DeleteUnclaimedDepositJob implements ShouldQueue {
 
         $createdTimestamp = Carbon::now()->subDays(30)->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0);
         UnclaimedDepositRepository::deleteLteCreatedTimestamp(new UTCDateTime($createdTimestamp), $this->websiteId);
+
+        $approvedTimestamp = Carbon::now()->subDays(90)->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0);
+        NexusPlayerTransactionRepository::deleteLteApprovedTimestamp($approvedTimestamp, $this->websiteId);
 
     }
 

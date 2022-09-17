@@ -10,8 +10,7 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
             "data": "name", "name": "name"
         }, {
             "data": "status", "name": "status"
-        }
-        , {
+        }, {
             "data": "modified.timestamp", "name": "modified.timestamp", "render": function(data) {
                 return initializeTimestamp(data.$date.$numberLong);
             }
@@ -66,7 +65,7 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
             if(response.result) {
 
                 $scope.nucode.value = $scope.account.nucode.value;
-                
+
                 if(response.template != null) {
                     $scope.name.value = response.template.name;
                     $scope.id.value = response.template._id;
@@ -107,8 +106,7 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
             "nucode": $scope.nucode.value,
             "isDefault": $scope.isDefault.value,
             "media": {
-                "mediaType": $scope.initializeSelect($scope.mediaType.value),
-                "mediaUrl": $scope.mediaUrl.value
+                "mediaType": $scope.initializeSelect($scope.mediaType.value), "mediaUrl": $scope.mediaUrl.value
             },
             "status": $scope.initializeSelect($scope.status.value)
         };
@@ -118,7 +116,7 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
     $scope.insert = function(event) {
         //console.warn($scope.initializeInputData());
         let validation = $scope.validateData();
-       
+
         if(validation) {
 
             let rest = {

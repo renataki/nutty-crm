@@ -11,6 +11,7 @@ class Template extends Model {
 
     use HasFactory;
 
+
     protected $attributes = [
         "description" => "",
         "name" => "",
@@ -18,10 +19,10 @@ class Template extends Model {
         "textMessage" => "",
         "isDefault" => "False",
         "status" => "Inactive",
-        "media"=> [
+        "media" => [
             "mediaType" => "",
             "mediaUrl" => ""
-            ],
+        ],
         "created" => [
             "timestamp" => "",
             "user" => [

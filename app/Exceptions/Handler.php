@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Components\DataComponent;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -38,9 +39,11 @@ class Handler extends ExceptionHandler {
 
         $this->reportable(function(Throwable $e) {
 
-            $text = urlencode("<b>" . config("app.name") . "</b>\n\n" . $e->getMessage() . "\n\nPlease check the details on \"storage > logs > nutty-crm-" . date("Y-m-d") . ".log\"");
-            $content = config("app.bot.telegram.url") . "/bot" . config("app.bot.telegram.token") . "/sendMessage?chat_id=" . config("app.bot.telegram.chatid") . "&text=" . $text . "&parse_mode=html";
-            file_get_contents($content, true);
+            if(!config("app.debug")) {
+
+                DataComponent::sendTelegramBot($e->getMessage());
+
+            }
 
         });
     }

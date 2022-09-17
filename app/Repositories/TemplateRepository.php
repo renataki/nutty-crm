@@ -89,7 +89,6 @@ class TemplateRepository {
 
     // }
 
-
     public static function findOneById($id) {
 
         return Template::where([

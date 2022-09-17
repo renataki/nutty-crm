@@ -3,21 +3,16 @@
 namespace App\Services;
 
 use App\Components\DataComponent;
-use App\Models\SyncQueue;
 use App\Models\Template;
 use App\Repositories\SyncQueueRepository;
 use App\Repositories\TemplateRepository;
-use Illuminate\Support\Carbon;
-use MongoDB\BSON\UTCDateTime;
 use stdClass;
 
 
-class TemplateService
-{
+class TemplateService {
 
 
-    public static function delete($request)
-    {
+    public static function delete($request) {
 
         $result = new stdClass();
         $result->response = "Failed to delete Template data";
@@ -25,7 +20,7 @@ class TemplateService
 
         $templateById = TemplateRepository::findOneById($request->id);
 
-        if (!empty($templateById)) {
+        if(!empty($templateById)) {
 
             TemplateRepository::delete($templateById);
 
@@ -40,8 +35,7 @@ class TemplateService
     }
 
 
-    public static function findData($id)
-    {
+    public static function findData($id) {
 
         $result = new stdClass();
         $result->response = "Failed to find template data";
@@ -57,8 +51,7 @@ class TemplateService
     }
 
 
-    public static function findTable($request, $active)
-    {
+    public static function findTable($request, $active) {
 
         $result = new stdClass();
         $result->draw = $request->draw;
@@ -68,7 +61,7 @@ class TemplateService
         $defaultOrder = ["created.timestamp"];
         $templates = DataComponent::initializeTableQuery(new Template(), DataComponent::initializeObject($request->columns), DataComponent::initializeObject($request->order), $defaultOrder);
 
-        if ($active) {
+        if($active) {
 
             $templates->where([
                 ["status", "=", "Active"]
@@ -86,8 +79,7 @@ class TemplateService
     }
 
 
-    public static function initializeData($request)
-    {
+    public static function initializeData($request) {
 
         $result = new stdClass();
         $result->response = "Failed to initialize template data";
@@ -102,14 +94,14 @@ class TemplateService
     }
 
 
-    public static function insert($request)
-    {
+    public static function insert($request) {
+
         $result = new stdClass();
         $result->response = "Failed to insert template data";
         $result->result = false;
 
         $validation = self::validateData($request, false);
-        if ($validation->result) {
+        if($validation->result) {
 
             $templateLast = TemplateRepository::insert(DataComponent::initializeAccount($request), $validation->template);
             DataComponent::initializeCollectionByTemplate($templateLast->_id);
@@ -166,9 +158,7 @@ class TemplateService
     //     return $result;
     // }
 
-
-    public static function update($request, $api)
-    {
+    public static function update($request, $api) {
 
         $result = new stdClass();
         $result->response = "Failed to update template data";
@@ -176,7 +166,7 @@ class TemplateService
 
         $validation = self::validateData($request, $api);
 
-        if ($validation->result) {
+        if($validation->result) {
 
             TemplateRepository::update(DataComponent::initializeAccount($request), $validation->template);
             //DataComponent::initializeCollectionByWebsite($validation->website->_id);
@@ -188,12 +178,13 @@ class TemplateService
         } else {
             $result->response = $validation->response;
         }
+
         return $result;
     }
 
 
-    public static function validateData($request)
-    {
+    public static function validateData($request) {
+
         $result = new stdClass();
         $result->response = "Failed to validate template data";
         $result->result = false;
@@ -202,11 +193,11 @@ class TemplateService
 
         $result->template = new Template();
 
-        if (!is_null($request->id)) {
+        if(!is_null($request->id)) {
 
             $result->template = TemplateRepository::findOneById($request->id);
 
-            if (empty($result->template)) {
+            if(empty($result->template)) {
                 array_push($validation, false);
                 $result->response = "Template doesn't exist";
             }
@@ -223,17 +214,20 @@ class TemplateService
         ];
         $templateByNameNucode = TemplateRepository::findOneByNameNucode($request->name, $request->nucode);
 
-        if (!empty($templateByNameNucode)) {
+        if(!empty($templateByNameNucode)) {
 
-            if (!$request->id == $templateByNameNucode->id) {
+            if(!$request->id == $templateByNameNucode->id) {
                 array_push($validation, false);
                 $result->response = "Template name already exist";
             }
         }
-        if (empty($validation)) {
+        if(empty($validation)) {
             $result->response = "Template data validated";
             $result->result = true;
         }
+
         return $result;
     }
+
+
 }

@@ -852,7 +852,7 @@ app.provider("global", function() {
 
                 $http({
                     "data": rest.data, "headers": {
-                       "Content-Type": undefined, "Process-Data": false
+                        "Content-Type": undefined, "Process-Data": false
                     }, "method": "POST", "transformRequest": angular.identity, "url": rest.url
                 }).then(function(response) {
 

@@ -24,9 +24,9 @@ class Kernel extends ConsoleKernel {
 
         $schedule->call(function() {
 
-            SystemService::deleteUnclaimedDeposit();
+            SystemService::deleteOldTransaction();
 
-            Log::info("Delete unclaimed deposit scheduler running");
+            Log::info("Delete old transaction scheduler running");
 
         })->dailyAt("21:00");
 

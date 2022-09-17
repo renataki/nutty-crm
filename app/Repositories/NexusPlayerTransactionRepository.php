@@ -22,6 +22,17 @@ class NexusPlayerTransactionRepository {
     }
 
 
+    public static function deleteLteApprovedTimestamp($approvedTimestamp, $websiteId) {
+
+        $nexusPlayerTransaction = new NexusPlayerTransaction();
+        $nexusPlayerTransaction->setTable("nexusPlayerTransaction_" . $websiteId);
+        $nexusPlayerTransaction->where([
+            ["approved.timestamp", "<=", $approvedTimestamp]
+        ])->delete();
+
+    }
+
+
     public static function findOneByReference($reference, $websiteId) {
 
         $nexusPlayerTransaction = new NexusPlayerTransaction();

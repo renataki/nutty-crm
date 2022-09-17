@@ -31,7 +31,7 @@
                                             <input class="form-control dt-input" name="template-filter-nucode"
                                                    type="text" placeholder="Nucode" data-column="2" data-regex="false"/>
                                         </div>
-                                        
+
                                         <div class="col-md-2">
                                             <select id="template-filter-status" class="select2 form-select dt-select"
                                                     name="template-filter-status" data-column="3" data-regex="false">

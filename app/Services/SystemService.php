@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Components\DataComponent;
 use App\Jobs\DatabaseAccountSyncJob;
-use App\Jobs\DeleteUnclaimedDepositJob;
+use App\Jobs\DeleteOldTransactionJob;
 use App\Jobs\PlayerTransactionJob;
 use App\Jobs\PlayerTransactionSyncJob;
 use App\Jobs\ReportDepositJob;
@@ -28,7 +28,7 @@ use stdClass;
 class SystemService {
 
 
-    public static function deleteUnclaimedDeposit() {
+    public static function deleteOldTransaction() {
 
         $result = new stdClass();
         $result->response = "Failed to find player transaction";
@@ -40,7 +40,7 @@ class SystemService {
 
         foreach($websites as $value) {
 
-            dispatch((new DeleteUnclaimedDepositJob($value->_id)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
+            dispatch((new DeleteOldTransactionJob($value->_id)))->delay($delay->addMinutes(config("app.api.nexus.batch.delay")));
 
         }
 
@@ -257,7 +257,12 @@ class SystemService {
 
                 }
 
-                Log::debug(json_encode($deposits));
+                if(!config("app.debug")) {
+
+                    $text = "Generate report " . $unclaimedDepositQueueByStatus->website["name"] . "\n" . json_encode($deposits);
+                    DataComponent::sendTelegramBot($text);
+
+                }
 
             }
 
@@ -336,10 +341,26 @@ class SystemService {
                         $syncQueueByStatus->date = new UTCDateTime($date);
                         SyncQueueRepository::update(DataComponent::initializeSystemAccount(), $syncQueueByStatus);
 
+                        $text = "Nucode : " . $websiteById->nucode . "\n" . "Name : " . $websiteById->name . "\n";
+
                         if($date->gte(Carbon::now())) {
 
                             $websiteById->sync = "Sync";
                             WebsiteRepository::update(DataComponent::initializeSystemAccount(), $websiteById);
+
+                            if(!config("app.debug")) {
+
+                                DataComponent::sendTelegramBot($text . "Status : Transaction synced completed");
+
+                            }
+
+                        } else {
+
+                            if(!config("app.debug")) {
+
+                                DataComponent::sendTelegramBot($text . "Status : transaction synced until " . $syncQueueByStatus->date->toDateTime()->format('Y-m-d'));
+
+                            }
 
                         }
 

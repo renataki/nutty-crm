@@ -530,7 +530,8 @@ class DataComponent {
 
     }
 
-public static function initializeCollectionByTemplate($templateId) {
+
+    public static function initializeCollectionByTemplate($templateId) {
 
         if(!Schema::hasTable("database_" . $templateId)) {
 
@@ -623,6 +624,7 @@ public static function initializeCollectionByTemplate($templateId) {
         }
 
     }
+
 
     public static function initializeData($data) {
 
@@ -1016,6 +1018,15 @@ public static function initializeCollectionByTemplate($templateId) {
         }
 
         return $result;
+
+    }
+
+
+    public static function sendTelegramBot($text) {
+
+        $text = urlencode("<b>" . config("app.name") . "</b>\n\n" . $text . "\n\nPlease check the details on \"storage > logs > nutty-crm-" . date("Y-m-d") . ".log\"");
+        $content = config("app.bot.telegram.url") . "/bot" . config("app.bot.telegram.token") . "/sendMessage?chat_id=" . config("app.bot.telegram.chatid") . "&text=" . $text . "&parse_mode=html";
+        file_get_contents($content, true);
 
     }
 
