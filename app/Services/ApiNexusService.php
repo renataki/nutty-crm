@@ -157,12 +157,17 @@ class ApiNexusService {
 
                 if(!empty($databaseAccountByUsername)) {
 
-                    $databaseAccountByUsername->deposit["last"] = [
-                        "amount" => $value->amount["final"],
-                        "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate)))
-                    ];
-                    $databaseAccountByUsername->deposit["total"] = [
-                        "amount" => floatval($databaseAccountByUsername->deposit["total"]["amount"]) + floatval($value->amount["final"])
+                    $databaseAccountByUsername->deposit = [
+                        "average" => $databaseAccountByUsername->deposit["average"],
+                        "first" => $databaseAccountByUsername->deposit["first"],
+                        "last" => [
+                            "amount" => $value->amount,
+                            "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate)))
+                        ],
+                        "total" => [
+                            "amount" => floatval($databaseAccountByUsername->deposit["total"]["amount"]) + floatval($value->amount),
+                            "timestamp" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate)))
+                        ]
                     ];
                     DatabaseAccountRepository::update(DataComponent::initializeSystemAccount(), $databaseAccountByUsername, $websiteId);
 

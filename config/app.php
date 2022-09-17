@@ -139,6 +139,14 @@ return [
         ]
     ],
 
+    'bot' => [
+        'telegram' => [
+            'chatid' => env('BOT_TELEGRAM_CHATID', ''),
+            'token' => env('BOT_TELEGRAM_TOKEN', ''),
+            'url' => env('BOT_TELEGRAM_URL', '')
+        ]
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
