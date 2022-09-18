@@ -66,6 +66,7 @@ return [
             'path' => storage_path('logs/nutty-crm.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 14,
+            'permission' => 0777,
         ],
 
         'slack' => [

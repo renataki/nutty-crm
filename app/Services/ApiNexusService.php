@@ -35,7 +35,7 @@ class ApiNexusService {
     }
 
 
-    public static function savePlayerTransaction($playerTransactions, $websiteId) {
+    public static function savePlayerTransaction($playerTransactions, $unclaimed, $websiteId) {
 
         if(!empty($playerTransactions)) {
 
@@ -112,44 +112,48 @@ class ApiNexusService {
                     ]
                 ]);
 
-                if($value->transactionType == "Deposit" && !in_array(strtolower($value->username), $usernames)) {
+                if($unclaimed) {
 
-                    $countDeposit = NexusPlayerTransactionRepository::countByTransactionTypeLikeUsername("Deposit", $value->username, $websiteId);
-                    $type = "FirstDeposit";
+                    if($value->transactionType == "Deposit" && !in_array(strtolower($value->username), $usernames)) {
 
-                    if($countDeposit > 0) {
+                        $countDeposit = NexusPlayerTransactionRepository::countByTransactionTypeLikeUsername("Deposit", $value->username, $websiteId);
+                        $type = "FirstDeposit";
 
-                        $type = "Redeposit";
+                        if($countDeposit > 0) {
+
+                            $type = "Redeposit";
+
+                        }
+
+                        array_push($insertUnclaimed, [
+                            "amount" => [
+                                "final" => floatval($value->finalAmount),
+                                "request" => floatval($value->amount)
+                            ],
+                            "date" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate))),
+                            "reference" => $value->refNo,
+                            "status" => true,
+                            "type" => $type,
+                            "username" => strtolower($value->username),
+                            "created" => [
+                                "timestamp" => $timestamp,
+                                "user" => [
+                                    "_id" => "0",
+                                    "username" => "System"
+                                ]
+                            ],
+                            "modified" => [
+                                "timestamp" => $timestamp,
+                                "user" => [
+                                    "_id" => "0",
+                                    "username" => "System"
+                                ]
+                            ]
+                        ]);
+
+                        array_push($usernames, strtolower($value->username));
 
                     }
-
-                    array_push($insertUnclaimed, [
-                        "amount" => [
-                            "final" => floatval($value->finalAmount),
-                            "request" => floatval($value->amount)
-                        ],
-                        "date" => new UTCDateTime(Carbon::createFromFormat("Y-m-d H:i:s", str_replace("T", " ", $value->approvedDate))),
-                        "reference" => $value->refNo,
-                        "status" => true,
-                        "type" => $type,
-                        "username" => strtolower($value->username),
-                        "created" => [
-                            "timestamp" => $timestamp,
-                            "user" => [
-                                "_id" => "0",
-                                "username" => "System"
-                            ]
-                        ],
-                        "modified" => [
-                            "timestamp" => $timestamp,
-                            "user" => [
-                                "_id" => "0",
-                                "username" => "System"
-                            ]
-                        ]
-                    ]);
-
-                    array_push($usernames, strtolower($value->username));
 
                 }
 
@@ -197,21 +201,25 @@ class ApiNexusService {
 
             }
 
-            try {
+            if($unclaimed) {
 
-                UnclaimedDepositRepository::insertMany($insertUnclaimed, $websiteId);
+                try {
 
-                Log::info("Unclaimed deposit inserted");
+                    UnclaimedDepositRepository::insertMany($insertUnclaimed, $websiteId);
 
-            } catch(Exception $exception) {
+                    Log::info("Unclaimed deposit inserted");
 
-                if($exception->getCode() == 11000) {
+                } catch(Exception $exception) {
 
-                    Log::error("Unclaimed deposit already exist");
+                    if($exception->getCode() == 11000) {
 
-                } else {
+                        Log::error("Unclaimed deposit already exist");
 
-                    Log::error($exception->getMessage());
+                    } else {
+
+                        Log::error($exception->getMessage());
+
+                    }
 
                 }
 

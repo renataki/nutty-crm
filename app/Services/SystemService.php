@@ -107,7 +107,7 @@ class SystemService {
 
                         if($apiNexusPlayerTransaction->content->errorCode == 0) {
 
-                            ApiNexusService::savePlayerTransaction($apiNexusPlayerTransaction->content->data->bankTransactionList, $websiteById->_id);
+                            ApiNexusService::savePlayerTransaction($apiNexusPlayerTransaction->content->data->bankTransactionList, true, $websiteById->_id);
 
                             $unclaimedDepositQueueByStatus->status = "TransactionSaved";
                             UnclaimedDepositQueueRepository::update(DataComponent::initializeSystemAccount(), $unclaimedDepositQueueByStatus);
@@ -336,7 +336,7 @@ class SystemService {
 
                     if($apiNexusPlayerTransaction->result) {
 
-                        ApiNexusService::savePlayerTransaction($apiNexusPlayerTransaction->content->data->bankTransactionList, $websiteById->_id);
+                        ApiNexusService::savePlayerTransaction($apiNexusPlayerTransaction->content->data->bankTransactionList, false, $websiteById->_id);
 
                         $syncQueueByStatus->date = new UTCDateTime($date);
                         SyncQueueRepository::update(DataComponent::initializeSystemAccount(), $syncQueueByStatus);
@@ -345,7 +345,9 @@ class SystemService {
 
                         if($date->gte(Carbon::now())) {
 
-                            $websiteById->sync = "Sync";
+                            SyncQueueRepository::delete($syncQueueByStatus);
+
+                            $websiteById->sync = "Synced";
                             WebsiteRepository::update(DataComponent::initializeSystemAccount(), $websiteById);
 
                             if(!config("app.debug")) {
@@ -358,7 +360,7 @@ class SystemService {
 
                             if(!config("app.debug")) {
 
-                                DataComponent::sendTelegramBot($text . "Status : transaction synced until " . $syncQueueByStatus->date->toDateTime()->format('Y-m-d'));
+                                DataComponent::sendTelegramBot($text . "Status : Transaction synced until " . $syncQueueByStatus->date->toDateTime()->format('Y-m-d'));
 
                             }
 

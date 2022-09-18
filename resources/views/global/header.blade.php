@@ -309,139 +309,155 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        @if(substr(Session::get("account")->privilege["user"], 0, 1) == "7")
-                            <li class="menu-title">User</li>
-                            <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="uil-user"></i>
-                                    <span>User</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{url("user")}}/">List</a></li>
-                                    <li><a href="{{url("user/entry")}}/">Add New</a></li>
-                                </ul>
-                            </li>
-                        @endif
-                        @if(substr(Session::get("account")->privilege["userRole"], 0, 1) == "7")
-                            <li>
-                                <a href="javascript:void(0);" class="has-arrow waves-effect">
-                                    <i class="uil-user-check"></i>
-                                    <span>Role</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{url("user/role")}}/">List</a></li>
-                                    <li><a href="{{url("user/role/entry")}}/">Add New</a></li>
-                                </ul>
-                            </li>
-                        @endif
-                        @if(substr(Session::get("account")->privilege["userGroup"], 0, 1) == "7")
-                            <li>
-                                <a href="javascript:void(0);" class="has-arrow waves-effect">
-                                    <i class="uil-users-alt"></i>
-                                    <span>Group</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{url("user/group")}}/">List</a></li>
-                                    <li><a href="{{url("user/group/entry")}}/">Add New</a></li>
-                                </ul>
-                            </li>
-                        @endif
-                        @if(substr(Session::get("account")->privilege["website"], 0, 1) == "7")
-                            <li class="menu-title">Website</li>
-                            <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="uil-globe"></i>
-                                    <span>Website</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{url("website")}}/">List</a></li>
-                                    <li><a href="{{url("website/entry")}}/">Add New</a></li>
-                                </ul>
-                            </li>
-                        @endif
-                        @if(substr(Session::get("account")->privilege["template"], 0, 1) == "7")
-                            <li class="menu-title">Template</li>
-                            <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="uil-globe"></i>
-                                    <span>Template</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                    <li><a href="{{url("template")}}/">List</a></li>
-                                    <li><a href="{{url("template/entry")}}/">Add New</a></li>
-                                </ul>
-                            </li>
-                        @endif
-                        @if(substr(Session::get("account")->privilege["database"], 0, 1) == "7" || substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
-                            <li class="menu-title">Apps</li>
-                            @if(substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
+                        @if(array_key_exists("user", Session::get("account")->privilege))
+                            @if(substr(Session::get("account")->privilege["user"], 0, 1) == "7")
+                                <li class="menu-title">User</li>
                                 <li>
                                     <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                        <i class="uil-outgoing-call"></i>
-                                        <span>Worksheet</span>
-                                    </a>
-                                    <ul class="sub-menu" aria-expanded="false">
-                                        <li><a href="{{url("worksheet")}}/">New Data</a></li>
-                                        <li><a href="{{url("worksheet/result")}}/">Result</a></li>
-                                    </ul>
-                                </li>
-                            @endif
-                            @if(substr(Session::get("account")->privilege["database"], 0, 1) == "7")
-                                <li class="menu-title">Database</li>
-                                <li>
-                                    <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                        <i class="uil-database"></i>
-                                        <span>Database</span>
-                                    </a>
-                                    <ul class="sub-menu" aria-expanded="false">
-                                        <li><a href="{{url("database")}}/">List</a></li>
-                                        <li>
-                                            <a href="javascript: void(0);" class="has-arrow" aria-expanded="false">Import</a>
-                                            <ul class="sub-menu" aria-expanded="false">
-                                                <li><a href="{{url("database/import")}}/">New Data</a></li>
-                                                <li><a href="{{url("database/import/history")}}/">History</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            @endif
-                        @endif
-                        @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
-                            <li class="menu-title">Report</li>
-                            @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
-                                <li>
-                                    <a href="{{url("report")}}/user/">
-                                        <i class="uil-chart-bar"></i>
+                                        <i class="uil-user"></i>
                                         <span>User</span>
                                     </a>
-                                </li>
-                            @endif
-                            @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
-                                <li>
-                                    <a href="{{url("report")}}/website/">
-                                        <i class="uil-graph-bar"></i>
-                                        <span>Website</span>
-                                    </a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="{{url("user")}}/">List</a></li>
+                                        <li><a href="{{url("user/entry")}}/">Add New</a></li>
+                                    </ul>
                                 </li>
                             @endif
                         @endif
-                        @if(substr(Session::get("account")->privilege["setting"], 0, 1) == "7")
-                            <li class="menu-title">Setting</li>
-                            @if(substr(Session::get("account")->privilege["setting"], 0, 1) == "7")
+                        @if(array_key_exists("userRole", Session::get("account")->privilege))
+                            @if(substr(Session::get("account")->privilege["userRole"], 0, 1) == "7")
                                 <li>
-                                    <a href="{{url("setting")}}/">
-                                        <i class="uil-cog"></i>
-                                        <span>Setting</span>
+                                    <a href="javascript:void(0);" class="has-arrow waves-effect">
+                                        <i class="uil-user-check"></i>
+                                        <span>Role</span>
                                     </a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="{{url("user/role")}}/">List</a></li>
+                                        <li><a href="{{url("user/role/entry")}}/">Add New</a></li>
+                                    </ul>
                                 </li>
                             @endif
-                            @if(substr(Session::get("account")->privilege["settingApi"], 0, 1) == "7")
+                        @endif
+                        @if(array_key_exists("userGroup", Session::get("account")->privilege))
+                            @if(substr(Session::get("account")->privilege["userGroup"], 0, 1) == "7")
                                 <li>
-                                    <a href="{{url("setting/api")}}/">
-                                        <i class="uil-exchange"></i>
-                                        <span>API</span>
+                                    <a href="javascript:void(0);" class="has-arrow waves-effect">
+                                        <i class="uil-users-alt"></i>
+                                        <span>Group</span>
                                     </a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="{{url("user/group")}}/">List</a></li>
+                                        <li><a href="{{url("user/group/entry")}}/">Add New</a></li>
+                                    </ul>
                                 </li>
+                            @endif
+                        @endif
+                        @if(array_key_exists("website", Session::get("account")->privilege))
+                            @if(substr(Session::get("account")->privilege["website"], 0, 1) == "7")
+                                <li class="menu-title">Website</li>
+                                <li>
+                                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                        <i class="uil-globe"></i>
+                                        <span>Website</span>
+                                    </a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="{{url("website")}}/">List</a></li>
+                                        <li><a href="{{url("website/entry")}}/">Add New</a></li>
+                                    </ul>
+                                </li>
+                            @endif
+                        @endif
+                        @if(array_key_exists("template", Session::get("account")->privilege))
+                            @if(substr(Session::get("account")->privilege["template"], 0, 1) == "7")
+                                <li class="menu-title">Template</li>
+                                <li>
+                                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                        <i class="uil-globe"></i>
+                                        <span>Template</span>
+                                    </a>
+                                    <ul class="sub-menu" aria-expanded="false">
+                                        <li><a href="{{url("template")}}/">List</a></li>
+                                        <li><a href="{{url("template/entry")}}/">Add New</a></li>
+                                    </ul>
+                                </li>
+                            @endif
+                        @endif
+                        @if(array_key_exists("database", Session::get("account")->privilege) && array_key_exists("worksheet", Session::get("account")->privilege))
+                            @if(substr(Session::get("account")->privilege["database"], 0, 1) == "7" || substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
+                                <li class="menu-title">Apps</li>
+                                @if(substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                            <i class="uil-outgoing-call"></i>
+                                            <span>Worksheet</span>
+                                        </a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{{url("worksheet")}}/">New Data</a></li>
+                                            <li><a href="{{url("worksheet/result")}}/">Result</a></li>
+                                        </ul>
+                                    </li>
+                                @endif
+                                @if(substr(Session::get("account")->privilege["database"], 0, 1) == "7")
+                                    <li class="menu-title">Database</li>
+                                    <li>
+                                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                            <i class="uil-database"></i>
+                                            <span>Database</span>
+                                        </a>
+                                        <ul class="sub-menu" aria-expanded="false">
+                                            <li><a href="{{url("database")}}/">List</a></li>
+                                            <li>
+                                                <a href="javascript: void(0);" class="has-arrow" aria-expanded="false">Import</a>
+                                                <ul class="sub-menu" aria-expanded="false">
+                                                    <li><a href="{{url("database/import")}}/">New Data</a></li>
+                                                    <li><a href="{{url("database/import/history")}}/">History</a></li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                @endif
+                            @endif
+                        @endif
+                        @if(array_key_exists("report", Session::get("account")->privilege))
+                            @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
+                                <li class="menu-title">Report</li>
+                                @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
+                                    <li>
+                                        <a href="{{url("report")}}/user/">
+                                            <i class="uil-chart-bar"></i>
+                                            <span>User</span>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(substr(Session::get("account")->privilege["report"], 0, 1) == "7")
+                                    <li>
+                                        <a href="{{url("report")}}/website/">
+                                            <i class="uil-graph-bar"></i>
+                                            <span>Website</span>
+                                        </a>
+                                    </li>
+                                @endif
+                            @endif
+                        @endif
+                        @if(array_key_exists("setting", Session::get("account")->privilege) && array_key_exists("settingApi", Session::get("account")->privilege))
+                            @if(substr(Session::get("account")->privilege["setting"], 0, 1) == "7")
+                                <li class="menu-title">Setting</li>
+                                @if(substr(Session::get("account")->privilege["setting"], 0, 1) == "7")
+                                    <li>
+                                        <a href="{{url("setting")}}/">
+                                            <i class="uil-cog"></i>
+                                            <span>Setting</span>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(substr(Session::get("account")->privilege["settingApi"], 0, 1) == "7")
+                                    <li>
+                                        <a href="{{url("setting/api")}}/">
+                                            <i class="uil-exchange"></i>
+                                            <span>API</span>
+                                        </a>
+                                    </li>
+                                @endif
                             @endif
                         @endif
                         @if(Session::get("account")->nucode == "system" && Session::get("account")->username == "system")

@@ -41,7 +41,7 @@ class Handler extends ExceptionHandler {
 
             if(!config("app.debug")) {
 
-                DataComponent::sendTelegramBot($e->getMessage());
+                DataComponent::sendTelegramBot($e->getMessage() . "\n\nPlease check the details on \"storage > logs > nutty-crm-" . date("Y-m-d") . ".log\"");
 
             }
 
