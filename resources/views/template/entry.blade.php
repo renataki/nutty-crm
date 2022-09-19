@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-flex align-items-center justify-content-between">
-                        <h4 class="mb-0">template Entry</h4>
+                        <h4 class="mb-0">Template Entry</h4>
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
                                 <li class="breadcrumb-item"><a href="{{config("app.url")}}/">Home</a></li>
@@ -63,7 +63,7 @@
                                                 data-error="Please select Media Type" data-input="template-mediaType"
                                                 data-required="true" data-response="response-mediaType"
                                                 data-scope="mediaType.value">
-                                            <option value="">Status</option>
+                                            <option value="">Media Type</option>
                                             <option value="Video">Video</option>
                                             <option value="Image">Image</option>
                                         </select>
@@ -71,19 +71,19 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Media URL</label>
-                                        <input id="template-mediaUrl" class="form-control" name="template-mediaUrl"
-                                               type="text"
+                                        <input id="template-mediaUrl" class="form-control" name="template-mediaUrl" type="text"
                                                placeholder="Media URL" ng-model="mediaUrl.value"
                                                ng-keyup="checkFormLength('mediaUrl.value', 'template-mediaUrl', 'response-mediaUrl', 3, 50)"/>
                                         <div id="response-mediaUrl"></div>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label">Defualt</label>
+                                        <label class="form-label"></label>
                                         <div>
-                                            <input class="form-check-input" type="checkbox"
-                                                   ng-checked="isDefult.value">
-                                            <label class="form-check-label" ng-bind="isDefult.value"></label>
+                                                <input class="form-check-input" type="checkbox" 
+                                                       ng-checked="isDefault.value == 'true'"
+                                                       ng-click="toggleIsDefault()">
+                                                <label class="form-check-label me-3">Set as default</label>
                                         </div>
                                     </div>
 
@@ -99,7 +99,7 @@
                                         </select>
                                         <div id="response-status"></div>
                                     </div>
-
+                                    
                                     <div class="mb-3">
                                         @if($model->template->_id != null)
                                             <button class="btn btn-warning waves-effect waves-light me-1"

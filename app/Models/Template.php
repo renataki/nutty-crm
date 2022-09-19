@@ -17,7 +17,7 @@ class Template extends Model {
         "name" => "",
         "nucode" => "",
         "textMessage" => "",
-        "isDefault" => "False",
+        "isDefault" => "false",
         "status" => "Inactive",
         "media" => [
             "mediaType" => "",

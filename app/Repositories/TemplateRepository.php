@@ -77,17 +77,7 @@ class TemplateRepository {
         return Template::whereIn("_id", $ids)->get();
 
     }
-
-
-    // public static function findBySyncNotApiNexusSaltStart($apiNexusSalt, $start, $sync) {
-
-    //     return Template::where([
-    //         ["api.nexus.salt", "!=", $apiNexusSalt],
-    //         ["start", "!=", $start],
-    //         ["sync", "=", $sync]
-    //     ])->get();
-
-    // }
+    
 
     public static function findOneById($id) {
 

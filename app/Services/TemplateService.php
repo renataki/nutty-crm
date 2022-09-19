@@ -104,7 +104,6 @@ class TemplateService {
         if($validation->result) {
 
             $templateLast = TemplateRepository::insert(DataComponent::initializeAccount($request), $validation->template);
-            DataComponent::initializeCollectionByTemplate($templateLast->_id);
 
             $result->response = "Template data inserted";
             $result->result = true;
@@ -114,49 +113,6 @@ class TemplateService {
 
         return $result;
     }
-
-
-    // public static function sync($request)
-    // {
-
-    //     $result = new stdClass();
-    //     $result->response = "Failed to sync template data";
-    //     $result->result = false;
-
-    //     $templateById = TemplateRepository::findOneById($request->id);
-
-    //     if (!empty($templateById)) {
-
-    //         if (!empty($templateById->api["nexus"]["code"]) && !empty($templateById->api["nexus"]["salt"]) && !empty($templateById->api["nexus"]["url"]) && !empty($templateById->start)) {
-
-    //             //SystemService::syncPlayerTransaction($websiteById->_id);
-
-    //             $templateById->sync = "OnGoing";
-    //             TemplateRepository::update(DataComponent::initializeAccount($request), $templateById);
-
-    //             $syncQueue = new SyncQueue();
-    //             $syncQueue->date = $templateById->start;
-    //             $syncQueue->nucode = $templateById->nucode;
-    //             $syncQueue->status = "OnGoing";
-    //             $syncQueue->template = [
-    //                 "_id" => DataComponent::initializeObjectId($templateById->_id),
-    //                 "name" => $templateById->name
-    //             ];
-    //             SyncQueueRepository::insert(DataComponent::initializeSystemAccount(), $syncQueue);
-
-    //             $result->response = "Template data synced";
-    //             $result->result = true;
-    //         } else {
-
-    //             $result->response = "Please fill in API credential and start date";
-    //         }
-    //     } else {
-
-    //         $result->response = "Template doesn't exist";
-    //     }
-
-    //     return $result;
-    // }
 
     public static function update($request, $api) {
 
@@ -169,9 +125,6 @@ class TemplateService {
         if($validation->result) {
 
             TemplateRepository::update(DataComponent::initializeAccount($request), $validation->template);
-            //DataComponent::initializeCollectionByWebsite($validation->website->_id);
-
-            UserGroupService::updateWebsiteNames($validation->template->_id, $validation->template->name);
 
             $result->response = "Template data updated";
             $result->result = true;

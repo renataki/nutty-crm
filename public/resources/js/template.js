@@ -144,8 +144,25 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
 
     }
 
-    $scope.update = function(event) {
+    $scope.toggleIsDefault = function() {
 
+        let current = "false";
+        let isDefault = "false";
+
+        current = $scope.isDefault.value;
+
+        if(current == "false") {
+
+            isDefault = "true";
+
+        }
+
+        $scope.isDefault.value = isDefault;
+
+    }
+
+    $scope.update = function(event) {
+        //console.warn($scope.initializeInputData());
         let validation = $scope.validateData();
 
         if(validation) {
@@ -188,8 +205,6 @@ app.controller("template", ["$scope", "$window", "$compile", "$timeout", "global
             "textMessage": $scope.checkFormLengthRequired("textMessage.value", "template-textMessage", "response-textMessage", 3, 250),
             "name": $scope.checkFormLengthRequired("name.value", "template-name", "response-name", 3, 50),
             "nucode": $scope.checkFormLength("nucode.value", "template-nucode", "response-nucode", 1, 50),
-            "mediaType": $scope.checkFormSelectRequired("mediaType.value", "template-mediaType", "response-mediaType", "Please select media Type"),
-            "mediaUrl": $scope.checkFormLength("mediaUrl.value", "template-mediaUrl", "response-mediaUrl", 3, 50),
             "status": $scope.checkFormSelectRequired("status.value", "template-status", "response-status", "Please select status")
         };
         angular.forEach(valid, function(value) {

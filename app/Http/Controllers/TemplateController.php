@@ -147,9 +147,13 @@ class TemplateController extends Controller {
     public function update(Request $request) {
 
         if(DataComponent::checkPrivilege($request, "template", "edit")) {
+
             return response()->json(TemplateService::update($request, false), 200);
+
         } else {
+
             return response()->json(DataComponent::initializeAccessDenied(), 200);
+            
         }
 
     }
