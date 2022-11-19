@@ -19,12 +19,12 @@ class DatabaseAccountRepository {
     }
 
 
-    public static function countCrmTable($endDepositLastTimestamp, $limit, $startDepositLastTimestamp, $websiteId) {
+    public static function countCrmTable($crmId, $depositLastTimestamp, $limit, $websiteId) {
 
         $databaseAccount = new DatabaseAccount();
         $databaseAccount->setTable("databaseAccount_" . $websiteId);
 
-        return $databaseAccount->raw(function($collection) use ($endDepositLastTimestamp, $limit, $startDepositLastTimestamp, $websiteId) {
+        return $databaseAccount->raw(function($collection) use ($crmId, $depositLastTimestamp, $limit, $websiteId) {
 
             $query = [
                 [
@@ -35,17 +35,29 @@ class DatabaseAccountRepository {
                         "pipeline" => [],
                         "as" => "database"
                     ]
+                ],
+                [
+                    '$lookup' => [
+                        "from" => "databaseLog_" . $websiteId,
+                        "localField" => "database._id",
+                        "foreignField" => "_id",
+                        "as" => "databaseLog"
+                    ]
                 ]
             ];
 
-            if($endDepositLastTimestamp != null && $startDepositLastTimestamp != null) {
+            if($depositLastTimestamp != null) {
 
                 array_push($query, [
                     '$match' => [
                         "deposit.last.timestamp" => [
-                            '$gte' => $startDepositLastTimestamp,
-                            '$lte' => $endDepositLastTimestamp
+                            '$lte' => $depositLastTimestamp
                         ]
+                    ]
+                ]);
+                array_push($query, [
+                    '$match' => [
+                        "database.crm._id" => DataComponent::initializeObjectId($crmId)
                     ]
                 ]);
 
@@ -85,12 +97,12 @@ class DatabaseAccountRepository {
     }
 
 
-    public static function findCrmTable($endDepositLastTimestamp, $limit, $sorts, $start, $startDepositLastTimestamp, $websiteId) {
+    public static function findCrmTable($crmId, $depositLastTimestamp, $limit, $sorts, $start, $websiteId) {
 
         $databaseAccount = new DatabaseAccount();
         $databaseAccount->setTable("databaseAccount_" . $websiteId);
 
-        return $databaseAccount->raw(function($collection) use ($endDepositLastTimestamp, $limit, $sorts, $start, $startDepositLastTimestamp, $websiteId) {
+        return $databaseAccount->raw(function($collection) use ($crmId, $depositLastTimestamp, $limit, $sorts, $start, $websiteId) {
 
             $query = [
                 [
@@ -103,6 +115,14 @@ class DatabaseAccountRepository {
                     ]
                 ],
                 [
+                    '$lookup' => [
+                        "from" => "databaseLog_" . $websiteId,
+                        "localField" => "database._id",
+                        "foreignField" => "database._id",
+                        "as" => "databaseLog"
+                    ]
+                ],
+                [
                     '$addFields' => [
                         "website" => [
                             "_id" => $websiteId
@@ -111,14 +131,18 @@ class DatabaseAccountRepository {
                 ]
             ];
 
-            if($endDepositLastTimestamp != null && $startDepositLastTimestamp != null) {
+            if($depositLastTimestamp != null) {
 
                 array_push($query, [
                     '$match' => [
                         "deposit.last.timestamp" => [
-                            '$gte' => $startDepositLastTimestamp,
-                            '$lte' => $endDepositLastTimestamp
+                            '$lte' => $depositLastTimestamp
                         ]
+                    ]
+                ]);
+                array_push($query, [
+                    '$match' => [
+                        "database.crm._id" => DataComponent::initializeObjectId($crmId)
                     ]
                 ]);
 

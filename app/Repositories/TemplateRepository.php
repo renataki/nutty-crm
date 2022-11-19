@@ -77,7 +77,7 @@ class TemplateRepository {
         return Template::whereIn("_id", $ids)->get();
 
     }
-    
+
 
     public static function findOneById($id) {
 

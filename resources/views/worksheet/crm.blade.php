@@ -1,7 +1,7 @@
 @include("global.head")
 @include("global.header")
 <div class="main-content" ng-controller="worksheet">
-    <div class="page-content">
+    <div class="page-content" ng-init="initializeData(null)">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
@@ -22,47 +22,64 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <form class="row g-1 mb-3" method="POST" action="">
-                                <div class="col-md-3">
-                                    <select id="worksheet-crm-filter-type"
-                                            class="select2 form-select dt-select"
-                                            name="worksheet-crm-filter-type"
-                                            data-column="1" data-regex="false">
-                                        <option value="">Type</option>
-                                        <option value="1-7">No deposit 1 - 7 days</option>
-                                        <option value="8-15">No deposit 8 - 15 days</option>
-                                        <option value="16-30">No deposit 16 - 30 days</option>
-                                        <option value="31-60">No deposit 31 - 60 days</option>
-                                        <option value="61-90">No deposit 61 - 90 days</option>
-                                    </select>
+                            @if($model->websiteId != null)
+                                <form class="row g-1 mb-3" method="POST" action="">
+                                    <div class="col-md-3">
+                                        <select id="worksheet-crm-filter-type"
+                                                class="select2 form-select dt-select"
+                                                name="worksheet-crm-filter-type"
+                                                data-column="1" data-regex="false">
+                                            <option value="1">Today no deposit</option>
+                                            <option value="3">3 days no deposit</option>
+                                            <option value="7">7 days no deposit</option>
+                                            <option value="10">10 days no deposit</option>
+                                            <option value="14">14 days no deposit</option>
+                                            <option value="20">20 days no deposit</option>
+                                            <option value="25">25 days no deposit</option>
+                                            <option value="30">30 days no deposit</option>
+                                            <option value="60">60 days no deposit</option>
+                                            <option value="90">90 days no deposit</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-9"></div>
+                                </form>
+                                <div class="col-12 overflow-auto">
+                                    <table id="worksheet-crm" class="table table-striped table-bordered nowrap"
+                                           style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Phone</th>
+                                            <th>Whatsapp</th>
+                                            <th>Username</th>
+                                            <th>Name</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Phone</th>
+                                            <th>Whatsapp</th>
+                                            <th>Username</th>
+                                            <th>Name</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
-                                <div class="col-md-9"></div>
-                            </form>
-                            <div class="col-12 overflow-auto">
-                                <table id="worksheet-crm" class="table table-striped table-bordered nowrap"
-                                       style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Phone</th>
-                                        <th>Whatsapp</th>
-                                        <th>Username</th>
-                                        <th>Name</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tfoot>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Phone</th>
-                                        <th>Whatsapp</th>
-                                        <th>Username</th>
-                                        <th>Name</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
+                            @else
+                                <h5 class="mb-3" style="text-align: center;">
+                                    Select one of website below
+                                </h5>
+                                <div ng-repeat="(key, value) in websites.option" class="col-2 mb-3">
+                                    <button class="btn btn-primary waves-effect waves-light me-1"
+                                            ng-click="start(value._id, $event)" ng-bind="value.name">
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>

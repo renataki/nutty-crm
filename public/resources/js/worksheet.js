@@ -155,15 +155,37 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
                     return result;
                 }
             }, {
+                "data": "databaseLog", "name": "databaseLog", "render": function(data) {
+
+                    let status = "";
+
+                    if(data.length > 0) {
+
+                        status = standardCase(data[data.length - 1].status);
+
+                    }
+
+                    return status;
+                }
+            }, {
                 "data": "_id", "render": function(data, type, row) {
-                    return "<a href=\"" + $scope.global.url.base + "/worksheet/call/" + row.website._id + "/" + row.database[0]._id.$oid + "/\" class=\"btn btn-outline-secondary btn-sm me-2 call\" title=\"Call\">" + "<i class=\"fas fa-phone-alt\"></i>" + "</a>";
+
+                    let databaseId = "";
+
+                    if(row.database.length > 0) {
+
+                        databaseId = row.database[0]._id.$oid;
+
+                    }
+
+                    return "<a href=\"" + $scope.global.url.base + "/worksheet/call/" + row.website._id + "/" + databaseId + "/\" class=\"btn btn-outline-secondary btn-sm me-2 call\" title=\"Call\">" + "<i class=\"fas fa-phone-alt\"></i>" + "</a>";
                 }
             }],
             "createdRow": function(row) {
                 $compile(angular.element(row).contents())($scope);
             },
-            "lengthMenu": [5, 10, 15, 20],
-            "pageLength": 5,
+            "lengthMenu": [5, 10, 15, 20, 25],
+            "pageLength": 15,
             "processing": !0,
             "rowId": "_id",
             "searching": false,

@@ -393,6 +393,9 @@
                                         </a>
                                         <ul class="sub-menu" aria-expanded="false">
                                             <li><a href="{{url("worksheet")}}/">New Data</a></li>
+                                            @if(Session::get("account")->type == "Administrator" || Session::get("account")->type == "CRM")
+                                                <li><a href="{{url("worksheet/crm")}}/">CRM</a></li>
+                                            @endif
                                             <li><a href="{{url("worksheet/result")}}/">Result</a></li>
                                         </ul>
                                     </li>

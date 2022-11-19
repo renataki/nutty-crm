@@ -735,14 +735,13 @@ app.controller("global", ["$scope", "$window", "$parse", "global", function($sco
 
     $scope.initializeSelect = function(value) {
 
-        if (!value)
-        {
-            
+        if(!value) {
+
             return "";
 
         } else {
 
-               return value.replaceAll("string:?", "").replaceAll("string:", "").replaceAll("string", "").replaceAll("?", "").trim();
+            return value.replaceAll("string:?", "").replaceAll("string:", "").replaceAll("string", "").replaceAll("?", "").trim();
 
         }
 

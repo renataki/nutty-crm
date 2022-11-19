@@ -150,7 +150,7 @@ class SystemService {
 
                                         $deposits = self::generateDeposit($databaseLogByDatabaseId, $deposits, $value, $unclaimedDepositQueueByStatus->website["_id"]);
 
-                                    } else if($userById->type == "CRM" && $value->type == "ReDeposit") {
+                                    } else if($userById->type == "CRM" && $value->type == "FirstDeposit") {
 
                                         $deposits = self::generateDeposit($databaseLogByDatabaseId, $deposits, $value, $unclaimedDepositQueueByStatus->website["_id"]);
 

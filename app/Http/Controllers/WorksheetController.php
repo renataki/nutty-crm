@@ -69,6 +69,7 @@ class WorksheetController extends Controller {
             $worksheetResponse = WorksheetService::findFilter($request, null);
 
             $model = new stdClass();
+            $model->websiteId = $request->session()->get("websiteId");
 
             return view("worksheet.crm", [
                 "layout" => (object)[

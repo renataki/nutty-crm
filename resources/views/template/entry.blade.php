@@ -71,7 +71,8 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Media URL</label>
-                                        <input id="template-mediaUrl" class="form-control" name="template-mediaUrl" type="text"
+                                        <input id="template-mediaUrl" class="form-control" name="template-mediaUrl"
+                                               type="text"
                                                placeholder="Media URL" ng-model="mediaUrl.value"
                                                ng-keyup="checkFormLength('mediaUrl.value', 'template-mediaUrl', 'response-mediaUrl', 3, 50)"/>
                                         <div id="response-mediaUrl"></div>
@@ -80,10 +81,10 @@
                                     <div class="mb-3">
                                         <label class="form-label"></label>
                                         <div>
-                                                <input class="form-check-input" type="checkbox" 
-                                                       ng-checked="isDefault.value == 'true'"
-                                                       ng-click="toggleIsDefault()">
-                                                <label class="form-check-label me-3">Set as default</label>
+                                            <input class="form-check-input" type="checkbox"
+                                                   ng-checked="isDefault.value == 'true'"
+                                                   ng-click="toggleIsDefault()">
+                                            <label class="form-check-label me-3">Set as default</label>
                                         </div>
                                     </div>
 
@@ -99,7 +100,7 @@
                                         </select>
                                         <div id="response-status"></div>
                                     </div>
-                                    
+
                                     <div class="mb-3">
                                         @if($model->template->_id != null)
                                             <button class="btn btn-warning waves-effect waves-light me-1"

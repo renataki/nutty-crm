@@ -153,7 +153,7 @@ class TemplateController extends Controller {
         } else {
 
             return response()->json(DataComponent::initializeAccessDenied(), 200);
-            
+
         }
 
     }

@@ -114,6 +114,7 @@ class TemplateService {
         return $result;
     }
 
+
     public static function update($request, $api) {
 
         $result = new stdClass();

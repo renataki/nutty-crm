@@ -81,38 +81,18 @@ class WorksheetService {
             ]
         ];
 
-        $type = explode("-", $request->columns[1]["search"]["value"]);
+        $depositLastTimestamp = new UTCDateTime(Carbon::now()->subDays($request->columns[1]["search"]["value"]));
 
-        if(count($type) == 2) {
+        $count = DatabaseAccountRepository::countCrmTable($request->session()->get("account")->_id, $depositLastTimestamp, 100, $request->session()->get("websiteId"));
 
-            $endDepositLastTimestamp = new UTCDateTime(Carbon::now()->subDays(intval($type[0])));
-            $startDepositLastTimestamp = new UTCDateTime(Carbon::now()->subDays(intval($type[1])));
+        if(!$count->isEmpty()) {
 
-            $count = DatabaseAccountRepository::countCrmTable($endDepositLastTimestamp, 100, $startDepositLastTimestamp, $request->session()->get("websiteId"));
-
-            if(!$count->isEmpty()) {
-
-                $result->recordsTotal = $count[0]->count;
-                $result->recordsFiltered = $result->recordsTotal;
-
-            }
-
-            $result->data = DatabaseAccountRepository::findCrmTable($endDepositLastTimestamp, $request->length, $sorts, $request->start, $startDepositLastTimestamp, $request->session()->get("websiteId"));
-
-        } else {
-
-            $count = DatabaseAccountRepository::countCrmTable(null, 100, null, $request->session()->get("websiteId"));
-
-            if(!$count->isEmpty()) {
-
-                $result->recordsTotal = $count[0]->count;
-                $result->recordsFiltered = $result->recordsTotal;
-
-            }
-
-            $result->data = DatabaseAccountRepository::findCrmTable(null, $request->length, $sorts, $request->start, null, $request->session()->get("websiteId"));
+            $result->recordsTotal = $count[0]->count;
+            $result->recordsFiltered = $result->recordsTotal;
 
         }
+
+        $result->data = DatabaseAccountRepository::findCrmTable($request->session()->get("account")->_id, $depositLastTimestamp, $request->length, $sorts, $request->start, $request->session()->get("websiteId"));
 
         return $result;
 
