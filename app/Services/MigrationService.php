@@ -230,13 +230,15 @@ class MigrationService {
                 $userById->privilege = [
                     "database" => $userById->privilege["database"],
                     "report" => $userById->privilege["report"],
-                    "setting" => "0000",
-                    "settingApi" => "0000",
+                    "setting" => $userById->privilege["setting"],
+                    "settingApi" => $userById->privilege["settingApi"],
+                    "template" => "0000",
                     "user" => $userById->privilege["user"],
                     "userGroup" => $userById->privilege["userGroup"],
                     "userRole" => $userById->privilege["userRole"],
                     "website" => $userById->privilege["website"],
                     "worksheet" => $userById->privilege["worksheet"],
+                    "worksheetCrm" => "0000"
                 ];
                 $userById->save();
 
@@ -257,65 +259,17 @@ class MigrationService {
                 $userRoleById->privilege = [
                     "database" => $userById->privilege["database"],
                     "report" => $userById->privilege["report"],
-                    "setting" => "0000",
-                    "settingApi" => "0000",
+                    "setting" => $userById->privilege["setting"],
+                    "settingApi" => $userById->privilege["settingApi"],
+                    "template" => "0000",
                     "user" => $userById->privilege["user"],
                     "userGroup" => $userById->privilege["userGroup"],
                     "userRole" => $userById->privilege["userRole"],
                     "website" => $userById->privilege["website"],
                     "worksheet" => $userById->privilege["worksheet"],
+                    "worksheetCrm" => "0000"
                 ];
                 $userRoleById->save();
-
-            }
-
-        }
-
-        if(config("app.nucode") == "PUBLIC") {
-
-            $licenses = License::where([])->get();
-
-            if(!$licenses->isEmpty()) {
-
-                foreach($licenses as $value) {
-
-                    Schema::table("reportWebsite_" . $value->nucode, function(Blueprint $table) {
-
-                        DataComponent::createReportWebsiteIndex($table);
-
-                    });
-
-                    self::generateReportWebsite($value->nucode);
-
-                }
-
-            }
-
-        } else {
-
-            Schema::table("reportWebsite_" . config("app.nucode"), function(Blueprint $table) {
-
-                DataComponent::createReportWebsiteIndex($table);
-
-            });
-
-            self::generateReportWebsite(config("app.nucode"));
-
-        }
-
-        $websites = WebsiteRepository::findAll();
-        $delay = Carbon::now();
-
-        foreach($websites as $value) {
-
-            $databaseAccount = new DatabaseAccount();
-            $databaseAccount->setTable("databaseAccount_" . $value->_id);
-
-            $loop = ceil($databaseAccount->where([])->count("_id") / 2000);
-
-            for($i = 0; $i < $loop; $i++) {
-
-                dispatch((new MigrationJob($i + 1, 2000, $value->_id)))->delay($delay->addMinutes(2));
 
             }
 

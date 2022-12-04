@@ -50,6 +50,7 @@
                                         @endif
                                         <th>Total Call</th>
                                         <th>Deposited</th>
+                                        <th>Redeposited</th>
                                         <th>Registered</th>
                                         <th>Interested</th>
                                         <th>Follow Up</th>

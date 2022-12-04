@@ -64,6 +64,18 @@ app.controller("reportUser", ["$scope", "$window", "$compile", "$timeout", "glob
 
                 angular.forEach(data, function(value) {
 
+                    result = $scope.initializeTableStatus("Redeposited", value.names, result, value.totals);
+
+                });
+
+                return result;
+            }
+        }, {
+            "data": "status", "render": function(data) {
+                let result = 0;
+
+                angular.forEach(data, function(value) {
+
                     result = $scope.initializeTableStatus("Registered", value.names, result, value.totals);
 
                 });

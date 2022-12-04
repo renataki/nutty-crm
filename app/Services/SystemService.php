@@ -52,7 +52,8 @@ class SystemService {
         $databaseLog->status = "Deposited";
         DatabaseLogRepository::update(DataComponent::initializeSystemAccount(), $databaseLog, $websiteId);
 
-        UnclaimedDepositRepository::updateByUsername($unclaimedDeposit->username, ["status" => false], $websiteId);
+        $unclaimedDeposit->status = false;
+        UnclaimedDepositRepository::update(DataComponent::initializeSystemAccount(), $unclaimedDeposit, $websiteId);
         $nexusPlayerTransactionByReference = NexusPlayerTransactionRepository::findOneByReference($unclaimedDeposit->reference, $websiteId);
 
         if(!empty($nexusPlayerTransactionByReference)) {
@@ -65,14 +66,37 @@ class SystemService {
 
         if(array_key_exists(strval($databaseLog->user["_id"]), $deposits)) {
 
-            $deposits[strval($databaseLog->user["_id"])]["total"] += 1;
+            if($unclaimedDeposit->type == "FirstDeposit") {
+
+                $deposits[strval($databaseLog->user["_id"])]["total"] += 1;
+
+            } else if($unclaimedDeposit->type == "Redeposit") {
+
+                $deposits[strval($databaseLog->user["_id"])]["redeposit"] += 1;
+
+            }
+
             array_push($deposits[strval($databaseLog->user["_id"])]["reference"], $nexusPlayerTransactionByReference->reference);
 
         } else {
 
+            $total = 0;
+            $redeposit = 0;
+
+            if($unclaimedDeposit->type == "FirstDeposit") {
+
+                $total = 1;
+
+            } else if($unclaimedDeposit->type == "Redeposit") {
+
+                $redeposit = 1;
+
+            }
+
             $deposits[strval($databaseLog->user["_id"])] = [
+                "redeposit" => $redeposit,
                 "reference" => [$nexusPlayerTransactionByReference->reference],
-                "total" => 1,
+                "total" => $total,
                 "username" => $databaseLog->user["username"]
             ];
 
@@ -146,15 +170,7 @@ class SystemService {
 
                                 if(!empty($userById)) {
 
-                                    if($userById->type == "Telemarketer" && $value->type == "FirstDeposit") {
-
-                                        $deposits = self::generateDeposit($databaseLogByDatabaseId, $deposits, $value, $unclaimedDepositQueueByStatus->website["_id"]);
-
-                                    } else if($userById->type == "CRM" && $value->type == "FirstDeposit") {
-
-                                        $deposits = self::generateDeposit($databaseLogByDatabaseId, $deposits, $value, $unclaimedDepositQueueByStatus->website["_id"]);
-
-                                    }
+                                    $deposits = self::generateDeposit($databaseLogByDatabaseId, $deposits, $value, $unclaimedDepositQueueByStatus->website["_id"]);
 
                                 }
 
@@ -195,6 +211,19 @@ class SystemService {
 
                                 array_push($statusNames, "Deposited");
                                 array_push($statusTotals, $value["total"]);
+
+                            }
+
+                            $index = array_search("Redeposited", $statusNames);
+
+                            if(gettype($index) == "integer") {
+
+                                $statusTotals[$index] = $statusTotals[$index] + $value["redeposit"];
+
+                            } else {
+
+                                array_push($statusNames, "Redeposited");
+                                array_push($statusTotals, $value["redeposit"]);
 
                             }
 

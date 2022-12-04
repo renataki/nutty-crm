@@ -385,15 +385,17 @@
                         @if(array_key_exists("database", Session::get("account")->privilege) && array_key_exists("worksheet", Session::get("account")->privilege))
                             @if(substr(Session::get("account")->privilege["database"], 0, 1) == "7" || substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
                                 <li class="menu-title">Apps</li>
-                                @if(substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
+                                @if(substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7" || substr(Session::get("account")->privilege["worksheetCrm"], 0, 1) == "7")
                                     <li>
                                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                                             <i class="uil-outgoing-call"></i>
                                             <span>Worksheet</span>
                                         </a>
                                         <ul class="sub-menu" aria-expanded="false">
-                                            <li><a href="{{url("worksheet")}}/">New Data</a></li>
-                                            @if(Session::get("account")->type == "Administrator" || Session::get("account")->type == "CRM")
+                                            @if(substr(Session::get("account")->privilege["worksheet"], 0, 1) == "7")
+                                                <li><a href="{{url("worksheet")}}/">New Data</a></li>
+                                            @endif
+                                            @if(substr(Session::get("account")->privilege["worksheetCrm"], 0, 1) == "7")
                                                 <li><a href="{{url("worksheet/crm")}}/">CRM</a></li>
                                             @endif
                                             <li><a href="{{url("worksheet/result")}}/">Result</a></li>

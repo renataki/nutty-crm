@@ -27,6 +27,7 @@ class UserRole extends Model {
             "userRole" => "0000",
             "website" => "0000",
             "worksheet" => "0000",
+            "worksheetCrm" => "0000",
         ],
         "status" => "",
         "created" => [
@@ -59,6 +60,7 @@ class UserRole extends Model {
         "privilege->userRole",
         "privilege->website",
         "privilege->worksheet",
+        "privilege->worksheetCrm",
         "status",
         "created->timestamp",
         "created->user->_id",

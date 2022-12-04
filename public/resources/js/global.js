@@ -347,11 +347,13 @@ app.controller("global", ["$scope", "$window", "$parse", "global", function($sco
         "database": {
             "name": "Database", "value": "0000"
         }, "report": {
-            "name": "ReportUser", "value": "0000"
+            "name": "Report", "value": "0000"
         }, "setting": {
             "name": "Setting", "value": "0000"
         }, "settingApi": {
             "name": "Setting API", "value": "0000"
+        }, "template": {
+            "name": "Template", "value": "0000"
         }, "user": {
             "name": "User", "value": "0000"
         }, "userGroup": {
@@ -362,6 +364,8 @@ app.controller("global", ["$scope", "$window", "$parse", "global", function($sco
             "name": "Website", "value": "0000"
         }, "worksheet": {
             "name": "Worksheet", "value": "0000"
+        }, "worksheetCrm": {
+            "name": "Worksheet CRM", "value": "0000"
         }
     };
 
