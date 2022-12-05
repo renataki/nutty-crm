@@ -465,7 +465,8 @@ class UserService {
             "userGroup" => "0000",
             "userRole" => "0000",
             "website" => "0000",
-            "worksheet" => "0000"
+            "worksheet" => "0000",
+            "worksheetCrm" => "0000"
         ];
         $result->user->role = [
             "_id" => DataComponent::initializeObjectId($request->role["id"]),

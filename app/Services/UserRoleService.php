@@ -166,7 +166,8 @@ class UserRoleService {
             "userGroup" => $request->privilege["userGroup"],
             "userRole" => $request->privilege["userRole"],
             "website" => $request->privilege["website"],
-            "worksheet" => $request->privilege["worksheet"]
+            "worksheet" => $request->privilege["worksheet"],
+            "worksheetCrm" => $request->privilege["worksheetCrm"]
         ];
         $result->userRole->status = $request->status;
 
