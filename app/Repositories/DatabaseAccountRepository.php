@@ -35,14 +35,6 @@ class DatabaseAccountRepository {
                         "pipeline" => [],
                         "as" => "database"
                     ]
-                ],
-                [
-                    '$lookup' => [
-                        "from" => "databaseLog_" . $websiteId,
-                        "localField" => "database._id",
-                        "foreignField" => "_id",
-                        "as" => "databaseLog"
-                    ]
                 ]
             ];
 
@@ -57,7 +49,10 @@ class DatabaseAccountRepository {
                 ]);
                 array_push($query, [
                     '$match' => [
-                        "database.crm._id" => DataComponent::initializeObjectId($crmId)
+                        '$or' => [
+                            ["database.crm._id" => DataComponent::initializeObjectId($crmId)],
+                            ["database.crm._id" => "0"]
+                        ]
                     ]
                 ]);
 
@@ -115,14 +110,6 @@ class DatabaseAccountRepository {
                     ]
                 ],
                 [
-                    '$lookup' => [
-                        "from" => "databaseLog_" . $websiteId,
-                        "localField" => "database._id",
-                        "foreignField" => "database._id",
-                        "as" => "databaseLog"
-                    ]
-                ],
-                [
                     '$addFields' => [
                         "website" => [
                             "_id" => $websiteId
@@ -142,7 +129,10 @@ class DatabaseAccountRepository {
                 ]);
                 array_push($query, [
                     '$match' => [
-                        "database.crm._id" => DataComponent::initializeObjectId($crmId)
+                        '$or' => [
+                            ["database.crm._id" => DataComponent::initializeObjectId($crmId)],
+                            ["database.crm._id" => "0"]
+                        ]
                     ]
                 ]);
 

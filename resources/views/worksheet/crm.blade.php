@@ -41,7 +41,23 @@
                                             <option value="90">90 days no deposit</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-9"></div>
+                                    <!--<div class="col-md-3">
+                                        <select id="worksheet-crm-filter-status"
+                                                class="select2 form-select dt-select"
+                                                name="worksheet-crm-filter-status"
+                                                data-column="5" data-regex="false">
+                                            <option value="">Status</option>
+                                            <option value="Deposited">Deposited</option>
+                                            <option value="Registered">Registered</option>
+                                            <option value="Interested">Interested</option>
+                                            <option value="FollowUp">Follow Up</option>
+                                            <option value="NotActive">Not Active</option>
+                                            <option value="NotPickedUp">Not Picked Up</option>
+                                            <option value="NotInterested">Not Interested</option>
+                                            <option value="InvalidNumber">Invalid Number</option>
+                                        </select>
+                                    </div>-->
+                                    <div class="col-md-6"></div>
                                 </form>
                                 <div class="col-12 overflow-auto">
                                     <table id="worksheet-crm" class="table table-striped table-bordered nowrap"
@@ -53,7 +69,7 @@
                                             <th>Whatsapp</th>
                                             <th>Username</th>
                                             <th>Name</th>
-                                            <th>Status</th>
+                                            <th>Last Deposit</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
@@ -64,7 +80,7 @@
                                             <th>Whatsapp</th>
                                             <th>Username</th>
                                             <th>Name</th>
-                                            <th>Status</th>
+                                            <th>Last Deposit</th>
                                             <th>Action</th>
                                         </tr>
                                         </tfoot>
@@ -76,7 +92,7 @@
                                 </h5>
                                 <div ng-repeat="(key, value) in websites.option" class="col-2 mb-3">
                                     <button class="btn btn-primary waves-effect waves-light me-1"
-                                            ng-click="start(value._id, $event)" ng-bind="value.name">
+                                            ng-click="startCrm(value._id, $event)" ng-bind="value.name">
                                     </button>
                                 </div>
                             @endif

@@ -64,7 +64,7 @@ class WorksheetController extends Controller {
 
     public function crm(Request $request) {
 
-        if(DataComponent::checkPrivilege($request, "worksheet", "view")) {
+        if(DataComponent::checkPrivilege($request, "worksheetCrm", "view")) {
 
             $worksheetResponse = WorksheetService::findFilter($request, null);
 
@@ -209,6 +209,21 @@ class WorksheetController extends Controller {
     public function start(Request $request) {
 
         if(DataComponent::checkPrivilege($request, "worksheet", "edit")) {
+
+            return response()->json(WorksheetService::start($request), 200);
+
+        } else {
+
+            return response()->json(DataComponent::initializeAccessDenied(), 200);
+
+        }
+
+    }
+
+
+    public function startCrm(Request $request) {
+
+        if(DataComponent::checkPrivilege($request, "worksheetCrm", "edit")) {
 
             return response()->json(WorksheetService::start($request), 200);
 

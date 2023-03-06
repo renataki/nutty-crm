@@ -155,17 +155,10 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
                     return result;
                 }
             }, {
-                "data": "databaseLog", "name": "databaseLog", "render": function(data) {
+                "data": "deposit.last.timestamp", "name": "deposit.last.timestamp", "render": function(data) {
 
-                    let status = "";
+                    return initializeTimestamp(data.$date.$numberLong);
 
-                    if(data.length > 0) {
-
-                        status = standardCase(data[data.length - 1].status);
-
-                    }
-
-                    return status;
                 }
             }, {
                 "data": "_id", "render": function(data, type, row) {
@@ -508,15 +501,42 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
                 if(response.account != null) {
 
-                    if(response.account.type == "CRM") {
+                    $window.location.reload();
 
-                        $window.location.href = $scope.global.url.base + "/worksheet/crm"
+                } else {
 
-                    } else {
+                    sweetAlert("error", "Invalid account")
 
-                        $window.location.reload();
+                }
 
-                    }
+            } else {
+
+                sweetAlert("error", response.response);
+
+            }
+
+        });
+
+        event.preventDefault();
+
+    }
+
+    $scope.startCrm = function(id, event) {
+
+        let rest = {
+            "data": {
+                "_token": $("meta[name=\"csrf-token\"]").attr("content"), "website": {
+                    "id": id
+                }
+            }, "url": $scope.global.url.base + "/worksheet/start-crm"
+        };
+        global.rest(rest, function(response) {
+
+            if(response.result) {
+
+                if(response.account != null) {
+
+                    $window.location.href = $scope.global.url.base + "/worksheet/crm";
 
                 } else {
 

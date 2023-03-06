@@ -161,6 +161,7 @@ Route::post("/worksheet/crm/table", [WorksheetController::class, "crmTable"]);
 Route::post("/worksheet/initialize-data", [WorksheetController::class, "initializeData"]);
 Route::post("/worksheet/result/table", [WorksheetController::class, "resultTable"]);
 Route::post("/worksheet/start", [WorksheetController::class, "start"]);
+Route::post("/worksheet/start-crm", [WorksheetController::class, "startCrm"]);
 Route::post("/worksheet/update", [WorksheetController::class, "update"]);
 
 Route::get("/template", [TemplateController::class, "index"]);
