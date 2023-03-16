@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Components\DataComponent;
 use App\Services\WorksheetService;
 use Illuminate\Http\Request;
+use App\Models\Template;
 use stdClass;
 
 
@@ -14,10 +15,10 @@ class WorksheetController extends Controller {
     public function index(Request $request) {
 
         if(DataComponent::checkPrivilege($request, "worksheet", "view")) {
-
+            $templates = Template::latest()->where('status','Active')->get();
             $model = new stdClass();
             $model->websiteId = $request->session()->get("websiteId");
-
+            $model->templates = $templates;
             return view("worksheet.worksheet", [
                 "layout" => (object)[
                     "css" => [],
@@ -40,11 +41,12 @@ class WorksheetController extends Controller {
         if(DataComponent::checkPrivilege($request, "worksheet", "view")) {
 
             $request->session()->put("websiteId", $websiteId);
-
+            $templates = Template::latest()->where('status','Active')->get();
             $model = new stdClass();
             $model->id = $id;
             $model->websiteId = $websiteId;
-
+            $model->templates = $templates;
+            
             return view("worksheet.call", [
                 "layout" => (object)[
                     "css" => [],
@@ -67,9 +69,10 @@ class WorksheetController extends Controller {
         if(DataComponent::checkPrivilege($request, "worksheetCrm", "view")) {
 
             $worksheetResponse = WorksheetService::findFilter($request, null);
-
+            $templates = Template::latest()->where('status','Active')->get();
             $model = new stdClass();
             $model->websiteId = $request->session()->get("websiteId");
+            $model->templates = $templates;
 
             return view("worksheet.crm", [
                 "layout" => (object)[
@@ -251,4 +254,11 @@ class WorksheetController extends Controller {
     }
 
 
+    public function sendSms(Request $request) {
+        return response()->json(WorksheetService::sendSms($request), 200);
+    }
+
+    public function sendGroupSms(Request $request) {
+        return response()->json(WorksheetService::sendGroupSms($request), 200);
+    }
 }

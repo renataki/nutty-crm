@@ -62,6 +62,18 @@
                                         <div id="response-status"></div>
                                     </div>
                                     <div class="mb-3">
+                                        <label class="form-label">Api Key</label>
+                                        <input id="website-apiKey" class="form-control" name="website-apiKey" type="text"
+                                               placeholder="Api Key" ng-model="apikey"/>
+                                        <div id="response-api-key"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Device ID</label>
+                                        <input id="website-deviceId" class="form-control" name="website-deviceId" type="text"
+                                               placeholder="Device ID" ng-model="deviceId"/>
+                                        <div id="response-device-id"></div>
+                                    </div>
+                                    <div class="mb-3">
                                         @if($model->website->_id != null)
                                             <button class="btn btn-warning waves-effect waves-light me-1"
                                                     ng-click="update($event)">Edit

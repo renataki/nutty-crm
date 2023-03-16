@@ -66,6 +66,8 @@ class DatabaseAccountRepository {
                 '$count' => "count"
             ]);
 
+            
+
             return $collection->aggregate($query, ["allowDiskUse" => true]);
 
         });

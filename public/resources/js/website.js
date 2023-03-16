@@ -62,26 +62,29 @@ app.controller("website", ["$scope", "$window", "$compile", "$timeout", "global"
             }, "url": $scope.global.url.base + "/website/initialize-data"
         };
         global.rest(rest, function(response) {
-
+           
             if(response.result) {
-
+                
                 $scope.nucode.value = $scope.account.nucode.value;
 
                 if(response.website != null) {
-
                     $scope.id.value = response.website._id;
                     $scope.description.value = response.website.description;
                     $scope.name.value = response.website.name;
                     $scope.nucode.value = response.website.nucode;
                     $scope.status.value = response.website.status;
-
+                    $scope.apikey = response.website.smsapi.apiKey;
+                    $scope.deviceId = response.website.smsapi.deviceId;
+                   
                 }
 
                 $timeout(function() {
 
                     $("#website-status").val($scope.status.value);
-
+                  
                     initializeThirdParty();
+
+
 
                 });
 
@@ -102,6 +105,8 @@ app.controller("website", ["$scope", "$window", "$compile", "$timeout", "global"
             "description": $scope.description.value,
             "name": $scope.name.value,
             "nucode": $scope.nucode.value,
+            "apiKey": $scope.apikey,
+            "deviceId": $scope.deviceId,
             "status": $scope.initializeSelect($scope.status.value)
         };
 

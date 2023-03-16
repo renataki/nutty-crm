@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Components;
 
 use App\Models\User;
@@ -61,8 +60,7 @@ class DataComponent {
 
                     break;
             }
-
-            if(substr($request->session()->get("account")->privilege[$privilege], $start, 1) == "7") {
+           if(substr($request->session()->get("account")->privilege[$privilege], $start, 1) == "7") {
 
                 $result = true;
 
@@ -204,6 +202,8 @@ class DataComponent {
         $table->date("modified.timestamp")->index();
 
     }
+
+
 
 
     public static function createDatabaseLogIndex($table) {

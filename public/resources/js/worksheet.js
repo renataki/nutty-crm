@@ -101,7 +101,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
             }, {
                 "data": "database", "name": "database", "render": function(data) {
                     let result = "";
-
+                
                     if(data.length > 0) {
 
                         let maskIndex = data[0].contact.phone.toString().length - 4;
@@ -162,7 +162,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
                 }
             }, {
                 "data": "_id", "render": function(data, type, row) {
-
+                   
                     let databaseId = "";
 
                     if(row.database.length > 0) {
@@ -171,7 +171,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
 
                     }
 
-                    return "<a href=\"" + $scope.global.url.base + "/worksheet/call/" + row.website._id + "/" + databaseId + "/\" class=\"btn btn-outline-secondary btn-sm me-2 call\" title=\"Call\">" + "<i class=\"fas fa-phone-alt\"></i>" + "</a>";
+                    return "<a href=\"" + $scope.global.url.base + "/worksheet/call/" + row.website._id + "/" + databaseId + "/\" class=\"btn btn-outline-secondary btn-sm me-2 call\" title=\"Call\">" + "<i class=\"fas fa-phone-alt\"></i>" + "</a><a onclick=\"sendSms('"+row.database[0].contact.phone+"')\" class=\"btn btn-outline-secondary btn-sm me-2 call\" title=\"Call\">" + "<i class=\"fas fa-comment-alt\"></i>" + "</a>";
                 }
             }],
             "createdRow": function(row) {
@@ -427,6 +427,7 @@ app.controller("worksheet", ["$scope", "$window", "$compile", "$timeout", "globa
                         $("#worksheet-status").val($scope.status.value).trigger("change");
 
                         $("#worksheet-skype-call").attr("href", "skype:" + $scope.contact.phone.value.toString().replaceAll("+", "") + "?call");
+                        $("#single_phone").val($scope.contact.phone.value);
                         $("#worksheet-whatsapp-call").attr("href", "https://api.whatsapp.com/send?phone=" + $scope.contact.whatsapp.value.toString().replaceAll("+", ""));
 
                     });

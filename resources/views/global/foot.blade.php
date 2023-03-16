@@ -1,4 +1,5 @@
 <script src="{{asset("resources/js/library/jquery/jquery.min.js?v=" . config("app.version"))}}"></script>
+<script src="{{asset("resources/js/library/bootstrap/bootstrap.min.js?v=" . config("app.version"))}}"></script>
 <script src="{{asset("resources/js/library/angular/angular.min.js?v=" . config("app.version"))}}"></script>
 <script src="{{asset("resources/js/library/angular/angular-sanitize.min.js?v=" . config("app.version"))}}"></script>
 <script src="{{asset("resources/js/library/apexcharts/apexcharts.min.js?v=" . config("app.version"))}}"></script>

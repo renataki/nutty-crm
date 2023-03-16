@@ -13,6 +13,8 @@ class CreateWebsitesTable extends Migration {
         $table->string("api.nexus.code")->index();
         $table->string("api.nexus.salt")->index();
         $table->string("api.nexus.url")->index();
+        $table->string("smsapi.apiKey")->index();
+        $table->string("smsapi.deviceId")->index();
         $table->integer("description")->index();
         $table->string("name")->index();
         $table->string("nucode")->index();

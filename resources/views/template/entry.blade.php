@@ -25,44 +25,31 @@
                                 <div class="row">
                                     <div class="mb-3">
                                         <label class="form-label">Name</label>
-                                        <input id="template-name" class="form-control" name="template-name" type="text"
-                                               placeholder="Name" ng-model="name.value"
-                                               ng-keyup="checkFormLengthRequired('name.value', 'template-name', 'response-name', 3, 50)"/>
+                                        <input id="template-name" class="form-control" name="template-name" type="text" placeholder="Name" ng-model="name.value" ng-keyup="checkFormLengthRequired('name.value', 'template-name', 'response-name', 3, 50)" />
                                         <div id="response-name"></div>
                                     </div>
                                     @if(Session::has("account"))
-                                        @if(Session::get("account")->nucode == "system")
-                                            <div class="mb-3">
-                                                <label class="form-label">Nucode</label>
-                                                <input id="template-nucode" class="form-control" name="template-nucode"
-                                                       type="text" placeholder="Nucode" ng-model="$parent.nucode.value"
-                                                       ng-keyup="checkFormLength('nucode.value', 'template-nucode', 'response-nucode', 1, 50)"/>
-                                                <div id="response-nucode"></div>
-                                            </div>
-                                        @endif
+                                    @if(Session::get("account")->nucode == "system")
+                                    <div class="mb-3">
+                                        <label class="form-label">Nucode</label>
+                                        <input id="template-nucode" class="form-control" name="template-nucode" type="text" placeholder="Nucode" ng-model="$parent.nucode.value" ng-keyup="checkFormLength('nucode.value', 'template-nucode', 'response-nucode', 1, 50)" />
+                                        <div id="response-nucode"></div>
+                                    </div>
+                                    @endif
                                     @endif
                                     <div class="mb-3">
                                         <label class="form-label">Description</label>
-                                        <textarea id="template-description" class="form-control"
-                                                  name="template-description" type="text" placeholder="Description"
-                                                  ng-model="description.value"
-                                                  ng-keyup="checkFormLength('description.value', 'template-description', 'response-description', 3, 250)"></textarea>
+                                        <textarea id="template-description" class="form-control" name="template-description" type="text" placeholder="Description" ng-model="description.value" ng-keyup="checkFormLength('description.value', 'template-description', 'response-description', 3, 250)"></textarea>
                                         <div id="response-description"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Text Message</label>
-                                        <textarea id="template-textMessage" class="form-control"
-                                                  name="template-textMessage" type="text" placeholder="Text Message"
-                                                  ng-model="textMessage.value"
-                                                  ng-keyup="checkFormLength('textMessage.value', 'template-textMessage', 'response-textMessage', 3, 250)"></textarea>
+                                        <textarea id="template-textMessage" class="form-control" name="template-textMessage" type="text" placeholder="Text Message" ng-model="textMessage.value" ng-keyup="checkFormLength('textMessage.value', 'template-textMessage', 'response-textMessage', 3, 250)"></textarea>
                                         <div id="response-textMessage"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Media Type</label>
-                                        <select id="template-mediaType" class="form-control select2"
-                                                data-error="Please select Media Type" data-input="template-mediaType"
-                                                data-required="true" data-response="response-mediaType"
-                                                data-scope="mediaType.value">
+                                        <select id="template-mediaType" class="form-control select2" data-error="Please select Media Type" data-input="template-mediaType" data-required="true" data-response="response-mediaType" data-scope="mediaType.value">
                                             <option value="">Media Type</option>
                                             <option value="Video">Video</option>
                                             <option value="Image">Image</option>
@@ -71,29 +58,21 @@
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Media URL</label>
-                                        <input id="template-mediaUrl" class="form-control" name="template-mediaUrl"
-                                               type="text"
-                                               placeholder="Media URL" ng-model="mediaUrl.value"
-                                               ng-keyup="checkFormLength('mediaUrl.value', 'template-mediaUrl', 'response-mediaUrl', 3, 50)"/>
+                                        <input id="template-mediaUrl" class="form-control" name="template-mediaUrl" type="text" placeholder="Media URL" ng-model="mediaUrl.value" ng-keyup="checkFormLength('mediaUrl.value', 'template-mediaUrl', 'response-mediaUrl', 3, 50)" />
                                         <div id="response-mediaUrl"></div>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label"></label>
                                         <div>
-                                            <input class="form-check-input" type="checkbox"
-                                                   ng-checked="isDefault.value == 'true'"
-                                                   ng-click="toggleIsDefault()">
+                                            <input class="form-check-input" type="checkbox" ng-checked="isDefault.value == 'true'" ng-click="toggleIsDefault()">
                                             <label class="form-check-label me-3">Set as default</label>
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label">Status</label>
-                                        <select id="template-status" class="form-control select2"
-                                                data-error="Please select status" data-input="template-status"
-                                                data-required="true" data-response="response-status"
-                                                data-scope="status.value">
+                                        <select id="template-status" class="form-control select2" data-error="Please select status" data-input="template-status" data-required="true" data-response="response-status" data-scope="status.value">
                                             <option value="">Status</option>
                                             <option value="Active">Active</option>
                                             <option value="Inactive">Inactive</option>
@@ -103,15 +82,20 @@
 
                                     <div class="mb-3">
                                         @if($model->template->_id != null)
-                                            <button class="btn btn-warning waves-effect waves-light me-1"
-                                                    ng-click="update($event)">Edit
-                                            </button>
+                                        <button class="btn btn-warning waves-effect waves-light me-1" ng-click="update($event)">Edit
+                                        </button>
                                         @else
-                                            <button class="btn btn-success waves-effect waves-light me-1"
-                                                    ng-click="insert($event)">Add New
-                                            </button>
+                                        <button class="btn btn-success waves-effect waves-light me-1" ng-click="insert($event)">Add New
+                                        </button>
                                         @endif
                                         <button type="reset" class="btn btn-secondary waves-effect me-1">Reset</button>
+
+
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <span data-toggle="tooltip" data-placement="top" title="Variables that you can use in your message"><b> SHORTCODES </b></span>
+                                        <br>[#name]
                                     </div>
                                 </div>
                             </form>
@@ -121,5 +105,5 @@
             </div>
         </div>
     </div>
-@include("global.footer")
-@include("global.foot")
+    @include("global.footer")
+    @include("global.foot")

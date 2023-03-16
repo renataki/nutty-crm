@@ -18,16 +18,19 @@ use App\Repositories\ReportWebsiteRepository;
 use App\Repositories\UserGroupRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WebsiteRepository;
+use App\Repositories\TemplateRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use MongoDB\BSON\UTCDateTime;
 use stdClass;
 
 
-class WorksheetService {
+class WorksheetService
+{
 
 
-    public static function callInitializeData($request) {
+    public static function callInitializeData($request)
+    {
 
         $result = new stdClass();
         $result->back = false;
@@ -41,35 +44,32 @@ class WorksheetService {
 
         $result->database = DatabaseRepository::findOneById($request->id, $request->websiteId);
 
-        if(!empty($result->database)) {
+        if (!empty($result->database)) {
 
             $result->databaseAccount = DatabaseAccountRepository::findOneByDatabaseId($result->database->_id, $request->websiteId);
 
             $result->databaseLog = DatabaseLogRepository::findLastByDatabaseIdUserId($result->database->_id, $account->_id, $request->websiteId);
 
-            if(!empty($result->databaseLog)) {
+            if (!empty($result->databaseLog)) {
 
                 $result->reference = $result->databaseLog->reference;
 
-                if($result->databaseLog->status != "FollowUp" && $result->databaseLog->status != "Interested" && $result->databaseLog->status != "Pending" && $result->databaseLog->status != "Registered") {
+                if ($result->databaseLog->status != "FollowUp" && $result->databaseLog->status != "Interested" && $result->databaseLog->status != "Pending" && $result->databaseLog->status != "Registered") {
 
                     $result->back = true;
-
                 }
-
             }
-
         }
 
         $result->response = "Call worksheet data initialized";
         $result->result = true;
 
         return $result;
-
     }
 
 
-    public static function crmFindTable($request) {
+    public static function crmFindTable($request)
+    {
 
         $result = new stdClass();
         $result->draw = $request->draw;
@@ -85,21 +85,20 @@ class WorksheetService {
 
         $count = DatabaseAccountRepository::countCrmTable($request->session()->get("account")->_id, $depositLastTimestamp, 100, $request->session()->get("websiteId"));
 
-        if(!$count->isEmpty()) {
+        if (!$count->isEmpty()) {
 
             $result->recordsTotal = $count[0]->count;
             $result->recordsFiltered = $result->recordsTotal;
-
         }
 
         $result->data = DatabaseAccountRepository::findCrmTable($request->session()->get("account")->_id, $depositLastTimestamp, $request->length, $sorts, $request->start, $request->session()->get("websiteId"));
 
         return $result;
-
     }
 
 
-    public static function findFilter($request, $id) {
+    public static function findFilter($request, $id)
+    {
 
         $result = new stdClass();
         $result->filterDate = "";
@@ -109,23 +108,22 @@ class WorksheetService {
 
         $account = DataComponent::initializeAccount($request);
 
-        if($request->session()->has("reportDateRangeFilter")) {
+        if ($request->session()->has("reportDateRangeFilter")) {
 
             $result->filterDate = $request->session()->get("reportDateRangeFilter");
-
         }
 
         $result->users = UserRepository::findByNucode($account->nucode);
 
-        if($id != null) {
+        if ($id != null) {
 
             $userById = UserRepository::findOneById($id);
 
-            if(empty($userById)) {
+            if (empty($userById)) {
 
                 $reportByUserId = ReportUserRepository::findOneByUserId($account->nucode, $id);
 
-                if(!empty($reportByUserId)) {
+                if (!empty($reportByUserId)) {
 
                     $user = new User();
                     $user->_id = $reportByUserId->user["_id"];
@@ -133,40 +131,35 @@ class WorksheetService {
                     $user->username = $reportByUserId->user["username"];
 
                     $result->users = $result->users->push($user);
-
                 }
-
             }
-
         }
 
         $userGroupById = UserGroupRepository::findOneById($account->group["_id"]);
 
-        if(!empty($userGroupById)) {
+        if (!empty($userGroupById)) {
 
             $result->websites = WebsiteRepository::findInId($userGroupById->website["ids"]);
-
         }
 
         $result->response = "Filter report data found";
         $result->result = true;
 
         return $result;
-
     }
 
 
-    public static function generateReport($account, $date, $status, $website) {
+    public static function generateReport($account, $date, $status, $website)
+    {
 
         $reportUserByDateUserId = ReportUserRepository::findOneByDateUserId($date, $account->nucode, $account->_id);
 
-        if(!empty($reportUserByDateUserId)) {
+        if (!empty($reportUserByDateUserId)) {
 
             $reportUserByDateUserId->status = self::initializeStatusData($reportUserByDateUserId, $status);
             $reportUserByDateUserId->total += 1;
             $reportUserByDateUserId->website = self::initializeWebsiteData($reportUserByDateUserId, $website);
             ReportUserRepository::update($account, $reportUserByDateUserId);
-
         } else {
 
             $reportUser = new ReportUser();
@@ -188,17 +181,15 @@ class WorksheetService {
                 "totals" => [1]
             ];
             ReportUserRepository::insert($account, $reportUser);
-
         }
 
         $reportWebsiteByDateWebsiteId = ReportWebsiteRepository::findOneByDateWebsiteId($date, $account->nucode, $website->_id);
 
-        if(!empty($reportWebsiteByDateWebsiteId)) {
+        if (!empty($reportWebsiteByDateWebsiteId)) {
 
             $reportWebsiteByDateWebsiteId->status = self::initializeStatusData($reportWebsiteByDateWebsiteId, $status);
             $reportWebsiteByDateWebsiteId->total += 1;
             ReportWebsiteRepository::update($account, $reportWebsiteByDateWebsiteId);
-
         } else {
 
             $reportWebsite = new ReportWebsite();
@@ -213,13 +204,12 @@ class WorksheetService {
                 "name" => $website->name
             ];
             ReportWebsiteRepository::insert($account, $reportWebsite);
-
         }
-
     }
 
 
-    public static function initializeData($request) {
+    public static function initializeData($request)
+    {
 
         $result = new stdClass();
         $result->back = false;
@@ -233,49 +223,44 @@ class WorksheetService {
 
         $account = DataComponent::initializeAccount($request);
 
-        if($request->session()->has("websiteId")) {
+        if ($request->session()->has("websiteId")) {
 
             $websiteById = WebsiteRepository::findOneById($request->session()->get("websiteId"));
 
-            if(!empty($websiteById)) {
+            if (!empty($websiteById)) {
 
-                if($account->type == "CRM") {
+                if ($account->type == "CRM") {
 
                     $result->database = DatabaseRepository::findOneWorksheetCrm($account->_id, "Available", $websiteById->_id);
-
-                } else if($account->type == "Telemarketer") {
+                } else if ($account->type == "Telemarketer") {
 
                     $result->database = DatabaseRepository::findOneWorksheetTelemarketer("Available", $account->_id, $websiteById->_id);
-
                 }
 
-                if(empty($result->database)) {
+                if (empty($result->database)) {
 
                     $result->database = DatabaseRepository::findOneWorksheetGroup($account->group["_id"], "Available", $websiteById->_id);
 
-                    if(empty($result->database)) {
+                    if (empty($result->database)) {
 
                         $result->database = DatabaseRepository::findOneWorksheetWebsite("Available", $websiteById->_id);
-
                     }
-
                 }
 
-                if(!empty($result->database)) {
+                if (!empty($result->database)) {
 
                     $result->databaseAccount = DatabaseAccountRepository::findOneByDatabaseId($result->database->_id, $websiteById->_id);
 
                     $databaseLogByDatabaseIdUserId = DatabaseLogRepository::findLastByDatabaseIdUserId($result->database->_id, $account->_id, $websiteById->_id);
 
-                    if(!empty($databaseLogByDatabaseIdUserId)) {
+                    if (!empty($databaseLogByDatabaseIdUserId)) {
 
                         $result->reference = $databaseLogByDatabaseIdUserId->reference;
-
                     }
 
                     $result->database->status = "Reserved";
 
-                    if($account->type == "Telemarketer") {
+                    if ($account->type == "Telemarketer") {
 
                         $result->database->telemarketer = [
                             "_id" => $account->_id,
@@ -283,7 +268,6 @@ class WorksheetService {
                             "name" => $account->name,
                             "username" => $account->username
                         ];
-
                     }
 
                     DatabaseRepository::update($account, $result->database, $websiteById->_id);
@@ -310,79 +294,69 @@ class WorksheetService {
 
                     $result->response = "Worksheet data initialized";
                     $result->result = true;
-
                 } else {
 
                     $result->response = "Database empty";
-
                 }
-
             } else {
 
                 $result->response = "Website doesn't exist";
-
             }
-
         } else {
 
             $result->userGroup = UserGroupRepository::findOneById($account->group["_id"]);
 
             $result->response = "Worksheet data initialized";
             $result->result = true;
-
         }
 
         return $result;
-
     }
 
 
-    private static function initializeStatusData($data, $status) {
+    private static function initializeStatusData($data, $status)
+    {
 
         $result = $data->status;
 
         $index = array_search($status, $data->status["names"]);
 
-        if(gettype($index) == "integer") {
+        if (gettype($index) == "integer") {
 
             $result["totals"][$index]++;
-
         } else {
 
             array_push($result["names"], $status);
             array_push($result["totals"], 1);
-
         }
 
         return $result;
-
     }
 
 
-    private static function initializeWebsiteData($data, $website) {
+    private static function initializeWebsiteData($data, $website)
+    {
 
         $result = $data->website;
 
         $index = array_search($website->_id, $data->website["ids"]);
 
-        if(gettype($index) == "integer") {
+        if (gettype($index) == "integer") {
 
             $result["totals"][$index]++;
-
         } else {
 
             array_push($result["ids"], $website->_id);
             array_push($result["names"], $website->name);
             array_push($result["totals"], 1);
-
         }
 
         return $result;
-
     }
 
 
-    public static function resultFindTable($request) {
+    public static function resultFindTable($request)
+    {
 
         $result = new stdClass();
         $result->draw = $request->draw;
@@ -402,28 +376,24 @@ class WorksheetService {
         $filterWebsite = $filter[6]->search->value;
         $filterWhatsapp = $filter[5]->search->value;
 
-        if($account->username == "system" || $account->type == "Administrator") {
+        if ($account->username == "system" || $account->type == "Administrator") {
 
-            if($account->username == "system") {
+            if ($account->username == "system") {
 
                 $websiteIds = WebsiteRepository::findIdAll();
-
-            } else if($account->type == "Administrator") {
+            } else if ($account->type == "Administrator") {
 
                 $userById = UserRepository::findOneById($filter[2]->search->value);
 
-                if(!empty($userById)) {
+                if (!empty($userById)) {
 
                     $userGroupById = UserGroupRepository::findOneById($userById->group["_id"]);
 
-                    if(!empty($userGroupById)) {
+                    if (!empty($userGroupById)) {
 
                         $websiteIds = $userGroupById->website["ids"];
-
                     }
-
                 }
-
             }
 
             $filterName = $filter[4]->search->value;
@@ -433,47 +403,41 @@ class WorksheetService {
             $filterUsername = $filter[3]->search->value;
             $filterWebsite = $filter[7]->search->value;
             $filterWhatsapp = $filter[6]->search->value;;
-
         } else {
 
             $userGroupById = UserGroupRepository::findOneById($account->group["_id"]);
 
-            if(!empty($userGroupById)) {
+            if (!empty($userGroupById)) {
 
                 $websiteIds = $userGroupById->website["ids"];
-
             }
-
         }
 
         $filterPhone = preg_replace("/[^0-9]/", '', $filterPhone);
         $filterWhatsapp = preg_replace("/[^0-9]/", '', $filterWhatsapp);
 
-        if(!empty($websiteIds)) {
+        if (!empty($websiteIds)) {
 
             $date = Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0);
             $filterDateRange = DataComponent::initializeFilterDateRange($request->columns[1]["search"]["value"], new UTCDateTime($date->addDays(1)), new UTCDateTime($date));
 
-            foreach($websiteIds as $value) {
+            foreach ($websiteIds as $value) {
 
                 $retrieve = true;
 
-                if(!empty($filterWebsite) && $value != $filterWebsite) {
+                if (!empty($filterWebsite) && $value != $filterWebsite) {
 
                     $retrieve = false;
-
                 }
 
-                if($retrieve) {
+                if ($retrieve) {
 
                     $countResultTable = DatabaseLogRepository::countDatabaseAccountTable($filterDateRange->end, $filterDateRange->start, $filterName, $filterPhone, $filterStatus, $filterUser, $filterUsername, $value, $filterWhatsapp);
 
-                    if(!$countResultTable->isEmpty()) {
+                    if (!$countResultTable->isEmpty()) {
 
                         $count += $countResultTable[0]->count;
-
                     }
-
                 }
 
                 $sorts = [
@@ -485,16 +449,15 @@ class WorksheetService {
 
                 $order = DataComponent::initializeObject($request->order);
 
-                if($order[0]->column != 0) {
+                if ($order[0]->column != 0) {
 
-                    if(strtoupper($order[0]->dir) == "ASC" || strtoupper($order[0]->dir) == "DESC") {
+                    if (strtoupper($order[0]->dir) == "ASC" || strtoupper($order[0]->dir) == "DESC") {
 
                         $direction = 1;
 
-                        if(strtoupper($order[0]->dir) == "DESC") {
+                        if (strtoupper($order[0]->dir) == "DESC") {
 
                             $direction = -1;
-
                         }
 
                         $sorts = [
@@ -503,19 +466,14 @@ class WorksheetService {
                                 "direction" => $direction
                             ]
                         ];
-
                     }
-
                 }
 
-                if($retrieve) {
+                if ($retrieve) {
 
                     $data = $data->merge(DatabaseLogRepository::findDatabaseAccountTable($filterDateRange->end, $filterDateRange->start, $request->length, $filterName, $filterPhone, $request->start, $sorts, $filterStatus, $filterUser, $filterUsername, $value, $filterWhatsapp));
-
                 }
-
             }
-
         }
 
         $result->recordsTotal = $count;
@@ -524,11 +482,11 @@ class WorksheetService {
         $result->data = $data;
 
         return $result;
-
     }
 
 
-    public static function start($request) {
+    public static function start($request)
+    {
 
         $result = new stdClass();
         $result->account = DataComponent::initializeAccount($request);
@@ -541,11 +499,11 @@ class WorksheetService {
         $result->result = true;
 
         return $result;
-
     }
 
 
-    public static function update($request) {
+    public static function update($request)
+    {
 
         $result = new stdClass();
         $result->response = "Failed to update worksheet data";
@@ -555,24 +513,22 @@ class WorksheetService {
 
         $databaseById = DatabaseRepository::findOneById($request->id, $request->session()->get("websiteId"));
 
-        if(!empty($databaseById)) {
+        if (!empty($databaseById)) {
 
             $databaseAttemptByContactPhone = DatabaseAttemptRepository::findOneByContactPhone($databaseById->contact["phone"], $account->nucode);
 
-            if(!empty($databaseAttemptByContactPhone)) {
+            if (!empty($databaseAttemptByContactPhone)) {
 
                 $result = self::updateDatabase($request, $databaseById, $databaseAttemptByContactPhone);
-
             }
-
         }
 
         return $result;
-
     }
 
 
-    private static function updateDatabase($request, $database, $databaseAttempt) {
+    private static function updateDatabase($request, $database, $databaseAttempt)
+    {
 
         $result = new stdClass();
         $result->response = "Failed to update worksheet database data";
@@ -588,29 +544,27 @@ class WorksheetService {
             "username" => strtolower($request->account["username"])
         ];
 
-        if(is_null($request->status)) {
+        if (is_null($request->status)) {
 
             $request->status = "Pending";
-
         }
 
         $websiteById = WebsiteRepository::findOneById($request->session()->get("websiteId"));
 
-        if(!empty($websiteById)) {
+        if (!empty($websiteById)) {
 
             $databaseAccountByUsername = DatabaseAccountRepository::findOneByUsernameNotDatabaseId($database->_id, $request->account["username"], $websiteById->_id);
 
-            if(empty($databaseAccountByUsername)) {
+            if (empty($databaseAccountByUsername)) {
 
-                if(!empty($request->account["username"])) {
+                if (!empty($request->account["username"])) {
 
                     $databaseAccountById = DatabaseAccountRepository::findOneByDatabaseId($database->_id, $websiteById->_id);
 
-                    if(!empty($databaseAccountById)) {
+                    if (!empty($databaseAccountById)) {
 
                         $databaseAccountById->username = $request->account["username"];
                         DatabaseAccountRepository::update($account, $databaseAccountById, $websiteById->_id);
-
                     } else {
 
                         $databaseAccount = new DatabaseAccount();
@@ -680,20 +634,17 @@ class WorksheetService {
                         ];
                         $databaseAccount->username = $request->account["username"];
                         DatabaseAccountRepository::insert($account, $databaseAccount, $websiteById->_id);
-
                     }
 
                     $playerAttemptByUsername = PlayerAttemptRepository::findOneByUsername($account->nucode, $request->account["username"]);
 
-                    if(!empty($playerAttemptByUsername)) {
+                    if (!empty($playerAttemptByUsername)) {
 
                         $playerAttemptByUsername->status = self::initializeStatusData($playerAttemptByUsername, $request->status);
                         $playerAttemptByUsername->total += 1;
                         $playerAttemptByUsername->website = self::initializeWebsiteData($playerAttemptByUsername, $websiteById);
                         PlayerAttemptRepository::update($account, $playerAttemptByUsername);
-
                     }
-
                 }
 
                 $databaseAttempt->status = self::initializeStatusData($databaseAttempt, $request->status);
@@ -701,19 +652,17 @@ class WorksheetService {
                 $databaseAttempt->website = self::initializeWebsiteData($databaseAttempt, $websiteById);
                 DatabaseAttemptRepository::update($account, $databaseAttempt);
 
-                if(is_null($request->reference)) {
+                if (is_null($request->reference)) {
 
                     $request->reference = "";
-
                 }
 
                 $databaseLogById = DatabaseLogRepository::findOneById($request->log["id"], $websiteById->_id);
 
-                if(!empty($databaseLogById)) {
+                if (!empty($databaseLogById)) {
 
                     $databaseLogById->status = $request->status;
                     DatabaseLogRepository::update($account, $databaseLogById, $websiteById->_id);
-
                 } else {
 
                     $databaseLog = new DatabaseLog();
@@ -733,25 +682,194 @@ class WorksheetService {
                         "name" => $websiteById->name
                     ];
                     DatabaseLogRepository::insert($account, $databaseLog, $websiteById->_id);
-
                 }
 
                 self::generateReport($account, new UTCDateTime(Carbon::now()->setHour(0)->setMinute(0)->setSecond(0)->setMicrosecond(0)), $request->status, $websiteById);
 
                 $result->response = "Worksheet data updated";
                 $result->result = true;
-
             } else {
 
                 $result->response = "Username already exist";
-
             }
-
         }
 
+        return $result;
+    }
+
+    public static function sendSms($request)
+    {   
+        $template = TemplateRepository::findByDefault();
+        
+        if(empty($template) && empty($request->template)){
+            
+            $result = 1;
+            return $result;
+        }
+        else if($template){
+            $template = TemplateRepository::findByDefault();
+        }
+        else {
+            $template = TemplateRepository::findOneById($request->template);
+        }
+        $data = \DB::table('database_'.$request->id)->where('contact.phone',$request->single_phone)->first();
+        $templateContent = $template->textMessage;
+        $templateContent = str_replace('#name#', $data['name'], $templateContent);
+
+        $website = WebsiteRepository::findOneById($request->id);
+
+        $message = [
+            "secret" =>  $website['smsapi']['apiKey'], // your API secret from (Tools -> API Keys) page
+            "mode" => "devices",
+            "device" => $website['smsapi']['deviceId'],
+            "sim" => 1,
+            "priority" => 1,
+            "phone" => $data['contact']['phone'],
+            "message" => $templateContent
+        ];
+
+       
+        
+      
+        $cURL = curl_init("https://gateway.yakuzahost.com/api/send/sms");
+        curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cURL, CURLOPT_POSTFIELDS, $message);
+        curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($cURL);
+        curl_close($cURL);
+      
+        $result = json_decode($response, true);
+         // do something with response
         return $result;
 
     }
 
+    public static function sendGroupSms($request){
 
+        $template = TemplateRepository::findByDefault();
+        
+        if(empty($template) && empty($request->template)){
+            
+            $result = 1;
+            return $result;
+        }
+        else if($template){
+            $template = TemplateRepository::findByDefault();
+        }
+        else {
+            $template = TemplateRepository::findOneById($request->template);
+        }
+
+        $website = WebsiteRepository::findOneById($request->id);
+        if($request->deposit != ''){
+            $depositLastTimestamp = new UTCDateTime(Carbon::now()->subDays($request->deposit));
+
+            $dataAccount = \DB::table('databaseAccount_'.$request->id)->where('deposit.last.timestamp','<=',$depositLastTimestamp)->get();
+            $data = array();
+            
+            if($dataAccount){
+                foreach($dataAccount as $dt){
+                    \DB::enableQueryLog();
+                    $data = \DB::table('database_'.$request->id)->where('_id','=',$dt['database']['_id'])->get();  
+
+                    if($data){
+          
+                        $templateContent = $template->textMessage;
+                        foreach($data as $val){
+                           
+                            if(isset( $val['name'])){
+                               
+                                $templateContentData = str_replace('#name#', $val['name'], $templateContent);
+                           
+                            }
+                            else {
+                               
+                                $templateContentData = str_replace('#name#', $val['database']['name'], $templateContent);
+                           
+                            }
+            
+                           
+                            $message = [
+                                "secret" => $website['smsapi']['apiKey'], // your API secret from (Tools -> API Keys) page
+                                "mode" => "devices",
+                                "device" => $website['smsapi']['deviceId'],
+                                "sim" => 1,
+                                "priority" => 1,
+                                "phone" => $val['contact']['phone'],
+                                "message" => $templateContentData
+                            ];
+                          
+                            $cURL = curl_init("https://gateway.yakuzahost.com/api/send/sms");
+                            curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+                            curl_setopt($cURL, CURLOPT_POSTFIELDS, $message);
+                            curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
+                            $response = curl_exec($cURL);
+                            curl_close($cURL);
+                          
+                            $result = json_decode($response, true);
+                            
+                        }
+                    }
+                    else {
+                        
+                        $result = 2;
+                    }
+                   
+                }
+            }
+            
+        }
+        else {
+            $data = \DB::table('database_'.$request->id)->get();
+
+            if($data){
+          
+                $templateContent = $template->textMessage;
+                foreach($data as $val){
+                   
+                    if(isset( $val['name'])){
+                       
+                        $templateContentData = str_replace('#name#', $val['name'], $templateContent);
+                   
+                    }
+                    else {
+                       
+                        $templateContentData = str_replace('#name#', $val['database']['name'], $templateContent);
+                   
+                    }
+    
+                   
+                    $message = [
+                        "secret" => $website['smsapi']['apiKey'], // your API secret from (Tools -> API Keys) page
+                        "mode" => "devices",
+                        "device" => $website['smsapi']['deviceId'],
+                        "sim" => 1,
+                        "priority" => 1,
+                        "phone" => $val['contact']['phone'],
+                        "message" => $templateContentData
+                    ];
+                  
+                    $cURL = curl_init("https://gateway.yakuzahost.com/api/send/sms");
+                    curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($cURL, CURLOPT_POSTFIELDS, $message);
+                    curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
+                    $response = curl_exec($cURL);
+                    curl_close($cURL);
+                  
+                    $result = json_decode($response, true);
+                    
+                }
+            }
+            else {
+                
+                $result = 2;
+            }
+        }
+
+    
+       
+        
+        
+        return $result;
+    }
 }

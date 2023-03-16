@@ -133,5 +133,8 @@ class TemplateRepository {
 
     }
 
-
+    public static function findByDefault() {
+        
+        return Template::where("isDefault", "true")->first();
+    }
 }

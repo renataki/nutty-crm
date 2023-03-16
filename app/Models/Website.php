@@ -20,6 +20,10 @@ class Website extends Model {
                 "url" => ""
             ]
         ],
+        "smsapi" => [
+                "apiKey" => "",
+                "deviceId" => ""
+        ],
         "description" => "",
         "name" => "",
         "nucode" => "",

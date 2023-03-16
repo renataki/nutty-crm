@@ -84,6 +84,9 @@ Route::group(["middleware" => ["authentication"]], function() {
     Route::get("/worksheet/result", [WorksheetController::class, "result"]);
     Route::get("/worksheet/result/{id}", [WorksheetController::class, "resultUser"]);
 
+    Route::post("/send-sms", [WorksheetController::class, "sendSms"]);
+
+    Route::post("/send-group-sms", [WorksheetController::class, "sendGroupSms"]);
 });
 
 Route::get("/access-denied", [AccessDeniedController::class, "index"]);

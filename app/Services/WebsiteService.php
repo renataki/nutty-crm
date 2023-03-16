@@ -95,7 +95,7 @@ class WebsiteService {
         $result->result = false;
 
         $result->website = WebsiteRepository::findOneById($request->id);
-
+        
         $result->response = "Website data initialized";
         $result->result = true;
 
@@ -106,6 +106,7 @@ class WebsiteService {
 
     public static function insert($request) {
 
+        
         $result = new stdClass();
         $result->response = "Failed to insert website data";
         $result->result = false;
@@ -250,6 +251,10 @@ class WebsiteService {
                     "salt" => "",
                     "url" => ""
                 ]
+            ];
+            $result->website->smsapi = [
+                    "apiKey" => $request->apiKey,
+                    "deviceId" => $request->deviceId
             ];
             $result->website->description = $request->description;
             $result->website->name = $request->name;

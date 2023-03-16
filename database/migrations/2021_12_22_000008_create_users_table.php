@@ -87,7 +87,8 @@ class CreateUsersTable extends Migration {
                 "userGroup" => "7777",
                 "userRole" => "7777",
                 "website" => "7777",
-                "worksheet" => "7777"
+                "worksheet" => "7777",
+                "worksheetCrm" => "7777"
             ];
             $user->role = [
                 "_id" => "0",
